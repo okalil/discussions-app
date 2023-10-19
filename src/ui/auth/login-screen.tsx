@@ -1,6 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { Pressable, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { Button } from '~/components/button';
 import { FormInput } from '~/components/forms/form-input';
@@ -9,12 +10,14 @@ import { UserRepository } from '~/data/user-repository';
 export function LoginScreen({
   navigation,
 }: NativeStackScreenProps<StackParamList>) {
+  const client = useQueryClient();
   const form = useForm();
+
   const onLogin = form.handleSubmit(async data => {
     try {
       const repository = new UserRepository();
-      const user = await repository.login(data.user);
-      console.log(user);
+      await repository.login(data.user);
+      client.invalidateQueries({ queryKey: ['user'] });
     } catch (error) {
       form.setError('root', { message: 'Erro ao Entrar' });
     }

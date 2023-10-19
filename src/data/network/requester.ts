@@ -1,3 +1,5 @@
+import { storage } from '../local/storage';
+
 type FetchFunction = (
   input: RequestInfo | URL,
   init?: RequestInit | undefined
@@ -24,8 +26,8 @@ export class Requester {
 
     request.headers.set('Content-Type', 'application/json');
 
-    // const token = storage.getString('token') ?? '';
-    // if (token) request.headers.set('Authorization', `Bearer ${token}`);
+    const token = storage.getString('token') ?? '';
+    if (token) request.headers.set('Authorization', `Bearer ${token}`);
 
     const response = await fetch(request);
     if (!response.ok) {

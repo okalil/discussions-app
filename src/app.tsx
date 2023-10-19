@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 import React from 'react';
 
-import { Navigation } from './navigation';
+import { Navigation } from './ui/navigation';
 
 function App() {
   return (
