@@ -1,9 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { LoginScreen } from '../auth/login-screen';
-import { RegisterScreen } from '../auth/register-screen';
 import { Tabs } from './tabs';
 import { useUserQuery } from './use-user-query';
+import { LoginScreen } from '../auth/login-screen';
+import { RegisterScreen } from '../auth/register-screen';
+import { DiscussionScreen } from '../discussion/discussion-screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ export function NavigationStack() {
             component={Tabs}
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="Discussion" component={DiscussionScreen} />
         </Stack.Group>
       )}
     </Stack.Navigator>
@@ -35,5 +37,6 @@ declare global {
   type StackParamList = {
     Login: undefined;
     Register: undefined;
+    Discussion?: { id?: string };
   };
 }

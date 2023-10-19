@@ -20,8 +20,9 @@ export class UserRepository {
     const response = await api.post('/api/v1/users/login', { body });
     const json = await response.json();
     const token = json.token;
-    const user = await this.getRemoteUser();
     storage.set('token', token);
+
+    const user = await this.getRemoteUser();
     storage.set('user', JSON.stringify(user));
     return user;
   }
