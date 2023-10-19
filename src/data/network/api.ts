@@ -1,9 +1,9 @@
-import Constants from 'expo-constants';
-
 import { Requester } from './requester';
 
+export const url = 'https://discussions-api.onrender.com';
+
 export const api = Requester.create({
-  baseUrl: Constants.expoConfig?.extra?.apiUrl ?? 'https://discussions-api.onrender.com',
+  baseUrl: url,
   async onError(response) {
     const body = await response.text();
     const json = safeParseJson(body);

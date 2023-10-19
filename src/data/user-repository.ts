@@ -1,5 +1,6 @@
 import { storage } from './local/storage';
 import { api } from './network/api';
+import { socket } from './network/socket';
 
 interface User {
   name: string;
@@ -21,6 +22,9 @@ export class UserRepository {
     const json = await response.json();
     const token = json.token;
     storage.set('token', token);
+
+    socket.auth = { token };
+    socket.connect();
 
     const user = await this.getRemoteUser();
     storage.set('user', JSON.stringify(user));

@@ -2,9 +2,12 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQuery } from '@tanstack/react-query';
 import { View, Text, ActivityIndicator, Pressable } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import React from 'react';
 
 import { DiscussionsRepository } from '~/data/discussions-repository';
 import { cn } from '~/utils/classnames';
+import { socket } from '~/data/network/socket';
+import { useSocketEvent } from '~/utils/use-socket-event';
 
 type ScreenProps = NativeStackScreenProps<StackParamList, 'Discussion'>;
 
@@ -22,6 +25,19 @@ export function DiscussionScreen({ route }: ScreenProps) {
     enabled: !!discussionId,
   });
   const discussion = discussionQuery.data;
+
+  React.useEffect(() => {
+    socket.emit('discussion_subscribe', discussionId);
+    return () => {
+      socket.emit('discussion_unsubscribe', discussionId);
+    };
+  }, [discussionId]);
+
+  useSocketEvent('discussion_update', async id => {
+    if (id === discussionId) {
+      discussionQuery.refetch();
+    }
+  });
 
   if (discussionQuery.isLoading) {
     return (
