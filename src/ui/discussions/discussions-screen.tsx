@@ -1,6 +1,13 @@
 import React from 'react';
-import { View, Image, FlatList, Pressable, Text } from 'react-native';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import {
+  View,
+  Image,
+  FlatList,
+  Pressable,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { DiscussionsRepository } from '~/data/discussions-repository';
@@ -22,8 +29,7 @@ export function DiscussionsScreen({ navigation }: ScreenProps) {
       return last.next;
     },
     select(state) {
-      type T = (typeof state)['pages'][number]['data'];
-      return state.pages.reduce<T>((result, it) => result.concat(it.data), []);
+      return state.pages.flatMap(it => it.data);
     },
   });
 
@@ -32,6 +38,8 @@ export function DiscussionsScreen({ navigation }: ScreenProps) {
   return (
     <View className="flex-1">
       <FlatList
+        refreshing={query.isRefetching}
+        onRefresh={() => query.refetch()}
         className="flex-1 px-4"
         data={discussions}
         renderItem={({ item }) => (
@@ -61,9 +69,19 @@ export function DiscussionsScreen({ navigation }: ScreenProps) {
               )}
             </View>
             <Text className="text-base font-semibold">{item.title}</Text>
+            <Text className="text-base font-semibold">{item.votes_count}</Text>
           </Pressable>
         )}
         onEndReached={() => query.fetchNextPage()}
+        ListFooterComponent={
+          query.isFetchingNextPage ? (
+            <ActivityIndicator
+              color="black"
+              size="large"
+              style={{ paddingVertical: 20 }}
+            />
+          ) : null
+        }
       />
     </View>
   );

@@ -16,7 +16,7 @@ export class DiscussionsRepository {
       meta: { current_page: number; last_page: number };
     }
 
-    const response = await api.get('/api/v1/discussions?page=' + page);
+    const response = await api.get(`/api/v1/discussions?page=${page}`);
     const json: RemoteDiscussions = await response.json();
     const next =
       json.meta.current_page === json.meta.last_page
