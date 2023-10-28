@@ -5,6 +5,7 @@ import { useUserQuery } from './use-user-query';
 import { LoginScreen } from '../auth/login-screen';
 import { RegisterScreen } from '../auth/register-screen';
 import { DiscussionScreen } from '../discussion/discussion-screen';
+import { DiscussionFormScreen } from '../discussion-form/discussion-form-screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,10 @@ export function NavigationStack() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Discussion" component={DiscussionScreen} />
+          <Stack.Screen
+            name="DiscussionForm"
+            component={DiscussionFormScreen}
+          />
         </Stack.Group>
       )}
     </Stack.Navigator>
@@ -38,5 +43,6 @@ declare global {
     Login: undefined;
     Register: undefined;
     Discussion?: { id?: string };
+    DiscussionForm: undefined;
   };
 }

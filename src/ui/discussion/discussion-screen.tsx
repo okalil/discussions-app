@@ -24,7 +24,6 @@ export function DiscussionScreen({ route }: ScreenProps) {
     },
     enabled: !!discussionId,
   });
-  const discussion = discussionQuery.data;
 
   React.useEffect(() => {
     socket.emit('discussion_subscribe', discussionId);
@@ -38,44 +37,56 @@ export function DiscussionScreen({ route }: ScreenProps) {
       discussionQuery.refetch();
     }
   });
+  
+  const discussion = discussionQuery.data;
 
-  if (discussionQuery.isLoading) {
+  if (discussion) {
+    return (
+      <View className="flex-1 px-4 py-4">
+        <Text className="text-lg font-semibold mb-2">{discussion.title}</Text>
+        <View>
+          <Pressable
+            className={cn(
+              'flex-row items-center w-12 ml-auto',
+              'px-2 py-1 border rounded-xl',
+              discussion?.voted ? 'border-blue-500' : 'border-gray-200'
+            )}
+            onPress={() => {
+              requestAnimationFrame(async () => {
+                await (discussion?.voted
+                  ? repository.downvoteDiscussion(discussionId)
+                  : repository.upvoteDiscussion(discussionId));
+                discussionQuery.refetch();
+              });
+            }}
+          >
+            <Icon
+              name="arrow-up"
+              color={discussion.voted ? 'rgb(59 130 246)' : undefined}
+              size={16}
+            />
+            <Text className={cn(discussion.voted && 'text-blue-500')}>
+              {discussion.votes}
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
+
+  if (discussionQuery.status === 'pending')
     return (
       <View className="flex-1 items-center justify-center">
         <ActivityIndicator />
       </View>
     );
-  }
 
   return (
-    <View className="flex-1 px-4 py-4">
-      <Text className="text-lg font-semibold mb-2">{discussion?.title}</Text>
-      <View>
-        <Pressable
-          className={cn(
-            'flex-row items-center w-12 ml-auto',
-            'px-2 py-1 border rounded-xl',
-            discussion?.user_voted ? 'border-blue-500' : 'border-gray-200'
-          )}
-          onPress={() => {
-            requestAnimationFrame(async () => {
-              await (discussion?.user_voted
-                ? repository.downvoteDiscussion(discussionId)
-                : repository.upvoteDiscussion(discussionId));
-              discussionQuery.refetch();
-            });
-          }}
-        >
-          <Icon
-            name="arrow-up"
-            color={discussion?.user_voted ? 'rgb(59 130 246)' : undefined}
-            size={16}
-          />
-          <Text className={cn(discussion?.user_voted && 'text-blue-500')}>
-            {discussion?.votes_count}
-          </Text>
-        </Pressable>
-      </View>
+    <View className="flex-1 items-center justify-center">
+      <Text>Houve um erro ao carregar</Text>
+      <Pressable onPress={() => discussionQuery.refetch()}>
+        <Text>Tente novamente.</Text>
+      </Pressable>
     </View>
   );
 }

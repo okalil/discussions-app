@@ -1,37 +1,26 @@
 import { api } from './network/api';
-
-interface RemoteDiscussion {
-  id: string;
-  title: string;
-  user: { id: number; name: string; picture?: { url: string } };
-  user_voted: boolean;
-  votes_count: number;
-  comments_count: number;
-}
+import { Discussion } from './discussion';
 
 export class DiscussionsRepository {
   async getDiscussions({ page }: { page: number }) {
-    interface RemoteDiscussions {
-      data: RemoteDiscussion[];
-      meta: { current_page: number; last_page: number };
-    }
-
     const response = await api.get(`/api/v1/discussions?page=${page}`);
-    const json: RemoteDiscussions = await response.json();
+    const json = await response.json();
+
+    const data = (json.data ?? []).map(Discussion.fromJson);
     const next =
-      json.meta.current_page === json.meta.last_page
-        ? null
-        : json.meta.current_page + 1;
+      json.meta?.current_page < json.meta?.last_page
+        ? json.meta?.current_page + 1
+        : null;
     return {
-      data: json.data,
+      data,
       next,
     };
   }
 
   async getDiscussion(id: string) {
     const response = await api.get('/api/v1/discussions/' + id);
-    const json: { discussion: RemoteDiscussion } = await response.json();
-    return json.discussion;
+    const json = await response.json();
+    return Discussion.fromJson(json.discussion);
   }
 
   async upvoteDiscussion(id: string) {
@@ -40,5 +29,17 @@ export class DiscussionsRepository {
 
   async downvoteDiscussion(id: string) {
     await api.delete(`/api/v1/discussions/${id}/votes`);
+  }
+
+  async createDiscussion(payload: { title: string; description: string }): Promise<string> {
+    const body = JSON.stringify(payload);
+    const response = await api.post(`/api/v1/discussions`, { body });
+    const json = await response.json();
+    return json?.discussion?.id ?? ''
+  }
+
+  async updateDiscussion(id: string, payload: object) {
+    const body = JSON.stringify(payload);
+    await api.put(`/api/v1/discussions/${id}`, { body });
   }
 }
