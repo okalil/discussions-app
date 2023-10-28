@@ -11,14 +11,17 @@ type Options = {
 };
 
 export class Requester {
-  _options;
+  private _options;
   constructor(options?: Options) {
     this._options = options;
   }
   static create(options?: Options) {
     return new Requester(options);
   }
-  async _fetch(input: RequestInfo | URL, init?: RequestInit | undefined) {
+  private async _fetch(
+    input: RequestInfo | URL,
+    init?: RequestInit | undefined
+  ) {
     const baseUrl = this._options?.baseUrl ?? '';
     if (typeof input === 'string') input = baseUrl + input;
 

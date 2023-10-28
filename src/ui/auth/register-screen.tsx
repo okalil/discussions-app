@@ -1,15 +1,28 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View, ToastAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { Button } from '~/components/button';
+import { UserRepository } from '~/data/user-repository';
 import { FormInput } from '~/components/forms/form-input';
+import { Button } from '~/components/button';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function RegisterScreen({
   navigation,
 }: NativeStackScreenProps<StackParamList>) {
+  const client = useQueryClient();
   const form = useForm();
-  const onRegister = form.handleSubmit(() => {});
+
+  const onRegister = form.handleSubmit(async data => {
+    try {
+      const repository = new UserRepository();
+      await repository.register(data);
+      client.invalidateQueries({ queryKey: ['user'] });
+    } catch (error: any) {
+      ToastAndroid.show(error.message || 'Erro ao Cadastrar', 1200)
+      form.setError('root', { message: 'Erro ao Cadastrar' });
+    }
+  });
 
   return (
     <FormProvider {...form}>
@@ -20,42 +33,47 @@ export function RegisterScreen({
 
         <FormInput
           label="Nome"
-          name="user.name"
+          name="name"
           className="mb-6"
-          nextFocusDown="user.email"
+          nextFocusDown="email"
           rules={{ required: 'Preencha esse campo' }}
         />
         <FormInput.Email
           label="E-mail"
-          name="user.email"
+          name="email"
           className="mb-6"
-          nextFocusDown="user.password"
+          nextFocusDown="password"
           rules={{ required: 'Preencha esse campo' }}
         />
         <FormInput.Password
           label="Senha"
-          name="user.password"
+          name="password"
           className="mb-6"
-          nextFocusDown="user.password_confirmation"
+          nextFocusDown="password_confirmation"
           rules={{ required: 'Preencha esse campo' }}
         />
         <FormInput.Password
           label="Confirmar senha"
-          name="user.password_confirmation"
+          name="password_confirmation"
           className="mb-8"
           onSubmitEditing={onRegister}
           rules={{
             required: 'Preencha esse campo',
             validate(value, values) {
               return (
-                values.user?.password === value ||
+                values?.password === value ||
                 'Confirmação de senha deve ser igual à senha'
               );
             },
           }}
         />
 
-        <Button variant="primary" className="h-12 mb-8" onPress={onRegister}>
+        <Button
+          variant="primary"
+          className="h-12 mb-8"
+          loading={form.formState.isSubmitting}
+          onPress={onRegister}
+        >
           Criar
         </Button>
 

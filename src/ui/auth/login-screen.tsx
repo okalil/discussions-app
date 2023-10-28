@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View, ToastAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -16,9 +16,10 @@ export function LoginScreen({
   const onLogin = form.handleSubmit(async data => {
     try {
       const repository = new UserRepository();
-      await repository.login(data.user);
+      await repository.login(data);
       client.invalidateQueries({ queryKey: ['user'] });
-    } catch (error) {
+    } catch (error: any) {
+      ToastAndroid.show(error.message || 'Erro ao Cadastrar', 1200)
       form.setError('root', { message: 'Erro ao Entrar' });
     }
   });
@@ -30,13 +31,13 @@ export function LoginScreen({
 
         <FormInput.Email
           label="E-mail"
-          name="user.email"
+          name="email"
           className="mb-6"
-          nextFocusDown="user.password"
+          nextFocusDown="password"
         />
         <FormInput.Password
           label="Senha"
-          name="user.password"
+          name="password"
           className="mb-8"
           onSubmitEditing={onLogin}
         />

@@ -7,7 +7,8 @@ export const api = Requester.create({
   async onError(response) {
     const body = await response.text();
     const json = safeParseJson(body);
-    throw new Error(json ? json.message : body);
+    const message = json.errors?.[0]?.message ?? body
+    throw new Error(message);
   },
 });
 
