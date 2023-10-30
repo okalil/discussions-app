@@ -5,22 +5,25 @@ import { cn } from '~/utils/classnames';
 interface Props {
   src?: string;
   alt: string;
+  size?: number;
 }
 
-export function Avatar({ src, alt }: Props) {
+export function Avatar({ src, alt, size = 40 }: Props) {
   return src ? (
     <Image
-      className="h-10 w-10 rounded-full"
+      className="rounded-full"
+      style={{ width: size, height: size }}
       source={{
-        uri: url + src,
+        uri: src.startsWith('/') ? url + src : src,
       }}
     />
   ) : (
     <View
       className={cn(
-        'h-10 w-10 items-center justify-center',
+        'items-center justify-center',
         'border border-gray-300 rounded-full'
       )}
+      style={{ width: size, height: size }}
     >
       <Text>{alt.at(0)}</Text>
     </View>

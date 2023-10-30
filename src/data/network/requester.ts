@@ -28,6 +28,9 @@ export class Requester {
     const request = new Request(input, init);
 
     request.headers.set('Content-Type', 'application/json');
+    if (init?.body instanceof FormData) {
+      request.headers.set('Content-Type', 'multipart/form-data');
+    }
 
     const token = storage.getString('token') ?? '';
     if (token) request.headers.set('Authorization', `Bearer ${token}`);

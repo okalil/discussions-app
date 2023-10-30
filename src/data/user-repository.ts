@@ -53,4 +53,21 @@ export class UserRepository {
     const user = json.user;
     return user;
   }
+
+  async updateProfile(data: { name: string; picture: string }) {
+    const body = new FormData();
+    body.append('name', data.name);
+    if (isLocalFile(data.picture))
+      body.append('picture', parseFile(data.picture));
+
+    await api.put('/api/v1/profile', { body });
+
+    function parseFile(uri: string): any {
+      const [name] = uri.split('/').reverse();
+      return { uri, name, type: 'image/jpeg' };
+    }
+    function isLocalFile(uri: string) {
+      return uri && !uri.startsWith('/');
+    }
+  }
 }
