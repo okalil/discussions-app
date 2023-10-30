@@ -1,3 +1,5 @@
+import { User } from './user';
+
 interface IDiscussion {
   id: string;
   title: string;
@@ -5,7 +7,7 @@ interface IDiscussion {
   votes: number;
   comments: number;
   voted: boolean;
-  user: { id: string; name: string; picture?: { url: string } };
+  user: User;
 }
 
 export class Discussion implements IDiscussion {
@@ -15,7 +17,7 @@ export class Discussion implements IDiscussion {
   votes: number;
   comments: number;
   voted: boolean;
-  user: { id: string; name: string; picture?: { url: string } | undefined };
+  user: User;
 
   constructor(values: Partial<IDiscussion>) {
     Object.assign(this, values);

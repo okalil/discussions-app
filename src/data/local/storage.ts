@@ -7,4 +7,7 @@ export const storage = {
   set(key: string, value: string) {
     map[key] = value;
   },
+  delete(key: string) {
+    map[key] = null;
+  },
 };

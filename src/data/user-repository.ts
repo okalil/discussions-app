@@ -1,10 +1,7 @@
 import { storage } from './local/storage';
 import { api } from './network/api';
 import { socket } from './network/socket';
-
-interface User {
-  name: string;
-}
+import { User } from './user';
 
 export class UserRepository {
   getUser(): User | null {
@@ -14,6 +11,10 @@ export class UserRepository {
     } catch {
       return null;
     }
+  }
+
+  logout() {
+    storage.delete('user');
   }
 
   async login(payload: object) {

@@ -1,15 +1,15 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { View, Text, ActivityIndicator, Pressable } from 'react-native';
-import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import React from 'react';
 
 import { DiscussionsRepository } from '~/data/discussions-repository';
-import { cn } from '~/utils/classnames';
 import { socket } from '~/data/network/socket';
 import { useSocketEvent } from '~/utils/use-socket-event';
+import { Comments } from './comments';
+import { Vote } from '~/components/vote';
 
-type ScreenProps = NativeStackScreenProps<StackParamList, 'Discussion'>;
+export type ScreenProps = NativeStackScreenProps<StackParamList, 'Discussion'>;
 
 const repository = new DiscussionsRepository();
 
@@ -17,9 +17,11 @@ export function DiscussionScreen({ route }: ScreenProps) {
   const params = route.params;
   const discussionId = params?.id ?? '';
 
+  const client = useQueryClient();
   const discussionQuery = useQuery({
     queryKey: ['discussions', discussionId],
     queryFn() {
+      client.prefetchQuery({ queryKey: ['comments'] });
       return repository.getDiscussion(discussionId);
     },
     enabled: !!discussionId,
@@ -37,39 +39,50 @@ export function DiscussionScreen({ route }: ScreenProps) {
       discussionQuery.refetch();
     }
   });
-  
+
   const discussion = discussionQuery.data;
 
+  const votesMutation = useMutation({
+    async mutationFn(voted: boolean) {
+      return voted
+        ? repository.upvoteDiscussion(discussionId)
+        : repository.downvoteDiscussion(discussionId);
+    },
+    onSettled() {
+      return client.invalidateQueries({
+        queryKey: ['discussions', discussionId],
+      });
+    },
+  });
+
   if (discussion) {
+    const optimisticVoted = votesMutation.variables;
+    const voted = votesMutation.isPending ? optimisticVoted : discussion.voted;
+
+    let votes = discussion.votes;
+    if (votesMutation.isPending && optimisticVoted !== discussion.voted) {
+      votes += optimisticVoted ? 1 : -1;
+    }
+
     return (
       <View className="flex-1 px-4 py-4">
-        <Text className="text-lg font-semibold mb-2">{discussion.title}</Text>
         <View>
-          <Pressable
-            className={cn(
-              'flex-row items-center w-12 ml-auto',
-              'px-2 py-1 border rounded-xl',
-              discussion?.voted ? 'border-blue-500' : 'border-gray-200'
-            )}
-            onPress={() => {
-              requestAnimationFrame(async () => {
-                await (discussion?.voted
-                  ? repository.downvoteDiscussion(discussionId)
-                  : repository.upvoteDiscussion(discussionId));
-                discussionQuery.refetch();
-              });
-            }}
-          >
-            <Icon
-              name="arrow-up"
-              color={discussion.voted ? 'rgb(59 130 246)' : undefined}
-              size={16}
+          <Text className="text-lg font-semibold mb-2">{discussion.title}</Text>
+          <Text className="text-base mb-2">{discussion.description}</Text>
+          <View>
+            <Vote
+              voted={voted}
+              count={votes}
+              onPress={() => {
+                requestAnimationFrame(async () => {
+                  votesMutation.mutate(!voted);
+                });
+              }}
             />
-            <Text className={cn(discussion.voted && 'text-blue-500')}>
-              {discussion.votes}
-            </Text>
-          </Pressable>
+          </View>
         </View>
+
+        <Comments />
       </View>
     );
   }

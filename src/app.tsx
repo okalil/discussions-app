@@ -6,6 +6,7 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -20,14 +21,16 @@ function App() {
   );
   return (
     <QueryClientProvider client={client}>
-      <SafeAreaProvider>
-        <SafeAreaContainer>
-          <NavigationContainer>
-            <NavigationStack />
-          </NavigationContainer>
-        </SafeAreaContainer>
-      </SafeAreaProvider>
-      <StatusBar style="auto" />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <SafeAreaContainer>
+            <NavigationContainer>
+              <NavigationStack />
+            </NavigationContainer>
+          </SafeAreaContainer>
+        </SafeAreaProvider>
+        <StatusBar style="auto" />
+      </GestureHandlerRootView>
     </QueryClientProvider>
   );
 }
