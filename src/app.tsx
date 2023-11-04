@@ -1,6 +1,5 @@
 import React from 'react';
 import { View } from 'react-native';
-import { registerRootComponent } from 'expo';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -12,7 +11,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { NavigationStack } from './ui/navigation/stack';
 
-function App() {
+export function App() {
   const [client] = React.useState(
     () =>
       new QueryClient({
@@ -46,5 +45,3 @@ function SafeAreaContainer({ children }: React.PropsWithChildren) {
     </View>
   );
 }
-
-registerRootComponent(App);

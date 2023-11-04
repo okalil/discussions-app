@@ -14,12 +14,17 @@ import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { DiscussionsRepository } from '~/data/discussions-repository';
 import { cn } from '~/utils/classnames';
 import { Fab } from '~/components/fab';
+import { url } from '~/data/network/api';
+import { Avatar } from '~/components/avatar';
 
 const repository = new DiscussionsRepository();
 
-type ScreenProps = NativeStackScreenProps<StackParamList>;
+type ScreenProps = NativeStackScreenProps<
+  StackParamList & TabParamList,
+  'Discussions'
+>;
 
-export function DiscussionsScreen({ navigation }: ScreenProps) {
+export function DiscussionsScreen({ navigation, route }: ScreenProps) {
   const query = useInfiniteQuery({
     queryKey: ['discussions'],
     queryFn(context) {
@@ -37,13 +42,15 @@ export function DiscussionsScreen({ navigation }: ScreenProps) {
 
   const discussions = query.data;
 
-  if (query.status === 'success')
+  const scrollOffsetRef = React.useRef(0);
+
+  if (discussions)
     return (
       <View className="flex-1">
         <FlatList
+          className="flex-1 px-4"
           refreshing={query.isRefetching}
           onRefresh={() => query.refetch()}
-          className="flex-1 px-4"
           data={discussions}
           renderItem={({ item }) => (
             <Pressable
@@ -51,33 +58,22 @@ export function DiscussionsScreen({ navigation }: ScreenProps) {
               className="flex-row gap-3 py-4 border-b border-gray-300"
             >
               <View>
-                {item.user.picture?.url ? (
-                  <Image
-                    className="h-12 w-12 rounded-full"
-                    source={{
-                      uri:
-                        'https://discussions-api.onrender.com' +
-                        item.user.picture.url,
-                    }}
-                  />
-                ) : (
-                  <View
-                    className={cn(
-                      'h-12 w-12 items-center justify-center',
-                      'border border-gray-300 rounded-full'
-                    )}
-                  >
-                    <Text>{item.user.name.at(0)}</Text>
-                  </View>
-                )}
+                <Avatar
+                  size={48}
+                  src={item.user.picture?.url}
+                  alt={item.user.name}
+                />
               </View>
+
               <Text className="text-base font-semibold">{item.title}</Text>
               <Text className="text-base font-semibold">
                 {item.votes_count}
               </Text>
             </Pressable>
           )}
-          onEndReached={() => query.fetchNextPage()}
+          onEndReached={() => {
+            if (query.hasNextPage) query.fetchNextPage();
+          }}
           ListFooterComponent={
             query.isFetchingNextPage ? (
               <ActivityIndicator
@@ -85,8 +81,22 @@ export function DiscussionsScreen({ navigation }: ScreenProps) {
                 size="large"
                 style={{ paddingVertical: 20 }}
               />
-            ) : null
+            ) : (
+              <View className="h-12" />
+            )
           }
+          onScroll={e => {
+            const previousOffset = scrollOffsetRef.current;
+            const currentOffset = e.nativeEvent.contentOffset.y;
+            const tabBarVisible =
+              currentOffset <= 0 || currentOffset < previousOffset;
+
+            if (tabBarVisible !== route.params?.tabBarVisible) {
+              navigation.setParams({ tabBarVisible });
+            }
+
+            scrollOffsetRef.current = currentOffset;
+          }}
         />
 
         <Fab
@@ -108,7 +118,7 @@ export function DiscussionsScreen({ navigation }: ScreenProps) {
     <View className="flex-1 items-center justify-center">
       <Text>Algo deu errado...</Text>
       <Pressable onPress={() => query.refetch()}>
-        <Text>Tentar novamente</Text>
+        <Text className="underline">Tentar novamente</Text>
       </Pressable>
     </View>
   );

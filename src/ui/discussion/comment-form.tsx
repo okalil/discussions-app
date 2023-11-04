@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import React from 'react';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import { MotiView } from 'moti';
 
 import { Comment } from '~/data/comment';
 import { CommentsRepository } from '~/data/comments-repository';
@@ -22,7 +23,7 @@ interface Props {
   comment?: Comment;
 }
 
-export function AddEditComment({ editing, onCancelEditing, comment }: Props) {
+export function CommentForm({ editing, onCancelEditing, comment }: Props) {
   const params = useRoute<ScreenProps['route']>().params;
   const discussionId = params?.id ?? '';
 
@@ -52,10 +53,16 @@ export function AddEditComment({ editing, onCancelEditing, comment }: Props) {
     },
   });
 
+  const height = useKeyboardHeight();
+
   return (
-    <View>
+    <MotiView
+      className="flex-1 absolute bottom-0 left-0 right-0 bg-gray-200"
+      animate={{ bottom: height }}
+      transition={{ type: 'timing', duration: height === 0 ? 150 : 300 }}
+    >
       {editing && (
-        <View className="py-2 px-2 flex-row items-center">
+        <View className="py-2 px-2 flex-row items-center bg-gray-300">
           <Pressable onPress={onCancelEditing}>
             <Icon name="close-circle" size={24} />
           </Pressable>
@@ -63,7 +70,7 @@ export function AddEditComment({ editing, onCancelEditing, comment }: Props) {
         </View>
       )}
 
-      <View className="flex-row gap-3">
+      <View className="flex-row px-4 py-4">
         <TextInput
           autoFocus={editing}
           className="flex-1 bg-white"
@@ -73,6 +80,7 @@ export function AddEditComment({ editing, onCancelEditing, comment }: Props) {
           onChangeText={text => form.setValue('content', text)}
         />
         <Pressable
+          className="ml-3"
           disabled={!content}
           onPress={() => {
             requestAnimationFrame(() => mutate());
@@ -83,12 +91,28 @@ export function AddEditComment({ editing, onCancelEditing, comment }: Props) {
           ) : (
             <Icon
               name="send"
-              color={content ? undefined : 'lightgray'}
+              color={content ? undefined : 'gray'}
               size={24}
             />
           )}
         </Pressable>
       </View>
-    </View>
+    </MotiView>
   );
+}
+
+function useKeyboardHeight() {
+  const [height, setHeight] = React.useState(0);
+  React.useEffect(() => {
+    const subscriptions = [
+      Keyboard.addListener('keyboardWillHide', e => {
+        setHeight(0);
+      }),
+      Keyboard.addListener('keyboardWillShow', e => {
+        setHeight(e.endCoordinates.height);
+      }),
+    ];
+    return () => subscriptions.forEach(it => it.remove());
+  }, []);
+  return height;
 }

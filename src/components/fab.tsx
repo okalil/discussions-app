@@ -1,16 +1,47 @@
-import { Pressable, PressableProps } from 'react-native';
+import React from 'react';
+import { MotiPressable, MotiPressableProps } from 'moti/interactions';
 
-interface FabProps extends PressableProps {
+interface FabProps extends MotiPressableProps {
   icon: JSX.Element;
 }
 
-export function Fab({ icon, ...props }: FabProps) {
+export function Fab({ icon, style, ...props }: FabProps) {
   return (
-    <Pressable
-      className="absolute bottom-4 right-4 px-4 py-4 rounded-full bg-black"
+    <MotiPressable
       {...props}
+      style={[
+        {
+          position: 'absolute',
+          bottom: 16,
+          right: 16,
+          padding: 16,
+          borderRadius: 9999,
+          backgroundColor: 'black',
+        },
+        style,
+      ]}
+      animate={React.useMemo(
+        () =>
+          ({ pressed }) => {
+            'worklet';
+            return {
+              opacity: pressed ? 0.7 : 1,
+            };
+          },
+        []
+      )}
+      transition={React.useMemo(
+        () =>
+          ({ pressed }) => {
+            'worklet';
+            return {
+              delay: pressed ? 0 : 100,
+            };
+          },
+        []
+      )}
     >
       {icon}
-    </Pressable>
+    </MotiPressable>
   );
 }

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   View,
@@ -7,20 +8,21 @@ import {
   Alert,
   BackHandler,
 } from 'react-native';
+import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRoute } from '@react-navigation/native';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import React from 'react';
+import { FadeIn } from 'react-native-reanimated';
+import { MotiPressable } from 'moti/interactions';
+import { MotiView } from 'moti';
 
 import { Comment } from '~/data/comment';
 import { CommentsRepository } from '~/data/comments-repository';
 import { ScreenProps } from './discussion-screen';
-import { AddEditComment } from './add-edit-comment';
-import { cn } from '~/utils/classnames';
 import { Avatar } from '~/components/avatar';
 import { Vote } from '~/components/vote';
 import { useSocketEvent } from '~/utils/use-socket-event';
 import { useUserQuery } from '../navigation/use-user-query';
+import { CommentForm } from './comment-form';
 
 const repository = new CommentsRepository();
 
@@ -29,10 +31,31 @@ export function Comments() {
   const discussionId = params?.id ?? '';
 
   const client = useQueryClient();
+  const deleteCommentMutation = useMutation({
+    async mutationFn(comment: Comment) {
+      const commentsRepository = new CommentsRepository();
+      await commentsRepository.deleteComment({
+        discussionId,
+        commentId: comment.id,
+      });
+    },
+    onSettled() {
+      return client.invalidateQueries({
+        queryKey: ['discussions', discussionId, 'comments'],
+      });
+    },
+  });
   const query = useQuery({
     queryKey: ['discussions', discussionId, 'comments'],
     async queryFn() {
       return repository.getComments(discussionId);
+    },
+    select(data) {
+      const deletedComment = deleteCommentMutation.variables;
+      if (deletedComment) {
+        return data.filter(it => it.id !== deletedComment.id);
+      }
+      return data;
     },
   });
 
@@ -62,15 +85,8 @@ export function Comments() {
       {
         text: 'Ok',
         onPress() {
-          requestAnimationFrame(async () => {
-            const commentsRepository = new CommentsRepository();
-            await commentsRepository.deleteComment({
-              discussionId,
-              commentId: comment.id,
-            });
-            client.invalidateQueries({
-              queryKey: ['discussions', discussionId, 'comments'],
-            });
+          requestAnimationFrame(() => {
+            deleteCommentMutation.mutate(comment);
           });
         },
       },
@@ -97,34 +113,39 @@ export function Comments() {
       <View className="flex-1">
         <FlatList
           data={query.data}
+          style={{ marginBottom: 40 }}
+          keyExtractor={it => it.id}
           renderItem={({ item }) => {
             const isAuthor = user?.id === item.user.id;
 
             return (
-              <Pressable
-                onLongPress={
-                  isAuthor ? () => onOpenCommentOptions(item) : undefined
-                }
-              >
-                <View className={cn('py-3')}>
-                  <View className="flex-row">
-                    <Avatar src={item.user.picture?.url} alt={item.user.name} />
-                    <Text className="ml-3">{item.user.name}</Text>
-                    {isAuthor && (
-                      <Pressable
-                        className="ml-auto"
-                        onPress={() => onOpenCommentOptions(item)}
-                      >
-                        <Icon name="dots-vertical" size={24} />
-                      </Pressable>
-                    )}
-                  </View>
-
-                  <Text className="py-2 px-3">{item.content}</Text>
-
-                  <CommentVote comment={item} />
+              <MotiView style={{ paddingVertical: 12 }} entering={FadeIn}>
+                <View className="flex-row">
+                  <Avatar src={item.user.picture?.url} alt={item.user.name} />
+                  <Text className="ml-3 mr-auto">{item.user.name}</Text>
+                  {isAuthor && (
+                    <MotiPressable
+                      style={{ borderRadius: 9999 }}
+                      animate={({ pressed }) => {
+                        'worklet';
+                        return {
+                          backgroundColor: pressed
+                            ? 'lightgray'
+                            : 'transparent',
+                          opacity: pressed ? 0 : 1,
+                        };
+                      }}
+                      onPress={() => onOpenCommentOptions(item)}
+                    >
+                      <Icon name="dots-vertical" size={24} />
+                    </MotiPressable>
+                  )}
                 </View>
-              </Pressable>
+
+                <Text className="py-2 px-3">{item.content}</Text>
+
+                <CommentVote comment={item} />
+              </MotiView>
             );
           }}
         />
@@ -164,7 +185,7 @@ export function Comments() {
         )}
       </View>
 
-      <AddEditComment
+      <CommentForm
         key={editing && comment ? comment.id : 'add-comment'}
         comment={editing && comment ? comment : undefined}
         editing={editing}
