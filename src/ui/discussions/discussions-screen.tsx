@@ -1,23 +1,17 @@
 import React from 'react';
 import {
   View,
-  Image,
   FlatList,
   Pressable,
   Text,
   ActivityIndicator,
 } from 'react-native';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
-import { DiscussionsRepository } from '~/data/discussions-repository';
-import { cn } from '~/utils/classnames';
 import { Fab } from '~/components/fab';
-import { url } from '~/data/network/api';
 import { Avatar } from '~/components/avatar';
-
-const repository = new DiscussionsRepository();
+import { useInfiniteDiscussionsQuery } from './discussions-query';
 
 type ScreenProps = NativeStackScreenProps<
   StackParamList & TabParamList,
@@ -25,24 +19,10 @@ type ScreenProps = NativeStackScreenProps<
 >;
 
 export function DiscussionsScreen({ navigation, route }: ScreenProps) {
-  const query = useInfiniteQuery({
-    queryKey: ['discussions'],
-    queryFn(context) {
-      const page = context.pageParam;
-      return repository.getDiscussions({ page });
-    },
-    initialPageParam: 1,
-    getNextPageParam(last) {
-      return last.next;
-    },
-    select(state) {
-      return state.pages.flatMap(it => it.data);
-    },
-  });
-
+  const query = useInfiniteDiscussionsQuery();
   const discussions = query.data;
 
-  const scrollOffsetRef = React.useRef(0);
+  const scrollYRef = React.useRef(0);
 
   if (discussions)
     return (
@@ -86,7 +66,7 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
             )
           }
           onScroll={e => {
-            const previousOffset = scrollOffsetRef.current;
+            const previousOffset = scrollYRef.current;
             const currentOffset = e.nativeEvent.contentOffset.y;
             const tabBarVisible =
               currentOffset <= 0 || currentOffset < previousOffset;
@@ -95,7 +75,7 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
               navigation.setParams({ tabBarVisible });
             }
 
-            scrollOffsetRef.current = currentOffset;
+            scrollYRef.current = currentOffset;
           }}
         />
 

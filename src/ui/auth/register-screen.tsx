@@ -1,11 +1,11 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { Pressable, Text, View, ToastAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { UserRepository } from '~/data/user-repository';
 import { FormInput } from '~/components/forms/form-input';
 import { Button } from '~/components/button';
-import { useQueryClient } from '@tanstack/react-query';
 
 export function RegisterScreen({
   navigation,

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   View,
   Text,
@@ -16,58 +15,23 @@ import { MotiPressable } from 'moti/interactions';
 import { MotiView } from 'moti';
 
 import { Comment } from '~/data/comment';
-import { CommentsRepository } from '~/data/comments-repository';
 import { ScreenProps } from './discussion-screen';
 import { Avatar } from '~/components/avatar';
 import { Vote } from '~/components/vote';
-import { useSocketEvent } from '~/utils/use-socket-event';
-import { useUserQuery } from '../navigation/use-user-query';
+import { useUserQuery } from '../navigation/user-query';
 import { CommentForm } from './comment-form';
-
-const repository = new CommentsRepository();
+import {
+  useCommentsQuery,
+  useDeleteCommentMutation,
+  useVoteCommentMutation,
+} from './comments-query';
 
 export function Comments() {
   const params = useRoute<ScreenProps['route']>().params;
   const discussionId = params?.id ?? '';
 
-  const client = useQueryClient();
-  const deleteCommentMutation = useMutation({
-    async mutationFn(comment: Comment) {
-      const commentsRepository = new CommentsRepository();
-      await commentsRepository.deleteComment({
-        discussionId,
-        commentId: comment.id,
-      });
-    },
-    onSettled() {
-      return client.invalidateQueries({
-        queryKey: ['discussions', discussionId, 'comments'],
-      });
-    },
-  });
-  const query = useQuery({
-    queryKey: ['discussions', discussionId, 'comments'],
-    async queryFn() {
-      return repository.getComments(discussionId);
-    },
-    select(data) {
-      const deletedComment = deleteCommentMutation.variables;
-      if (deletedComment) {
-        return data.filter(it => it.id !== deletedComment.id);
-      }
-      return data;
-    },
-  });
-
-  useSocketEvent('comment_create', () => {
-    query.refetch();
-  });
-  useSocketEvent('comment_delete', () => {
-    query.refetch();
-  });
-  useSocketEvent('comment_update', () => {
-    query.refetch();
-  });
+  const commentsQuery = useCommentsQuery({ discussionId });
+  const deleteCommentMutation = useDeleteCommentMutation({ discussionId });
 
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
 
@@ -112,7 +76,7 @@ export function Comments() {
     <React.Fragment>
       <View className="flex-1">
         <FlatList
-          data={query.data}
+          data={commentsQuery.data}
           style={{ marginBottom: 40 }}
           keyExtractor={it => it.id}
           renderItem={({ item }) => {
@@ -203,19 +167,7 @@ function CommentVote({ comment }: { comment: Comment }) {
   const discussionId = params?.id ?? '';
   const commentId = comment.id;
 
-  const client = useQueryClient();
-  const mutation = useMutation({
-    async mutationFn(voted: boolean) {
-      return voted
-        ? repository.upvoteComment({ commentId, discussionId })
-        : repository.downvoteComment({ commentId, discussionId });
-    },
-    onSettled() {
-      return client.invalidateQueries({
-        queryKey: ['discussions', discussionId],
-      });
-    },
-  });
+  const mutation = useVoteCommentMutation({ discussionId, commentId });
 
   const optimisticVoted = mutation.variables;
   const voted = mutation.isPending ? optimisticVoted : comment.voted;

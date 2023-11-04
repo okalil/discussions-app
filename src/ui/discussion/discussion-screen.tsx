@@ -1,59 +1,24 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { View, Text, ActivityIndicator, Pressable } from 'react-native';
 import React from 'react';
 
-import { DiscussionsRepository } from '~/data/discussions-repository';
-import { socket } from '~/data/network/socket';
-import { useSocketEvent } from '~/utils/use-socket-event';
 import { Comments } from './comments';
 import { Vote } from '~/components/vote';
+import {
+  useDiscussionQuery,
+  useVoteDiscussionMutation,
+} from './discussion-query';
 
 export type ScreenProps = NativeStackScreenProps<StackParamList, 'Discussion'>;
-
-const repository = new DiscussionsRepository();
 
 export function DiscussionScreen({ route }: ScreenProps) {
   const params = route.params;
   const discussionId = params?.id ?? '';
 
-  const client = useQueryClient();
-  const discussionQuery = useQuery({
-    queryKey: ['discussions', discussionId],
-    queryFn() {
-      client.prefetchQuery({ queryKey: ['comments'] });
-      return repository.getDiscussion(discussionId);
-    },
-    enabled: !!discussionId,
-  });
-
-  React.useEffect(() => {
-    socket.emit('discussion_subscribe', discussionId);
-    return () => {
-      socket.emit('discussion_unsubscribe', discussionId);
-    };
-  }, [discussionId]);
-
-  useSocketEvent('discussion_update', async id => {
-    if (id === discussionId) {
-      discussionQuery.refetch();
-    }
-  });
-
+  const discussionQuery = useDiscussionQuery({ discussionId });
   const discussion = discussionQuery.data;
 
-  const votesMutation = useMutation({
-    async mutationFn(voted: boolean) {
-      return voted
-        ? repository.upvoteDiscussion(discussionId)
-        : repository.downvoteDiscussion(discussionId);
-    },
-    onSettled() {
-      return client.invalidateQueries({
-        queryKey: ['discussions', discussionId],
-      });
-    },
-  });
+  const votesMutation = useVoteDiscussionMutation({ discussionId });
 
   if (discussion) {
     const optimisticVoted = votesMutation.variables;
@@ -90,15 +55,15 @@ export function DiscussionScreen({ route }: ScreenProps) {
   if (discussionQuery.status === 'pending')
     return (
       <View className="flex-1 items-center justify-center">
-        <ActivityIndicator />
+        <ActivityIndicator color="black" size="large" />
       </View>
     );
 
   return (
     <View className="flex-1 items-center justify-center">
-      <Text>Houve um erro ao carregar</Text>
+      <Text className="text-base">Houve um erro ao carregar</Text>
       <Pressable onPress={() => discussionQuery.refetch()}>
-        <Text>Tente novamente.</Text>
+        <Text className="underline text-base">Tente novamente.</Text>
       </Pressable>
     </View>
   );

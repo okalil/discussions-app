@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 import { Tabs } from './tabs';
-import { useUserQuery } from './use-user-query';
+import { useUserQuery } from './user-query';
 import { LoginScreen } from '../auth/login-screen';
 import { RegisterScreen } from '../auth/register-screen';
 import { DiscussionScreen } from '../discussion/discussion-screen';

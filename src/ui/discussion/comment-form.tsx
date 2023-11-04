@@ -7,15 +7,14 @@ import {
   Text,
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import React from 'react';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { MotiView } from 'moti';
 
 import { Comment } from '~/data/comment';
-import { CommentsRepository } from '~/data/comments-repository';
 import { ScreenProps } from './discussion-screen';
+import { useUpsertCommentMutation } from './comments-query';
 
 interface Props {
   editing: boolean;
@@ -30,22 +29,9 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
   const form = useForm({ defaultValues: comment });
   const content = form.watch('content');
 
-  const client = useQueryClient();
-  const { isPending, mutate } = useMutation({
-    async mutationFn() {
-      const commentsRepository = new CommentsRepository();
-      if (comment) {
-        await commentsRepository.updateComment(
-          { discussionId, commentId: comment.id },
-          { content }
-        );
-      } else {
-        await commentsRepository.createComment({ discussionId }, { content });
-      }
-      client.invalidateQueries({
-        queryKey: ['discussions', discussionId, 'comments'],
-      });
-    },
+  const { isPending, mutate } = useUpsertCommentMutation({
+    discussionId,
+    comment,
     onSuccess() {
       form.reset();
       Keyboard.dismiss();
@@ -83,17 +69,13 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
           className="ml-3"
           disabled={!content}
           onPress={() => {
-            requestAnimationFrame(() => mutate());
+            requestAnimationFrame(() => mutate({ content }));
           }}
         >
           {isPending ? (
             <ActivityIndicator color="black" size={24} />
           ) : (
-            <Icon
-              name="send"
-              color={content ? undefined : 'gray'}
-              size={24}
-            />
+            <Icon name="send" color={content ? undefined : 'gray'} size={24} />
           )}
         </Pressable>
       </View>

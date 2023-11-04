@@ -15,7 +15,10 @@ export function App() {
   const [client] = React.useState(
     () =>
       new QueryClient({
-        defaultOptions: { queries: { staleTime: 5 * 60 * 1000 } },
+        defaultOptions: {
+          queries: { staleTime: 5 * 60 * 1000 },
+          mutations: { retry: 0 },
+        },
       })
   );
   return (

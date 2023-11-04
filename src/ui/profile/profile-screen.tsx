@@ -1,22 +1,21 @@
-import { View, Text, Pressable, ToastAndroid } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import * as ImagePicker from 'expo-image-picker';
-import { useMutation } from '@tanstack/react-query';
 
-import { useUserQuery } from '../navigation/use-user-query';
+import { useUserQuery } from '../navigation/user-query';
 import { UserRepository } from '~/data/user-repository';
 import { Avatar } from '~/components/avatar';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Button } from '~/components/button';
 import { FormInput } from '~/components/forms/form-input';
 import { cn } from '~/utils/classnames';
-
-const repository = new UserRepository();
+import { useUpdateProfileMutation } from './profile-query';
 
 export function ProfileScreen() {
   const { data: user, refetch } = useUserQuery();
 
   const onLogout = () => {
+    const repository = new UserRepository();
     repository.logout();
     refetch();
   };
@@ -40,23 +39,9 @@ export function ProfileScreen() {
     form.setValue('picture', image);
   };
 
-  const mutation = useMutation({
-    mutationFn() {
-      const data = form.getValues();
-      return repository.updateProfile({
-        name: data.name,
-        picture: data.picture.uri,
-      });
-    },
-    onSuccess() {
-      ToastAndroid.show('Salvo!', ToastAndroid.SHORT);
-    },
-    onError(error) {
-      ToastAndroid.show('Erro', ToastAndroid.SHORT);
-    }
-  });
+  const mutation = useUpdateProfileMutation();
 
-  const onSave = form.handleSubmit(() => mutation.mutate());
+  const onSave = form.handleSubmit(data => mutation.mutate(data));
 
   if (!user) {
     return <Text>Sem dados</Text>;
