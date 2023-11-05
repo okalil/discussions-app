@@ -7,33 +7,27 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import * as SplashScreen from 'expo-splash-screen';
 
 import { NavigationStack } from './ui/navigation/stack';
+import { QueryProvider } from './query-provider';
+
+SplashScreen.preventAutoHideAsync();
 
 export function App() {
-  const [client] = React.useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: { staleTime: 5 * 60 * 1000 },
-          mutations: { retry: 0 },
-        },
-      })
-  );
   return (
-    <QueryClientProvider client={client}>
+    <QueryProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
           <SafeAreaContainer>
             <NavigationContainer>
-              <NavigationStack />
+              <NavigationStack onReady={SplashScreen.hideAsync} />
             </NavigationContainer>
           </SafeAreaContainer>
         </SafeAreaProvider>
         <StatusBar style="auto" />
       </GestureHandlerRootView>
-    </QueryClientProvider>
+    </QueryProvider>
   );
 }
 

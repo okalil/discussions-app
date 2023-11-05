@@ -10,8 +10,19 @@ import { DiscussionFormScreen } from '../discussion-form/discussion-form-screen'
 
 const Stack = createNativeStackNavigator();
 
-export function NavigationStack() {
-  const isAuthenticated = useUserQuery(user => !!user).data;
+interface Props {
+  onReady: () => void;
+}
+
+export function NavigationStack({ onReady }: Props) {
+  const userQuery = useUserQuery();
+  const isAuthenticated = !!userQuery.data;
+
+  if (userQuery.isLoading) {
+    return null;
+  }
+
+  onReady();
 
   return (
     <BottomSheetModalProvider>

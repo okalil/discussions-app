@@ -3,8 +3,13 @@ import { io } from 'socket.io-client';
 import { url } from './api';
 import { storage } from '../local/storage';
 
-const token = storage.getString('token');
+const socket = io(url, { autoConnect: false });
 
-const socket = io(url, { autoConnect: !!token, auth: { token } });
+storage.getItem('token').then(token => {
+  if (token) {
+    socket.auth = { token };
+    socket.connect();
+  }
+});
 
 export { socket };

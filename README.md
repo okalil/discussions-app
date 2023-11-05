@@ -48,7 +48,7 @@ O aplicativo inclui várias funcionalidades típicas de diversos aplicativos mó
 
 - **[React Query](https://tanstack.com/query)**, para gerenciamento de estado assíncrono eficiente.
 
-- **[React Native MMKV](https://github.com/mrousavy/react-native-mmkv)**, para persistência básica de dados.
+- **[Async Storage](https://react-native-async-storage.github.io/async-storage/)**, para persistência básica de dados.
 
 - **[Nativewind](https://www.nativewind.dev)**, para estilização de componentes.
 

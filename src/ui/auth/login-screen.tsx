@@ -17,7 +17,7 @@ export function LoginScreen({
     try {
       const repository = new UserRepository();
       await repository.login(data);
-      client.invalidateQueries({ queryKey: ['user'] });
+      await client.invalidateQueries({ queryKey: ['user'] });
     } catch (error: any) {
       ToastAndroid.show(error.message || 'Erro ao Cadastrar', 1200)
       form.setError('root', { message: 'Erro ao Entrar' });

@@ -32,7 +32,7 @@ export class Requester {
       request.headers.set('Content-Type', 'multipart/form-data');
     }
 
-    const token = storage.getString('token') ?? '';
+    const token = (await storage.getItem('token')) ?? '';
     if (token) request.headers.set('Authorization', `Bearer ${token}`);
 
     const response = await fetch(request);

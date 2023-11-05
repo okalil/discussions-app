@@ -4,8 +4,8 @@ import { socket } from './network/socket';
 import { User } from './user';
 
 export class UserRepository {
-  getUser(): User | null {
-    const userString = storage.getString('user');
+  async getUser(): Promise<User | null> {
+    const userString = (await storage.getItem('user')) ?? '';
     try {
       return JSON.parse(userString);
     } catch {
@@ -14,7 +14,7 @@ export class UserRepository {
   }
 
   logout() {
-    storage.delete('user');
+    storage.removeItem('user');
   }
 
   async login(payload: object) {
@@ -22,13 +22,13 @@ export class UserRepository {
     const response = await api.post('/api/v1/users/login', { body });
     const json = await response.json();
     const token = json.token;
-    storage.set('token', token);
+    storage.setItem('token', token);
 
     socket.auth = { token };
     socket.connect();
 
     const user = await this.getRemoteUser();
-    storage.set('user', JSON.stringify(user));
+    storage.setItem('user', JSON.stringify(user));
     return user;
   }
 
@@ -37,13 +37,13 @@ export class UserRepository {
     const response = await api.post('/api/v1/users', { body });
     const json = await response.json();
     const token = json.token;
-    storage.set('token', token);
+    storage.setItem('token', token);
 
     socket.auth = { token };
     socket.connect();
 
     const user = await this.getRemoteUser();
-    storage.set('user', JSON.stringify(user));
+    storage.setItem('user', JSON.stringify(user));
     return user;
   }
 
