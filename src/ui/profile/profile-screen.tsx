@@ -83,7 +83,7 @@ export function ProfileScreen() {
 
         <View className="flex-1 justify-center">
           <View className="mx-auto mb-12">
-            <Avatar src={picture.uri} alt="" size={96} />
+            <Avatar src={picture.uri} alt={user.name ?? ''} size={96} />
 
             <Pressable
               onPress={onEditPicturePress}
@@ -114,7 +114,7 @@ export function ProfileScreen() {
                   onPress={onPickFromLibrary}
                   className="flex-row items-center mb-3"
                 >
-                  <Icon name="image-album" size={24} />
+                  <Icon name="image" size={24} />
                   <Text className="ml-3 text-base">Galeria</Text>
                 </Pressable>
                 <Pressable
