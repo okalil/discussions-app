@@ -5,16 +5,17 @@ import { User } from './user';
 
 export class UserRepository {
   async getUser(): Promise<User | null> {
-    const userString = (await storage.getItem('user')) ?? '';
-    try {
-      return JSON.parse(userString);
-    } catch {
-      return null;
-    }
+    const token = await storage.getItem('token');
+    if (!token) return null;
+
+    const response = await api.get('/api/v1/profile');
+    const json = await response.json();
+    const user = json.user;
+    return user;
   }
 
   logout() {
-    storage.removeItem('user');
+    storage.removeItem('token');
   }
 
   async login(payload: object) {
@@ -26,10 +27,6 @@ export class UserRepository {
 
     socket.auth = { token };
     socket.connect();
-
-    const user = await this.getRemoteUser();
-    storage.setItem('user', JSON.stringify(user));
-    return user;
   }
 
   async register(payload: object) {
@@ -41,17 +38,6 @@ export class UserRepository {
 
     socket.auth = { token };
     socket.connect();
-
-    const user = await this.getRemoteUser();
-    storage.setItem('user', JSON.stringify(user));
-    return user;
-  }
-
-  async getRemoteUser() {
-    const response = await api.get('/api/v1/profile');
-    const json = await response.json();
-    const user = json.user;
-    return user;
   }
 
   async updateProfile(data: { name: string; picture: string }) {
