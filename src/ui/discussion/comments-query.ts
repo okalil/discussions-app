@@ -14,7 +14,7 @@ interface Props {
 
 export function useCommentsQuery({ discussionId }: Props) {
   const [deletedComment] = useMutationState({
-    filters: { mutationKey: ['comments', { action: 'delete' }] },
+    filters: { mutationKey: ['delete_comment', discussionId] },
     select(mutation) {
       return mutation.state.variables as Comment;
     },
@@ -79,6 +79,7 @@ export function useUpsertCommentMutation({
 export function useDeleteCommentMutation({ discussionId }: Props) {
   const client = useQueryClient();
   return useMutation({
+    mutationKey: ['delete_comment', discussionId],
     async mutationFn(comment: Comment) {
       const commentsRepository = new CommentsRepository();
       await commentsRepository.deleteComment({
