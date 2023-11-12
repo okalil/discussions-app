@@ -2,6 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Pressable, Text, View, ToastAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '~/components/button';
 import { FormInput } from '~/components/forms/form-input';
@@ -19,14 +20,14 @@ export function LoginScreen({
       await repository.login(data);
       await client.invalidateQueries({ queryKey: ['user'] });
     } catch (error: any) {
-      ToastAndroid.show(error.message || 'Erro ao Cadastrar', 1200)
+      ToastAndroid.show(error.message || 'Erro ao Cadastrar', 1200);
       form.setError('root', { message: 'Erro ao Entrar' });
     }
   });
 
   return (
     <FormProvider {...form}>
-      <View className="flex-1 px-8 justify-center">
+      <SafeAreaView className="flex-1 px-8 justify-center">
         <Text className="font-semibold text-3xl text-center mb-8">Entrar</Text>
 
         <FormInput.Email
@@ -57,7 +58,7 @@ export function LoginScreen({
             <Text className="underline">Cadastre-se agora</Text>
           </Pressable>
         </View>
-      </View>
+      </SafeAreaView>
     </FormProvider>
   );
 }

@@ -3,6 +3,7 @@ import { View, Text, Pressable } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import * as ImagePicker from 'expo-image-picker';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useUserQuery } from '../navigation/user-query';
 import { UserRepository } from '~/data/user-repository';
@@ -73,7 +74,7 @@ export function ProfileScreen() {
 
   return (
     <FormProvider {...form}>
-      <View className="px-4 py-4 flex-1">
+      <SafeAreaView className="px-4 py-4 flex-1">
         <View className="flex-row items-center justify-between mb-8">
           <Text className="text-2xl font-semibold">Perfil</Text>
           <Pressable onPress={onLogout}>
@@ -138,7 +139,7 @@ export function ProfileScreen() {
             Salvar
           </Button>
         </View>
-      </View>
+      </SafeAreaView>
     </FormProvider>
   );
 }

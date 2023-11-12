@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { Fab } from '~/components/fab';
@@ -26,7 +27,7 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
 
   if (discussions)
     return (
-      <View className="flex-1">
+      <SafeAreaView className="flex-1">
         <FlatList
           className="flex-1 px-4"
           refreshing={query.isRefetching}
@@ -83,23 +84,23 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
           onPress={() => navigation.navigate('DiscussionForm')}
           icon={<Icon name="plus" color="white" size={24} />}
         />
-      </View>
+      </SafeAreaView>
     );
 
   if (query.status === 'pending') {
     return (
-      <View className="flex-1 items-center justify-center">
+      <SafeAreaView className="flex-1 items-center justify-center">
         <ActivityIndicator color="black" size="large" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View className="flex-1 items-center justify-center">
+    <SafeAreaView className="flex-1 items-center justify-center">
       <Text>Algo deu errado...</Text>
       <Pressable onPress={() => query.refetch()}>
         <Text className="underline">Tentar novamente</Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -2,6 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Pressable, Text, View, ToastAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { UserRepository } from '~/data/user-repository';
 import { FormInput } from '~/components/forms/form-input';
@@ -26,7 +27,7 @@ export function RegisterScreen({
 
   return (
     <FormProvider {...form}>
-      <View className="flex-1 px-8 justify-center">
+      <SafeAreaView className="flex-1 px-8 justify-center">
         <Text className="font-semibold text-3xl text-center mb-8">
           Criar conta
         </Text>
@@ -83,7 +84,7 @@ export function RegisterScreen({
             <Text className="underline">Entrar agora</Text>
           </Pressable>
         </View>
-      </View>
+      </SafeAreaView>
     </FormProvider>
   );
 }
