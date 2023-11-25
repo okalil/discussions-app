@@ -16,9 +16,9 @@ import { MotiView } from 'moti';
 
 import { Comment } from '~/data/comment';
 import { Vote } from '~/ui/shared/vote';
-import { ScreenProps } from './discussion-screen';
 import { Avatar } from '~/ui/shared/avatar';
-import { useUserQuery } from '../navigation/user-query';
+import { useUserQuery } from '../profile/user-query';
+import type { ScreenProps } from './discussion-screen';
 import { CommentForm } from './comment-form';
 import {
   useCommentsQuery,

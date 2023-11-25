@@ -6,13 +6,13 @@ import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { useUserQuery } from '../navigation/user-query';
 import { UserRepository } from '~/data/user-repository';
 import { Avatar } from '~/ui/shared/avatar';
 import { Button } from '~/ui/shared/button';
 import { FormInput } from '~/ui/shared/form-input';
 import { cn } from '~/utils/classnames';
-import { useUpdateProfileMutation } from './profile-query';
+import { useUserQuery } from './user-query';
+import { useUpdateProfileMutation } from './update-profile-mutation';
 
 export function ProfileScreen() {
   const { data: user, refetch } = useUserQuery();
