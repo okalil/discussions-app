@@ -5,8 +5,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { UserRepository } from '~/data/user-repository';
-import { FormInput } from '~/components/forms/form-input';
-import { Button } from '~/components/button';
+import { FormInput } from '~/ui/shared/form-input';
+import { Button } from '~/ui/shared/button';
 
 export function RegisterScreen({
   navigation,

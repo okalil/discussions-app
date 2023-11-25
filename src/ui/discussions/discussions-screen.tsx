@@ -10,8 +10,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
-import { Fab } from '~/components/fab';
-import { Avatar } from '~/components/avatar';
+import { Fab } from '~/ui/shared/fab';
+import { Avatar } from '~/ui/shared/avatar';
 import { useInfiniteDiscussionsQuery } from './discussions-query';
 
 type ScreenProps = NativeStackScreenProps<

@@ -15,9 +15,9 @@ import { MotiPressable } from 'moti/interactions';
 import { MotiView } from 'moti';
 
 import { Comment } from '~/data/comment';
+import { Vote } from '~/ui/shared/vote';
 import { ScreenProps } from './discussion-screen';
-import { Avatar } from '~/components/avatar';
-import { Vote } from '~/components/vote';
+import { Avatar } from '~/ui/shared/avatar';
 import { useUserQuery } from '../navigation/user-query';
 import { CommentForm } from './comment-form';
 import {

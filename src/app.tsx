@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { NavigationStack } from './ui/navigation/stack';
-import { QueryProvider } from './query-provider';
+import { QueryProvider } from './ui/providers/query-provider';
 
 SplashScreen.preventAutoHideAsync();
 

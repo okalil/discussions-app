@@ -2,13 +2,13 @@ import React from 'react';
 import { ScrollView, ToastAndroid, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-
-import { DiscussionsRepository } from '~/data/discussions-repository';
-import { FormInput } from '~/components/forms/form-input';
-import { Fab } from '~/components/fab';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { FormTextarea } from '~/components/forms/form-textarea';
+
+import { Fab } from '~/ui/shared/fab';
+import { FormInput } from '~/ui/shared/form-input';
+import { FormTextarea } from '~/ui/shared/form-textarea';
+import { DiscussionsRepository } from '~/data/discussions-repository';
 
 type ScreenProps = NativeStackScreenProps<StackParamList>;
 

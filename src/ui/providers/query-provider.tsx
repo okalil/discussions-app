@@ -1,7 +1,7 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { experimental_createPersister } from '@tanstack/query-persist-client-core';
-import { storage } from './data/local/storage';
+import { storage } from '../../data/local/storage';
 
 const client = new QueryClient({
   defaultOptions: {
