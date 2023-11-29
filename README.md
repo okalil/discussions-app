@@ -48,6 +48,8 @@ O aplicativo inclui várias funcionalidades típicas de diversos aplicativos mó
 
 - **[React Query](https://tanstack.com/query)**, para gerenciamento de estado assíncrono eficiente.
 
+- **[React Hook Form](https://react-hook-form.com)**, para controle e validação de formulários.
+
 - **[Async Storage](https://react-native-async-storage.github.io/async-storage/)**, para persistência básica de dados.
 
 - **[Nativewind](https://www.nativewind.dev)**, para estilização de componentes.
