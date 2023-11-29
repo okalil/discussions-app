@@ -2,7 +2,7 @@ import React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { DiscussionsRepository } from '~/data/discussions-repository';
-import { useSocketEvent } from '~/utils/use-socket-event';
+import { useSocketEvent } from '~/ui/shared/utils';
 import { socket } from '~/data/network/socket';
 
 interface Props {

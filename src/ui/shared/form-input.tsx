@@ -3,7 +3,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { TextInput, Text, View, TextInputProps, Pressable } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
-import { cn } from '~/utils/classnames';
+import { cn } from '~/ui/shared/utils';
 
 interface FormInputProps extends TextInputProps {
   name: string;

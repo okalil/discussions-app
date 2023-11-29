@@ -10,7 +10,7 @@ import { UserRepository } from '~/data/user-repository';
 import { Avatar } from '~/ui/shared/avatar';
 import { Button } from '~/ui/shared/button';
 import { FormInput } from '~/ui/shared/form-input';
-import { cn } from '~/utils/classnames';
+import { cn } from '~/ui/shared/utils';
 import { useUserQuery } from './user-query';
 import { useUpdateProfileMutation } from './update-profile-mutation';
 

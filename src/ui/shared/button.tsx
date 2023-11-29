@@ -4,7 +4,7 @@ import {
   PressableProps,
   ActivityIndicator,
 } from 'react-native';
-import { cn } from '~/utils/classnames';
+import { cn } from '~/ui/shared/utils';
 
 interface ButtonProps extends PressableProps {
   variant: 'primary';

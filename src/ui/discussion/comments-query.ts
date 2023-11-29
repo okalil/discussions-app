@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { Comment } from '~/data/comment';
 import { CommentsRepository } from '~/data/comments-repository';
-import { useSocketEvent } from '~/utils/use-socket-event';
+import { useSocketEvent } from '~/ui/shared/utils';
 
 interface Props {
   discussionId: string;

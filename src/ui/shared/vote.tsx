@@ -1,7 +1,7 @@
 import { Pressable, Text } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
-import { cn } from '~/utils/classnames';
+import { cn } from '~/ui/shared/utils';
 
 export interface VoteProps {
   voted?: boolean;
