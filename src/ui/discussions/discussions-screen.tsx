@@ -6,7 +6,7 @@ import {
   Text,
   ActivityIndicator,
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -14,7 +14,7 @@ import { Fab } from '~/ui/shared/fab';
 import { Avatar } from '~/ui/shared/avatar';
 import { useInfiniteDiscussionsQuery } from './discussions-query';
 
-type ScreenProps = NativeStackScreenProps<
+type ScreenProps = BottomTabScreenProps<
   StackParamList & TabParamList,
   'Discussions'
 >;

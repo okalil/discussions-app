@@ -1,5 +1,5 @@
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 import { Tabs } from './tabs';
 import { LoginScreen } from '../auth/login-screen';
@@ -14,7 +14,7 @@ interface Props {
   onReady: () => void;
 }
 
-export function NavigationStack({ onReady }: Props) {
+export function Navigation({ onReady }: Props) {
   const userQuery = useUserQuery();
   const isAuthenticated = !!userQuery.data;
 
@@ -25,7 +25,7 @@ export function NavigationStack({ onReady }: Props) {
   onReady();
 
   return (
-    <BottomSheetModalProvider>
+    <NavigationContainer>
       <Stack.Navigator>
         {!isAuthenticated && (
           <Stack.Group screenOptions={{ headerShown: false }}>
@@ -48,7 +48,7 @@ export function NavigationStack({ onReady }: Props) {
           </Stack.Group>
         )}
       </Stack.Navigator>
-    </BottomSheetModalProvider>
+    </NavigationContainer>
   );
 }
 
