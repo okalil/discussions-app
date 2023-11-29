@@ -179,7 +179,7 @@ function CommentVote({ comment }: { comment: Comment }) {
   return (
     <Vote
       voted={voted}
-      count={votes}
+      votes={votes}
       onPress={() => {
         requestAnimationFrame(async () => {
           mutation.mutate(!voted);

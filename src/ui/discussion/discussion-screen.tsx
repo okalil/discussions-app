@@ -37,7 +37,7 @@ export function DiscussionScreen({ route }: ScreenProps) {
           <View>
             <Vote
               voted={voted}
-              count={votes}
+              votes={votes}
               onPress={() => {
                 requestAnimationFrame(async () => {
                   votesMutation.mutate(!voted);

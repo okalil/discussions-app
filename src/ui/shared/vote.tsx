@@ -5,11 +5,11 @@ import { cn } from '~/ui/shared/utils';
 
 export interface VoteProps {
   voted?: boolean;
-  count: number;
+  votes: number;
   onPress: () => void;
 }
 
-export function Vote({ voted, count, onPress }: VoteProps) {
+export function Vote({ voted, votes, onPress }: VoteProps) {
   return (
     <Pressable
       className={cn(
@@ -24,7 +24,7 @@ export function Vote({ voted, count, onPress }: VoteProps) {
         color={voted ? 'rgb(59 130 246)' : undefined}
         size={16}
       />
-      <Text className={cn(voted && 'text-blue-500')}>{count}</Text>
+      <Text className={cn(voted && 'text-blue-500')}>{votes}</Text>
     </Pressable>
   );
 }
