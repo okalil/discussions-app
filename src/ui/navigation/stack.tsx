@@ -22,10 +22,8 @@ export function Navigation({ onReady }: Props) {
     return null;
   }
 
-  onReady();
-
   return (
-    <NavigationContainer>
+    <NavigationContainer onReady={onReady}>
       <Stack.Navigator>
         {!isAuthenticated && (
           <Stack.Group screenOptions={{ headerShown: false }}>
