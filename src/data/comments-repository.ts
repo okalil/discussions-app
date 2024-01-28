@@ -1,5 +1,6 @@
 import { api } from './network/api';
 import { Comment } from './comment';
+import { socket } from './network/socket';
 
 export class CommentsRepository {
   async getComments(dicussionId: string) {
@@ -57,5 +58,24 @@ export class CommentsRepository {
     await api.delete(
       `/api/v1/discussions/${params.discussionId}/comments/${params.commentId}`
     );
+  }
+
+  addCommentCreateListener(listener: () => void) {
+    socket.on('comment_create', listener);
+    return function removeCommentCreateListener() {
+      socket.off('comment_create', listener);
+    };
+  }
+  addCommentUpdateListener(listener: () => void) {
+    socket.on('comment_update', listener);
+    return function removeCommentUpdateListener() {
+      socket.off('comment_update', listener);
+    };
+  }
+  addCommentDeleteListener(listener: () => void) {
+    socket.on('comment_delete', listener);
+    return function removeCommentDeleteListener() {
+      socket.off('comment_delete', listener);
+    };
   }
 }

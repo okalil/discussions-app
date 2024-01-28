@@ -1,5 +1,5 @@
-import { UserRepository } from '../../data/user-repository';
 import { useQuery } from '@tanstack/react-query';
+import { UserRepository } from '../../../data/user-repository';
 
 const userRepository = new UserRepository();
 

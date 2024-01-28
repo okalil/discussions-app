@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   View,
   ActivityIndicator,
@@ -7,14 +8,13 @@ import {
   Text,
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { useForm } from 'react-hook-form';
-import React from 'react';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import { useForm } from 'react-hook-form';
 import { MotiView } from 'moti';
 
 import { Comment } from '~/data/comment';
 import { ScreenProps } from './discussion-screen';
-import { useUpsertCommentMutation } from './comments-query';
+import { useUpsertCommentMutation } from './queries/use-upsert-comment-mutation';
 
 interface Props {
   editing: boolean;
@@ -31,13 +31,22 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
 
   const { isPending, mutate } = useUpsertCommentMutation({
     discussionId,
-    comment,
-    onSuccess() {
-      form.reset();
-      Keyboard.dismiss();
-      onCancelEditing();
-    },
   });
+
+  const onSaveComment = () => {
+    requestAnimationFrame(() =>
+      mutate(
+        { id: comment?.id, content },
+        {
+          onSuccess() {
+            form.reset();
+            Keyboard.dismiss();
+            onCancelEditing();
+          },
+        }
+      )
+    );
+  };
 
   const height = useKeyboardHeight();
 
@@ -65,13 +74,7 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
           value={content}
           onChangeText={text => form.setValue('content', text)}
         />
-        <Pressable
-          className="ml-3"
-          disabled={!content}
-          onPress={() => {
-            requestAnimationFrame(() => mutate({ content }));
-          }}
-        >
+        <Pressable className="ml-3" disabled={!content} onPress={onSaveComment}>
           {isPending ? (
             <ActivityIndicator color="black" size={24} />
           ) : (

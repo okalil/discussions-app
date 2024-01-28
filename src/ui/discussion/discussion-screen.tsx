@@ -4,10 +4,8 @@ import React from 'react';
 
 import { Vote } from '~/ui/shared/vote';
 import { Comments } from './comments';
-import {
-  useDiscussionQuery,
-  useVoteDiscussionMutation,
-} from './discussion-query';
+import { useDiscussionQuery } from './queries/use-discussion-query';
+import { useVoteDiscussionMutation } from './queries/use-vote-discussion-mutation';
 
 export type ScreenProps = NativeStackScreenProps<StackParamList, 'Discussion'>;
 
@@ -52,7 +50,7 @@ export function DiscussionScreen({ route }: ScreenProps) {
     );
   }
 
-  if (discussionQuery.status === 'pending')
+  if (discussionQuery.isPending)
     return (
       <View className="flex-1 items-center justify-center">
         <ActivityIndicator color="black" size="large" />

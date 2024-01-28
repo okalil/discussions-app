@@ -14,17 +14,15 @@ import { FadeIn } from 'react-native-reanimated';
 import { MotiPressable } from 'moti/interactions';
 import { MotiView } from 'moti';
 
+import type { ScreenProps } from './discussion-screen';
 import { Comment } from '~/data/comment';
 import { Vote } from '~/ui/shared/vote';
 import { Avatar } from '~/ui/shared/avatar';
-import { useUserQuery } from '../profile/user-query';
-import type { ScreenProps } from './discussion-screen';
+import { useUserQuery } from '../profile/queries/use-user-query';
+import { useCommentsQuery } from './queries/use-comments-query';
+import { useDeleteCommentMutation } from './queries/use-delete-comment-mutation';
+import { useVoteCommentMutation } from './queries/use-vote-comment-mutation';
 import { CommentForm } from './comment-form';
-import {
-  useCommentsQuery,
-  useDeleteCommentMutation,
-  useVoteCommentMutation,
-} from './comments-query';
 
 export function Comments() {
   const params = useRoute<ScreenProps['route']>().params;

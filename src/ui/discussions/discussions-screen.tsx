@@ -12,7 +12,7 @@ import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { Fab } from '~/ui/shared/fab';
 import { Avatar } from '~/ui/shared/avatar';
-import { useInfiniteDiscussionsQuery } from './discussions-query';
+import { useInfiniteDiscussionsQuery } from './queries/use-infinite-discussions-query';
 
 type ScreenProps = BottomTabScreenProps<
   StackParamList & TabParamList,
@@ -87,7 +87,7 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
       </SafeAreaView>
     );
 
-  if (query.status === 'pending') {
+  if (query.isPending) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center">
         <ActivityIndicator color="black" size="large" />

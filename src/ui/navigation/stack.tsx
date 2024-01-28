@@ -6,7 +6,7 @@ import { LoginScreen } from '../auth/login-screen';
 import { RegisterScreen } from '../auth/register-screen';
 import { DiscussionScreen } from '../discussion/discussion-screen';
 import { DiscussionFormScreen } from '../discussion-form/discussion-form-screen';
-import { useUserQuery } from '../profile/user-query';
+import { useUserQuery } from '../profile/queries/use-user-query';
 
 const Stack = createNativeStackNavigator();
 
