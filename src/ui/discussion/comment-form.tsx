@@ -5,7 +5,6 @@ import {
   Pressable,
   TextInput,
   Keyboard,
-  Text,
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
@@ -15,6 +14,7 @@ import { MotiView } from 'moti';
 import { Comment } from '~/data/comment';
 import { ScreenProps } from './discussion-screen';
 import { useUpsertCommentMutation } from './queries/use-upsert-comment-mutation';
+import { Text } from '../shared/text';
 
 interface Props {
   editing: boolean;
@@ -61,14 +61,14 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
           <Pressable onPress={onCancelEditing}>
             <Icon name="close-circle" size={24} />
           </Pressable>
-          <Text className="ml-3">Editando mensagem</Text>
+          <Text className=" ml-3">Editando mensagem</Text>
         </View>
       )}
 
       <View className="flex-row px-4 py-4">
         <TextInput
           autoFocus={editing}
-          className="flex-1 bg-white"
+          className=" flex-1 bg-white"
           multiline
           placeholder="Entre na discussão"
           value={content}

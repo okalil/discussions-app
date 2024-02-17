@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Pressable,
-  Alert,
-  BackHandler,
-} from 'react-native';
+import { View, FlatList, Pressable, Alert, BackHandler } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRoute } from '@react-navigation/native';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
@@ -18,6 +11,7 @@ import type { ScreenProps } from './discussion-screen';
 import { Comment } from '~/data/comment';
 import { Vote } from '~/ui/shared/vote';
 import { Avatar } from '~/ui/shared/avatar';
+import { Text } from '~/ui/shared/text';
 import { useUserQuery } from '../profile/queries/use-user-query';
 import { useCommentsQuery } from './queries/use-comments-query';
 import { useDeleteCommentMutation } from './queries/use-delete-comment-mutation';

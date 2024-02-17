@@ -1,34 +1,44 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { Pressable, Text, View, ToastAndroid } from 'react-native';
+import { Pressable, View, ToastAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Text } from '~/ui/shared/text';
 import { Button } from '~/ui/shared/button';
 import { FormInput } from '~/ui/shared/form-input';
 import { UserRepository } from '~/data/user-repository';
 
+function useLoginMutation() {
+  const client = useQueryClient();
+  return useMutation({
+    async mutationFn(data: object) {
+      const repository = new UserRepository();
+      await repository.login(data);
+    },
+    onSuccess: () => client.invalidateQueries({ queryKey: ['user'] }),
+  });
+}
+
 export function LoginScreen({
   navigation,
 }: NativeStackScreenProps<StackParamList>) {
-  const client = useQueryClient();
   const form = useForm();
+  const mutation = useLoginMutation();
 
   const onLogin = form.handleSubmit(async data => {
-    try {
-      const repository = new UserRepository();
-      await repository.login(data);
-      await client.invalidateQueries({ queryKey: ['user'] });
-    } catch (error: any) {
-      ToastAndroid.show(error.message || 'Erro ao Cadastrar', 1200);
-      form.setError('root', { message: 'Erro ao Entrar' });
-    }
+    mutation.mutate(data, {
+      onError: error =>
+        ToastAndroid.show(error.message || 'Erro ao Entrar', 1200),
+    });
   });
 
   return (
     <FormProvider {...form}>
       <SafeAreaView className="flex-1 px-8 justify-center">
-        <Text className="font-semibold text-3xl text-center mb-8">Entrar</Text>
+        <Text className="font-inter-semibold text-3xl text-center mb-8">
+          Entrar
+        </Text>
 
         <FormInput.Email
           label="E-mail"
@@ -46,14 +56,14 @@ export function LoginScreen({
         <Button
           variant="primary"
           className="h-12 mb-8"
-          loading={form.formState.isSubmitting}
+          loading={mutation.isPending}
           onPress={onLogin}
         >
           Entrar
         </Button>
 
-        <View className="flex-row justify-center">
-          <Text>Novo por aqui? </Text>
+        <View className="flex-row justify-center ">
+          <Text className="">Novo por aqui? </Text>
           <Pressable onPress={() => navigation.navigate('Register')}>
             <Text className="underline">Cadastre-se agora</Text>
           </Pressable>

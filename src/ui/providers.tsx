@@ -9,10 +9,10 @@ import { storage } from '~/data/local/storage';
 const client = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,
+      staleTime: 5 * 1000,
       persister: experimental_createPersister({ storage }),
+      retry: 1,
     },
-    mutations: { retry: 0 },
   },
 });
 

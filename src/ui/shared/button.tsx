@@ -1,10 +1,6 @@
-import {
-  Text,
-  Pressable,
-  PressableProps,
-  ActivityIndicator,
-} from 'react-native';
-import { cn } from '~/ui/shared/utils';
+import { Pressable, PressableProps, ActivityIndicator } from 'react-native';
+import { Text } from './text';
+import { cn } from './utils';
 
 interface ButtonProps extends PressableProps {
   variant: 'primary';
@@ -34,7 +30,7 @@ export function Button({
       {loading ? (
         <ActivityIndicator color="white" size="small" />
       ) : (
-        <Text className="text-white font-semibold">{children}</Text>
+        <Text className="text-white font-inter-semibold">{children}</Text>
       )}
     </Pressable>
   );

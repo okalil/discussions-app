@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import * as ImagePicker from 'expo-image-picker';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -9,6 +9,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { UserRepository } from '~/data/user-repository';
 import { Avatar } from '~/ui/shared/avatar';
 import { Button } from '~/ui/shared/button';
+import { Text } from '~/ui/shared/text';
 import { FormInput } from '~/ui/shared/form-input';
 import { cn } from '~/ui/shared/utils';
 import { useUserQuery } from './queries/use-user-query';
@@ -76,7 +77,7 @@ export function ProfileScreen() {
     <FormProvider {...form}>
       <SafeAreaView className="px-4 py-4 flex-1">
         <View className="flex-row items-center justify-between mb-8">
-          <Text className="text-2xl font-semibold">Perfil</Text>
+          <Text className="text-2xl font-inter-semibold">Perfil</Text>
           <Pressable onPress={onLogout}>
             <Icon name="logout" size={24} />
           </Pressable>

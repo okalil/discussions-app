@@ -1,8 +1,9 @@
 import React from 'react';
 import { useController, useFormContext } from 'react-hook-form';
-import { TextInput, Text, View, TextInputProps, Pressable } from 'react-native';
+import { TextInput, View, TextInputProps, Pressable } from 'react-native';
 
-import { cn } from '~/ui/shared/utils';
+import { Text } from './text';
+import { cn } from './utils';
 
 interface FormTextareaProps extends TextInputProps {
   name: string;
@@ -30,7 +31,7 @@ export function FormTextarea({
       className={cn('flex-col relative gap-y-2')}
       style={style}
     >
-      <Text className="font-semibold">{label}</Text>
+      <Text className="font-inter-semibold">{label}</Text>
 
       <View>
         <TextInput

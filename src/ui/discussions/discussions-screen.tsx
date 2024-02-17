@@ -1,17 +1,12 @@
 import React from 'react';
-import {
-  View,
-  FlatList,
-  Pressable,
-  Text,
-  ActivityIndicator,
-} from 'react-native';
+import { View, FlatList, Pressable, ActivityIndicator } from 'react-native';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { Fab } from '~/ui/shared/fab';
 import { Avatar } from '~/ui/shared/avatar';
+import { Text } from '~/ui/shared/text';
 import { useInfiniteDiscussionsQuery } from './queries/use-infinite-discussions-query';
 
 type ScreenProps = BottomTabScreenProps<
@@ -46,8 +41,10 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
                 />
               </View>
 
-              <Text className="text-base font-semibold">{item.title}</Text>
-              <Text className="text-base font-semibold">
+              <Text className="text-base font-inter-semibold">
+                {item.title}
+              </Text>
+              <Text className="text-base font-inter-semibold">
                 {item.votes_count}
               </Text>
             </Pressable>

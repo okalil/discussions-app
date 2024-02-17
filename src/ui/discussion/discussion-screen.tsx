@@ -1,8 +1,9 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { View, Text, ActivityIndicator, Pressable } from 'react-native';
 import React from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { View, ActivityIndicator, Pressable } from 'react-native';
 
 import { Vote } from '~/ui/shared/vote';
+import { Text } from '~/ui/shared/text';
 import { Comments } from './comments';
 import { useDiscussionQuery } from './queries/use-discussion-query';
 import { useVoteDiscussionMutation } from './queries/use-vote-discussion-mutation';
@@ -30,7 +31,9 @@ export function DiscussionScreen({ route }: ScreenProps) {
     return (
       <View className="flex-1 px-4 py-4">
         <View>
-          <Text className="text-lg font-semibold mb-2">{discussion.title}</Text>
+          <Text className="text-lg font-inter-semibold mb-2">
+            {discussion.title}
+          </Text>
           <Text className="text-base mb-2">{discussion.description}</Text>
           <View>
             <Vote

@@ -1,34 +1,42 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { Pressable, Text, View, ToastAndroid } from 'react-native';
+import { Pressable, View, ToastAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { UserRepository } from '~/data/user-repository';
 import { FormInput } from '~/ui/shared/form-input';
 import { Button } from '~/ui/shared/button';
+import { Text } from '../shared/text';
+
+function useRegisterMutation() {
+  const client = useQueryClient();
+  return useMutation({
+    async mutationFn(data: object) {
+      const repository = new UserRepository();
+      await repository.register(data);
+    },
+    onSuccess: () => client.invalidateQueries({ queryKey: ['user'] }),
+  });
+}
 
 export function RegisterScreen({
   navigation,
 }: NativeStackScreenProps<StackParamList>) {
-  const client = useQueryClient();
   const form = useForm();
+  const mutation = useRegisterMutation();
 
   const onRegister = form.handleSubmit(async data => {
-    try {
-      const repository = new UserRepository();
-      await repository.register(data);
-      await client.invalidateQueries({ queryKey: ['user'] });
-    } catch (error: any) {
-      ToastAndroid.show(error.message || 'Erro ao Cadastrar', 1200)
-      form.setError('root', { message: 'Erro ao Cadastrar' });
-    }
+    mutation.mutate(data, {
+      onError: error =>
+        ToastAndroid.show(error.message || 'Erro ao Cadastrar', 1200),
+    });
   });
 
   return (
     <FormProvider {...form}>
       <SafeAreaView className="flex-1 px-8 justify-center">
-        <Text className="font-semibold text-3xl text-center mb-8">
+        <Text className="font-inter-semibold text-3xl text-center mb-8">
           Criar conta
         </Text>
 
@@ -72,16 +80,16 @@ export function RegisterScreen({
         <Button
           variant="primary"
           className="h-12 mb-8"
-          loading={form.formState.isSubmitting}
+          loading={mutation.isPending}
           onPress={onRegister}
         >
           Criar
         </Button>
 
         <View className="flex-row justify-center">
-          <Text>Já tem uma conta? </Text>
+          <Text className="">Já tem uma conta? </Text>
           <Pressable onPress={() => navigation.navigate('Login')}>
-            <Text className="underline">Entrar agora</Text>
+            <Text className=" underline">Entrar agora</Text>
           </Pressable>
         </View>
       </SafeAreaView>

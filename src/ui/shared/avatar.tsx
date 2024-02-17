@@ -1,6 +1,7 @@
-import { Image, View, Text } from 'react-native';
+import { Image, View } from 'react-native';
 import { url } from '~/data/network/api';
 import { cn } from '~/ui/shared/utils';
+import { Text } from '~/ui/shared/text';
 
 interface Props {
   src?: string;

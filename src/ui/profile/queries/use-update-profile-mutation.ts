@@ -12,11 +12,7 @@ export function useUpdateProfileMutation() {
         picture: data.picture.uri,
       });
     },
-    onSuccess() {
-      ToastAndroid.show('Salvo!', ToastAndroid.SHORT);
-    },
-    onError(error) {
-      ToastAndroid.show('Erro', ToastAndroid.SHORT);
-    },
+    onSuccess: () => ToastAndroid.show('Salvo!', ToastAndroid.SHORT),
+    onError: () => ToastAndroid.show('Erro ao salvar', ToastAndroid.SHORT),
   });
 }

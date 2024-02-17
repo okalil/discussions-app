@@ -1,5 +1,12 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  useFonts,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from '@expo-google-fonts/inter';
 
 import { Tabs } from './tabs';
 import { LoginScreen } from '../auth/login-screen';
@@ -18,7 +25,15 @@ export function Navigation({ onReady }: Props) {
   const userQuery = useUserQuery();
   const isAuthenticated = !!userQuery.data;
 
-  if (userQuery.isLoading) {
+  const [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+  });
+  const fontsLoading = !fontsLoaded && !fontError;
+
+  if (userQuery.isLoading || fontsLoading) {
     return null;
   }
 
