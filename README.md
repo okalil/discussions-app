@@ -26,7 +26,7 @@ O aplicativo inclui várias funcionalidades típicas de diversos aplicativos mó
 
 - **CRUDs**: Operações de criação, leitura, atualização e exclusão de dados.
 
-- **Tab Navigation**: Navegação por abas para uma experiência de usuário organizada.
+- **Tab Navigation**: Navegação por abas para rápido acesso aos principais recursos.
 
 - **Pull to Refresh**: Atualização de conteúdo puxando a tela para baixo.
 
