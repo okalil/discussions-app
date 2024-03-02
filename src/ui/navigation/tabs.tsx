@@ -5,8 +5,8 @@ import {
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { MotiView } from 'moti';
 
-import { DiscussionsScreen } from '../discussions/discussions-screen';
-import { ProfileScreen } from '../profile/profile-screen';
+import { DiscussionsScreen } from '~/ui/discussions';
+import { ProfileScreen } from '~/ui/profile';
 
 const Tab = createBottomTabNavigator();
 

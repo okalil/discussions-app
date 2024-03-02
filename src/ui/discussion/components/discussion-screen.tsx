@@ -5,8 +5,8 @@ import { View, ActivityIndicator, Pressable } from 'react-native';
 import { Vote } from '~/ui/shared/vote';
 import { Text } from '~/ui/shared/text';
 import { Comments } from './comments';
-import { useDiscussionQuery } from './queries/use-discussion-query';
-import { useVoteDiscussionMutation } from './queries/use-vote-discussion-mutation';
+import { useDiscussionQuery } from '../queries/use-discussion-query';
+import { useVoteDiscussionMutation } from '../queries/use-vote-discussion-mutation';
 
 export type ScreenProps = NativeStackScreenProps<StackParamList, 'Discussion'>;
 

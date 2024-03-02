@@ -13,8 +13,8 @@ import { MotiView } from 'moti';
 
 import { Comment } from '~/data/comment';
 import { ScreenProps } from './discussion-screen';
-import { useUpsertCommentMutation } from './queries/use-upsert-comment-mutation';
-import { Text } from '../shared/text';
+import { useUpsertCommentMutation } from '../queries/use-upsert-comment-mutation';
+import { Text } from '../../shared/text';
 
 interface Props {
   editing: boolean;

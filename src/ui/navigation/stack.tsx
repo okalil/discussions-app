@@ -8,12 +8,11 @@ import {
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
 
+import { LoginScreen, RegisterScreen } from '~/ui/auth';
+import { DiscussionFormScreen } from '~/ui/discussion-form';
+import { DiscussionScreen } from '~/ui/discussion';
+import { useUserQuery } from '~/ui/profile';
 import { Tabs } from './tabs';
-import { LoginScreen } from '../auth/login-screen';
-import { RegisterScreen } from '../auth/register-screen';
-import { DiscussionScreen } from '../discussion/discussion-screen';
-import { DiscussionFormScreen } from '../discussion-form/discussion-form-screen';
-import { useUserQuery } from '../profile/queries/use-user-query';
 
 const Stack = createNativeStackNavigator();
 

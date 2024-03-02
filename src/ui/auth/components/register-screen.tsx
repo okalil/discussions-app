@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { UserRepository } from '~/data/user-repository';
 import { FormInput } from '~/ui/shared/form-input';
 import { Button } from '~/ui/shared/button';
-import { Text } from '../shared/text';
+import { Text } from '../../shared/text';
 
 function useRegisterMutation() {
   const client = useQueryClient();

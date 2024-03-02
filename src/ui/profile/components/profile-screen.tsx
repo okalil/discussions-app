@@ -12,8 +12,8 @@ import { Button } from '~/ui/shared/button';
 import { Text } from '~/ui/shared/text';
 import { FormInput } from '~/ui/shared/form-input';
 import { cn } from '~/ui/shared/utils';
-import { useUserQuery } from './queries/use-user-query';
-import { useUpdateProfileMutation } from './queries/use-update-profile-mutation';
+import { useUserQuery } from '../queries/use-user-query';
+import { useUpdateProfileMutation } from '../queries/use-update-profile-mutation';
 
 export function ProfileScreen() {
   const { data: user, refetch } = useUserQuery();

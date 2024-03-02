@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { Providers } from './ui/providers';
-import { Navigation } from './ui/navigation/stack';
+import { Navigation } from './ui/navigation';
 
 SplashScreen.preventAutoHideAsync();
 

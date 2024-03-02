@@ -7,7 +7,7 @@ import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { Fab } from '~/ui/shared/fab';
 import { Avatar } from '~/ui/shared/avatar';
 import { Text } from '~/ui/shared/text';
-import { useInfiniteDiscussionsQuery } from './queries/use-infinite-discussions-query';
+import { useInfiniteDiscussionsQuery } from '../queries/use-infinite-discussions-query';
 
 type ScreenProps = BottomTabScreenProps<
   StackParamList & TabParamList,
