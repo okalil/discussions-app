@@ -1,24 +1,12 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { Pressable, View, ToastAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { UserRepository } from '~/data/user-repository';
 import { FormInput } from '~/ui/shared/form-input';
 import { Button } from '~/ui/shared/button';
-import { Text } from '../../shared/text';
-
-function useRegisterMutation() {
-  const client = useQueryClient();
-  return useMutation({
-    async mutationFn(data: object) {
-      const repository = new UserRepository();
-      await repository.register(data);
-    },
-    onSuccess: () => client.invalidateQueries({ queryKey: ['user'] }),
-  });
-}
+import { Text } from '~/ui/shared/text';
+import { useRegisterMutation } from '../queries/use-register-mutation';
 
 export function RegisterScreen({
   navigation,
