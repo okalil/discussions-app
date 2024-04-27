@@ -11,7 +11,7 @@ import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useForm } from 'react-hook-form';
 import { MotiView } from 'moti';
 
-import { Comment } from '~/data/comment';
+import { CommentDto } from '~/data/comment/comment.dto';
 import { ScreenProps } from './discussion-screen';
 import { useUpsertCommentMutation } from './queries/use-upsert-comment-mutation';
 import { Text } from '../shared/text';
@@ -19,7 +19,7 @@ import { Text } from '../shared/text';
 interface Props {
   editing: boolean;
   onCancelEditing: () => void;
-  comment?: Comment;
+  comment?: CommentDto;
 }
 
 export function CommentForm({ editing, onCancelEditing, comment }: Props) {
@@ -29,9 +29,7 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
   const form = useForm({ defaultValues: comment });
   const content = form.watch('content');
 
-  const { isPending, mutate } = useUpsertCommentMutation({
-    discussionId,
-  });
+  const { isPending, mutate } = useUpsertCommentMutation(discussionId);
 
   const onSaveComment = () => {
     requestAnimationFrame(() =>

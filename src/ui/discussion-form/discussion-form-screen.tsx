@@ -5,10 +5,10 @@ import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
 import { Fab } from '~/ui/shared/fab';
 import { FormInput } from '~/ui/shared/form-input';
 import { FormTextarea } from '~/ui/shared/form-textarea';
-import { DiscussionsRepository } from '~/data/discussions-repository';
 
 type ScreenProps = NativeStackScreenProps<StackParamList>;
 
@@ -18,7 +18,7 @@ export function DiscussionFormScreen({ navigation }: ScreenProps) {
 
   const onSaveDiscussion = form.handleSubmit(async data => {
     try {
-      const repository = new DiscussionsRepository();
+      const repository = getDiscussionRepository();
       const discussionId = await repository.createDiscussion(data);
       client.invalidateQueries({ queryKey: ['discussions'] });
       navigation.replace('Discussion', { id: discussionId });

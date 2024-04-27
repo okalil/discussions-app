@@ -1,30 +1,28 @@
-import { User } from './user';
+import { UserDto } from '../user/user.dto';
 
-interface IDiscussion {
+export interface DiscussionDto {
   id: string;
   title: string;
   description: string;
   votes: number;
   comments: number;
   voted: boolean;
-  user: User;
+  user: UserDto;
 }
 
-export class Discussion implements IDiscussion {
+interface DiscussionJsonDto {
   id: string;
   title: string;
   description: string;
-  votes: number;
-  comments: number;
-  voted: boolean;
-  user: User;
+  votes_count: number;
+  comments_count: number;
+  user_voted: boolean;
+  user: UserDto;
+}
 
-  constructor(values: Partial<IDiscussion>) {
-    Object.assign(this, values);
-  }
-
-  static fromJson(json: Record<string, any>): Discussion {
-    return new Discussion({
+export const DiscussionSchema = {
+  parse(json: DiscussionJsonDto): DiscussionDto {
+    return {
       id: json.id ?? '',
       title: json.title ?? '',
       description: json.description ?? '',
@@ -32,6 +30,6 @@ export class Discussion implements IDiscussion {
       comments: json.comments_count ?? 0,
       voted: json.user_voted ?? false,
       user: json.user,
-    });
-  }
-}
+    };
+  },
+};

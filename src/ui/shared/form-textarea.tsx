@@ -3,7 +3,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { TextInput, View, TextInputProps, Pressable } from 'react-native';
 
 import { Text } from './text';
-import { cn } from './utils';
+import { cn } from './utils/cn';
 
 interface FormTextareaProps extends TextInputProps {
   name: string;

@@ -4,7 +4,7 @@ import { TextInput, View, TextInputProps, Pressable } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { Text } from './text';
-import { cn } from './utils';
+import { cn } from './utils/cn';
 
 interface FormInputProps extends TextInputProps {
   name: string;

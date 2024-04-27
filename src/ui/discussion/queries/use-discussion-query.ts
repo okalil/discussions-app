@@ -1,23 +1,23 @@
 import React from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { DiscussionsRepository } from '~/data/discussions-repository';
+import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
 
-interface Props {
-  discussionId: string;
-}
+const discussionsRepository = getDiscussionRepository();
 
-const discussionsRepository = new DiscussionsRepository();
+const getCommentsQuery = (discussionId: string) =>
+  queryOptions({ queryKey: ['discussions', discussionId, 'comments'] });
 
-export function useDiscussionQuery({ discussionId }: Props) {
+export function useDiscussionQuery(discussionId: string) {
   const client = useQueryClient();
 
   const query = useQuery({
     queryKey: ['discussions', discussionId],
     queryFn() {
-      client.prefetchQuery({
-        queryKey: ['discussions', discussionId, 'comments'],
-      });
+      const commentsQuery = getCommentsQuery(discussionId);
+      if (!client.getQueryData(commentsQuery.queryKey)) {
+        client.prefetchQuery(commentsQuery);
+      }
       return discussionsRepository.getDiscussion(discussionId);
     },
     enabled: !!discussionId,
@@ -28,7 +28,7 @@ export function useDiscussionQuery({ discussionId }: Props) {
     return () => discussionsRepository.sendDiscussionUnsubscribe(discussionId);
   }, [discussionId]);
   React.useEffect(() => {
-    return discussionsRepository.addDiscussionUpdateListener(id => {
+    return discussionsRepository.listenDiscussionUpdate(id => {
       if (id === discussionId) {
         query.refetch();
       }

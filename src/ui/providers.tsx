@@ -4,7 +4,7 @@ import { experimental_createPersister } from '@tanstack/query-persist-client-cor
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
-import { storage } from '~/data/local/storage';
+import { storage } from '~/data/core/local/storage';
 
 const client = new QueryClient({
   defaultOptions: {

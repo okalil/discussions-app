@@ -1,27 +1,23 @@
-import { useMutationState, useQuery } from '@tanstack/react-query';
 import React from 'react';
-import { Comment } from '~/data/comment';
-import { CommentsRepository } from '~/data/comments-repository';
+import { useMutationState, useQuery } from '@tanstack/react-query';
+import { CommentDto } from '~/data/comment/comment.dto';
+import { getCommentRepository } from '~/data/comment/comment.repository';
 
-interface Props {
-  discussionId: string;
-}
-
-const commentsRepository = new CommentsRepository();
-
-export function useCommentsQuery({ discussionId }: Props) {
+export function useCommentsQuery(discussionId: string) {
+  const commentsRepository = React.useMemo(
+    () => getCommentRepository(discussionId),
+    [discussionId]
+  );
   const [deletedComment] = useMutationState({
     filters: { mutationKey: ['delete_comment', discussionId] },
     select(mutation) {
-      return mutation.state.variables as Comment;
+      return mutation.state.variables as CommentDto;
     },
   });
 
   const query = useQuery({
     queryKey: ['discussions', discussionId, 'comments'],
-    async queryFn() {
-      return commentsRepository.getComments(discussionId);
-    },
+    queryFn: () => commentsRepository.getComments(),
     select(data) {
       if (deletedComment) {
         return data.filter(it => it.id !== deletedComment.id);
@@ -31,12 +27,12 @@ export function useCommentsQuery({ discussionId }: Props) {
   });
 
   React.useEffect(() => {
-    const unsubscribes = [
-      commentsRepository.addCommentCreateListener(() => query.refetch()),
-      commentsRepository.addCommentUpdateListener(() => query.refetch()),
-      commentsRepository.addCommentDeleteListener(() => query.refetch()),
+    const subscriptions = [
+      commentsRepository.listenCommentCreate(() => query.refetch()),
+      commentsRepository.listenCommentUpdate(() => query.refetch()),
+      commentsRepository.listenCommentDelete(() => query.refetch()),
     ];
-    return () => unsubscribes.forEach(run => run());
+    return () => subscriptions.forEach(remove => remove());
   }, []);
 
   return query;

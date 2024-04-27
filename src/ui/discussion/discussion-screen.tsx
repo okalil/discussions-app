@@ -14,10 +14,10 @@ export function DiscussionScreen({ route }: ScreenProps) {
   const params = route.params;
   const discussionId = params?.id ?? '';
 
-  const discussionQuery = useDiscussionQuery({ discussionId });
-  const discussion = discussionQuery.data;
+  const discussionQuery = useDiscussionQuery(discussionId);
+  const votesMutation = useVoteDiscussionMutation(discussionId);
 
-  const votesMutation = useVoteDiscussionMutation({ discussionId });
+  const discussion = discussionQuery.data;
 
   if (discussion) {
     const optimisticVoted = votesMutation.variables;

@@ -2,7 +2,7 @@ import { Pressable } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { Text } from '~/ui/shared/text';
-import { cn } from '~/ui/shared/utils';
+import { cn } from '~/ui/shared/utils/cn';
 
 export interface VoteProps {
   voted?: boolean;

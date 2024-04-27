@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CommentsRepository } from '~/data/comments-repository';
+import { getCommentRepository } from '~/data/comment/comment.repository';
 
 interface VoteCommentProps {
   discussionId: string;
@@ -7,15 +7,16 @@ interface VoteCommentProps {
 }
 
 export function useVoteCommentMutation({
-  discussionId, commentId,
+  discussionId,
+  commentId,
 }: VoteCommentProps) {
   const client = useQueryClient();
   const mutation = useMutation({
     async mutationFn(voted: boolean) {
-      const repository = new CommentsRepository();
+      const repository = getCommentRepository(discussionId);
       return voted
-        ? repository.upvoteComment({ commentId, discussionId })
-        : repository.downvoteComment({ commentId, discussionId });
+        ? repository.upvoteComment(commentId)
+        : repository.downvoteComment(commentId);
     },
     onSettled() {
       return client.invalidateQueries({

@@ -1,15 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { DiscussionsRepository } from '~/data/discussions-repository';
+import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
 
-interface Props {
-  discussionId: string;
-}
-
-export function useVoteDiscussionMutation({ discussionId }: Props) {
+export function useVoteDiscussionMutation(discussionId: string) {
   const client = useQueryClient();
   return useMutation({
     async mutationFn(voted: boolean) {
-      const repository = new DiscussionsRepository();
+      const repository = getDiscussionRepository();
       return voted
         ? repository.upvoteDiscussion(discussionId)
         : repository.downvoteDiscussion(discussionId);

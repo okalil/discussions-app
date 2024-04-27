@@ -1,14 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { UserRepository } from '../../../data/user-repository';
-
-const userRepository = new UserRepository();
+import { getUserRepository } from '~/data/user/user.repository';
 
 export function useUserQuery() {
   return useQuery({
     queryKey: ['user'],
-    queryFn() {
-      return userRepository.getUser();
-    },
+    queryFn: () => getUserRepository().getUser(),
     gcTime: Infinity,
     staleTime: Infinity,
   });

@@ -1,22 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Comment } from '~/data/comment';
-import { CommentsRepository } from '~/data/comments-repository';
+import { CommentDto } from '~/data/comment/comment.dto';
+import { getCommentRepository } from '~/data/comment/comment.repository';
 
-interface Props {
-  discussionId: string;
-}
-
-export function useDeleteCommentMutation({ discussionId }: Props) {
+export function useDeleteCommentMutation(discussionId: string) {
   const client = useQueryClient();
   return useMutation({
     mutationKey: ['delete_comment', discussionId],
-    async mutationFn(comment: Comment) {
-      const commentsRepository = new CommentsRepository();
-      await commentsRepository.deleteComment({
-        discussionId,
-        commentId: comment.id,
-      });
-    },
+    mutationFn: (comment: CommentDto) =>
+      getCommentRepository(discussionId).deleteComment(comment.id),
     onSettled() {
       return client.invalidateQueries({
         queryKey: ['discussions', discussionId, 'comments'],

@@ -1,29 +1,18 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { Pressable, View, ToastAndroid } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { LoginDto } from '~/data/user/login.dto';
 import { Text } from '~/ui/shared/text';
 import { Button } from '~/ui/shared/button';
 import { FormInput } from '~/ui/shared/form-input';
-import { UserRepository } from '~/data/user-repository';
-
-function useLoginMutation() {
-  const client = useQueryClient();
-  return useMutation({
-    async mutationFn(data: object) {
-      const repository = new UserRepository();
-      await repository.login(data);
-    },
-    onSuccess: () => client.invalidateQueries({ queryKey: ['user'] }),
-  });
-}
+import { useLoginMutation } from './queries/use-login-mutation';
 
 export function LoginScreen({
   navigation,
 }: NativeStackScreenProps<StackParamList>) {
-  const form = useForm();
+  const form = useForm<LoginDto>();
   const mutation = useLoginMutation();
 
   const onLogin = form.handleSubmit(async data => {

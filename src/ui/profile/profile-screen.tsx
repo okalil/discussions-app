@@ -6,40 +6,44 @@ import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { UserRepository } from '~/data/user-repository';
+import { UpdateUserDto } from '~/data/user/update-user.dto';
 import { Avatar } from '~/ui/shared/avatar';
 import { Button } from '~/ui/shared/button';
 import { Text } from '~/ui/shared/text';
 import { FormInput } from '~/ui/shared/form-input';
-import { cn } from '~/ui/shared/utils';
+import { cn } from '~/ui/shared/utils/cn';
 import { useUserQuery } from './queries/use-user-query';
 import { useUpdateProfileMutation } from './queries/use-update-profile-mutation';
+import { useLogoutMutation } from './queries/use-logout-mutation';
 
 export function ProfileScreen() {
-  const { data: user, refetch } = useUserQuery();
-
-  const onLogout = () => {
-    const repository = new UserRepository();
-    repository.logout();
-    refetch();
-  };
-
-  const form = useForm({
+  const { data: user } = useUserQuery();
+  const logout = useLogoutMutation();
+  const updateProfile = useUpdateProfileMutation();
+  const form = useForm<UpdateUserDto>({
     defaultValues: {
       name: user?.name ?? '',
       picture: { uri: user?.picture?.url ?? '' },
     },
   });
-  const picture = form.watch('picture');
-
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
-  const onEditPicturePress = () => {
-    bottomSheetModalRef.current?.present();
-  };
-
   const mediaLibraryPermissions = ImagePicker.useMediaLibraryPermissions();
   const cameraPermissions = ImagePicker.useCameraPermissions();
 
+  const picture = form.watch('picture');
+  const onEditPicturePress = () => {
+    bottomSheetModalRef.current?.present();
+  };
+  const parseAssetToLocalFile = (
+    asset: ImagePicker.ImagePickerAsset
+  ): LocalFile => {
+    const file: LocalFile = {
+      uri: asset.uri,
+      name: asset.fileName ?? '',
+      type: asset.mimeType ?? '',
+    };
+    return file;
+  };
   const onPickFromLibrary = async () => {
     requestAnimationFrame(() => bottomSheetModalRef.current?.close());
 
@@ -49,8 +53,8 @@ export function ProfileScreen() {
     if (!response.granted) return;
     const result = await ImagePicker.launchImageLibraryAsync();
     if (result.canceled) return;
-    const [image] = result.assets;
-    form.setValue('picture', image);
+    const [asset] = result.assets;
+    form.setValue('picture', parseAssetToLocalFile(asset));
   };
   const onPickFromCamera = async () => {
     requestAnimationFrame(() => bottomSheetModalRef.current?.close());
@@ -61,13 +65,11 @@ export function ProfileScreen() {
     if (!response.granted) return;
     const result = await ImagePicker.launchCameraAsync();
     if (result.canceled) return;
-    const [image] = result.assets;
-    form.setValue('picture', image);
+    const [asset] = result.assets;
+    form.setValue('picture', parseAssetToLocalFile(asset));
   };
 
-  const mutation = useUpdateProfileMutation();
-
-  const onSave = form.handleSubmit(data => mutation.mutate(data));
+  const onSave = form.handleSubmit(data => updateProfile.mutate(data));
 
   if (!user) {
     return <Text>Sem dados</Text>;
@@ -78,14 +80,14 @@ export function ProfileScreen() {
       <SafeAreaView className="px-4 py-4 flex-1">
         <View className="flex-row items-center justify-between mb-8">
           <Text className="text-2xl font-inter-semibold">Perfil</Text>
-          <Pressable onPress={onLogout}>
+          <Pressable onPress={() => logout.mutate()}>
             <Icon name="logout" size={24} />
           </Pressable>
         </View>
 
         <View className="flex-1 justify-center">
           <View className="mx-auto mb-12">
-            <Avatar src={picture.uri} alt={user.name ?? ''} size={96} />
+            <Avatar src={picture?.uri} alt={user.name ?? ''} size={96} />
 
             <Pressable
               onPress={onEditPicturePress}
@@ -134,7 +136,7 @@ export function ProfileScreen() {
 
           <Button
             variant="primary"
-            loading={mutation.isPending}
+            loading={updateProfile.isPending}
             onPress={onSave}
           >
             Salvar

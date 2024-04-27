@@ -1,0 +1,67 @@
+import { api } from '../core/network/api';
+import { socket } from '../core/network/socket';
+import { CreateDiscussionDto } from './create-discussion.dto';
+import { DiscussionDto, DiscussionSchema } from './discussion.dto';
+import { UpdateDiscussionDto } from './update-discussion.dto';
+
+export function getDiscussionRepository() {
+  return new DiscussionRepository();
+}
+
+export class DiscussionRepository {
+  async getDiscussions({ page }: { page: number }) {
+    const response = await api.get(`/api/v1/discussions?page=${page}`);
+    const json: PaginatedDiscussionsResponse = await response.json();
+    const jsonData = json.data ?? [];
+
+    const data = jsonData.map(DiscussionSchema.parse);
+    const currentPage = json.meta?.current_page ?? 1;
+    const lastPage = json.meta?.last_page ?? 1;
+    const next = currentPage < lastPage ? currentPage + 1 : null;
+    return { data, next };
+
+    interface PaginatedDiscussionsResponse {
+      data: any[];
+      meta?: { current_page: number; last_page: number };
+    }
+  }
+
+  async getDiscussion(id: string): Promise<DiscussionDto> {
+    const response = await api.get('/api/v1/discussions/' + id);
+    const json = await response.json();
+    return DiscussionSchema.parse(json.discussion);
+  }
+
+  async upvoteDiscussion(id: string) {
+    await api.post(`/api/v1/discussions/${id}/votes`);
+  }
+
+  async downvoteDiscussion(id: string) {
+    await api.delete(`/api/v1/discussions/${id}/votes`);
+  }
+
+  async createDiscussion(dto: CreateDiscussionDto): Promise<string> {
+    const body = JSON.stringify(dto);
+    const response = await api.post(`/api/v1/discussions`, { body });
+    const json = await response.json();
+    return json?.discussion?.id ?? '';
+  }
+
+  async updateDiscussion(id: string, dto: UpdateDiscussionDto) {
+    const body = JSON.stringify(dto);
+    await api.put(`/api/v1/discussions/${id}`, { body });
+  }
+
+  sendDiscussionSubscribe(discussionId: string) {
+    socket.emit('discussion_subscribe', discussionId);
+  }
+  sendDiscussionUnsubscribe(discussionId: string) {
+    socket.emit('discussion_unsubscribe', discussionId);
+  }
+  listenDiscussionUpdate(listener: (id: string) => void) {
+    socket.on('discussion_update', listener);
+    return function removeDiscussionUpdateListener() {
+      socket.off('discussion_update', listener);
+    };
+  }
+}

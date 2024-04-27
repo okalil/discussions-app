@@ -1,10 +1,17 @@
-import { storage } from './local/storage';
-import { api } from './network/api';
-import { socket } from './network/socket';
-import { User } from './user';
+import { storage } from '../core/local/storage';
+import { api } from '../core/network/api';
+import { socket } from '../core/network/socket';
+import { LoginDto } from './login.dto';
+import { RegisterDto } from './register.dto';
+import { UpdateUserDto } from './update-user.dto';
+import { UserDto } from './user.dto';
+
+export function getUserRepository() {
+  return new UserRepository();
+}
 
 export class UserRepository {
-  async getUser(): Promise<User | null> {
+  async getUser(): Promise<UserDto | null> {
     const token = await storage.getItem('token');
     if (!token) return null;
 
@@ -18,7 +25,7 @@ export class UserRepository {
     storage.removeItem('token');
   }
 
-  async login(payload: object) {
+  async login(payload: LoginDto) {
     const body = JSON.stringify(payload);
     const response = await api.post('/api/v1/users/login', { body });
     const json = await response.json();
@@ -29,7 +36,7 @@ export class UserRepository {
     socket.connect();
   }
 
-  async register(payload: object) {
+  async register(payload: RegisterDto) {
     const body = JSON.stringify(payload);
     const response = await api.post('/api/v1/users', { body });
     const json = await response.json();
@@ -40,20 +47,11 @@ export class UserRepository {
     socket.connect();
   }
 
-  async updateProfile(data: { name: string; picture: string }) {
+  async updateProfile(data: UpdateUserDto) {
     const body = new FormData();
     body.append('name', data.name);
-    if (isLocalFile(data.picture))
-      body.append('picture', parseFile(data.picture));
+    if (data.picture) body.append('picture', data.picture);
 
     await api.put('/api/v1/profile', { body });
-
-    function parseFile(uri: string): any {
-      const [name] = uri.split('/').reverse();
-      return { uri, name, type: 'image/jpeg' };
-    }
-    function isLocalFile(uri: string) {
-      return uri && !uri.startsWith('/');
-    }
   }
 }

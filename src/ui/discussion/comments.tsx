@@ -8,7 +8,7 @@ import { MotiPressable } from 'moti/interactions';
 import { MotiView } from 'moti';
 
 import type { ScreenProps } from './discussion-screen';
-import { Comment } from '~/data/comment';
+import { CommentDto } from '~/data/comment/comment.dto';
 import { Vote } from '~/ui/shared/vote';
 import { Avatar } from '~/ui/shared/avatar';
 import { Text } from '~/ui/shared/text';
@@ -22,19 +22,19 @@ export function Comments() {
   const params = useRoute<ScreenProps['route']>().params;
   const discussionId = params?.id ?? '';
 
-  const commentsQuery = useCommentsQuery({ discussionId });
-  const deleteCommentMutation = useDeleteCommentMutation({ discussionId });
+  const commentsQuery = useCommentsQuery(discussionId);
+  const deleteCommentMutation = useDeleteCommentMutation(discussionId);
 
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
 
-  const [comment, setComment] = React.useState<Comment | null>(null);
+  const [comment, setComment] = React.useState<CommentDto | null>(null);
   const [editing, setEditing] = React.useState(false);
 
-  const onOpenCommentOptions = (it: Comment) => {
+  const onOpenCommentOptions = (it: CommentDto) => {
     setComment(it);
     requestAnimationFrame(() => bottomSheetModalRef.current?.present());
   };
-  const onDeleteCommentPress = (comment: Comment) => {
+  const onDeleteCommentPress = (comment: CommentDto) => {
     bottomSheetModalRef.current?.close();
     Alert.alert('Excluir comentário', 'Excluir comentário permanentemente?', [
       { text: 'Cancelar' },
@@ -154,7 +154,7 @@ export function Comments() {
   );
 }
 
-function CommentVote({ comment }: { comment: Comment }) {
+function CommentVote({ comment }: { comment: CommentDto }) {
   const params = useRoute<ScreenProps['route']>().params;
   const discussionId = params?.id ?? '';
   const commentId = comment.id;
