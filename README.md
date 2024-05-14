@@ -8,15 +8,33 @@ Este projeto é um aplicativo multiplataforma de discussões (ou fóruns) desenv
 
 ### Camada de Interface (UI Layer)
 
-- **Elementos visuais (React)**: O papel da IU é mostrar os dados do app na tela e atuar como o ponto principal de interação do usuário. Nessa aplicação, o React é o responsável pela renderização e interatividade.
+**Elementos visuais e interação**
 
-- **Estado (React Query)**: O estado da aplicação é gerenciado usando o React Query, que oferece um gerenciamento de estado assíncrono eficiente.
+- O papel da IU é mostrar os dados do app na tela e atuar como o ponto principal de interação do usuário.
+- Os componentes React e React Native são os responsáveis pela renderização e interatividade.
+
+**Gerenciadores de Estado**
+
+- O estado é o que modela a forma como os componentes visuais vão apresentar as informações na tela.
+- O estado puramente local pode ser controlado e consumido com recursos do React, como `useState`, `useReducer`, e `useContext`.
+- Por outro lado, todo estado que se origina de fontes externas, geralmente assíncrono, é gerenciado com o **React Query**, que oferece otimizações para controlar esse tipo de estado de forma eficiente.
 
 ### Camada de Dados (Data Layer)
 
-- **Repositórios**: Os repositórios são responsáveis por fornecer uma camada de abstração entre a camada de dados e a camada de interface do usuário. Eles interagem com as fontes de dados (data sources) para buscar e salvar informações.
+**Repositórios**
 
-- **Fontes de dados (API, storage)**: As fontes de dados são componentes que se conectam a diferentes origens de dados, como APIs ou armazenamento local, para obter e armazenar informações no aplicativo.
+- Os repositórios interagem com as fontes de dados (data sources) para buscar e salvar informações.
+- Eles são responsáveis por fornecer uma camada de abstração entre a camada de dados e a camada de interface do usuário.
+- Dessa forma, mudanças na forma como os dados são obtidos ou tratados não afetarão os componentes.
+
+**Data Transfer Objects**
+
+- Os Data Transfer Objects (DTOs), representam os dados que são transferidos entre a camada de dados e a camada de interface.
+- Nessa arquitetura, os DTOS são definidos através de interfaces TypeScript
+
+**Fontes de dados**
+
+- As fontes de dados são componentes que se conectam a diferentes origens de dados, como APIs ou armazenamento local, para obter e armazenar informações no aplicativo.
 
 ## Funcionalidades
 
@@ -56,19 +74,23 @@ O aplicativo inclui várias funcionalidades típicas de diversos aplicativos mó
 
 - **[Reanimated](https://www.reanimated2.com) e [Moti](https://moti.fyi)**, para animações.
 
-## Pré-requisitos
+## Instalação
 
-Antes de começar, certifique-se de ter as seguintes ferramentas instaladas:
+1. Clone o repositório
 
-- Node.js
-- npm (gerenciador de pacotes Node.js)
-- React Native CLI
+```bash
+git clone https://github.com/okalil/discussions-app.git
+cd carbono-neutro-app
+```
 
-## Instalação e Uso
+2. Instale as dependências
 
-1. Clone este repositório:
+```bash
+npm install
+```
 
-   ```bash
-   git clone https://github.com/seu-usuario/discussions-app.git
-   cd discussions-app
-   ```
+3. Execute o servidor local via tunnel, e abra o app usando o Expo Go ou development build
+
+```bash
+npm start -- --tunnel
+```
