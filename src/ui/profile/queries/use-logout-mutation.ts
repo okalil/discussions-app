@@ -6,6 +6,6 @@ export function useLogoutMutation() {
   const client = useQueryClient();
   return useMutation({
     mutationFn: async () => getUserRepository().logout(),
-    onSuccess: () => client.invalidateQueries({ queryKey: ['user'] }),
+    onSuccess: () => client.setQueryData(['user'], null),
   });
 }

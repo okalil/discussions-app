@@ -1,8 +1,8 @@
+import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import {
   createBottomTabNavigator,
   BottomTabBar,
 } from '@react-navigation/bottom-tabs';
-import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { MotiView } from 'moti';
 
 import { DiscussionsScreen } from '../discussions/discussions-screen';

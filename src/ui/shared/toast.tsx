@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 import { Animated, View, Text, Image } from 'react-native';
 import Constants from 'expo-constants';
 
-import toast, { useToaster, Toast as T } from 'react-hot-toast/headless';
+import type { Toast as T } from 'react-hot-toast/headless';
+import toast, { useToaster } from 'react-hot-toast/headless';
 
 interface ToastProps {
   toast: T;

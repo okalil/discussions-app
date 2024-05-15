@@ -1,10 +1,11 @@
 import { storage } from '../core/local/storage';
 import { api } from '../core/network/api';
 import { socket } from '../core/network/socket';
-import { LoginDto } from './login.dto';
-import { RegisterDto } from './register.dto';
-import { UpdateUserDto } from './update-user.dto';
-import { UserDto } from './user.dto';
+
+import type { LoginDto } from './login.dto';
+import type { RegisterDto } from './register.dto';
+import type { UpdateUserDto } from './update-user.dto';
+import type { UserDto } from './user.dto';
 
 export function getUserRepository() {
   return new UserRepository();

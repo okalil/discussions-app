@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { LoginDto } from '~/data/user/login.dto';
+import { type LoginDto } from '~/data/user/login.dto';
 import { getUserRepository } from '~/data/user/user.repository';
 
 export function useLoginMutation() {

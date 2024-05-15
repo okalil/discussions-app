@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, FlatList, Pressable, ActivityIndicator } from 'react-native';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Fab } from '~/ui/shared/fab';
 import { Avatar } from '~/ui/shared/avatar';
+import { Fab } from '~/ui/shared/fab';
 import { Text } from '~/ui/shared/text';
-import { useInfiniteDiscussionsQuery } from './queries/use-infinite-discussions-query';
 import { Toast } from '../shared/toast';
+import { useInfiniteDiscussionsQuery } from './queries/use-infinite-discussions-query';
 
 type ScreenProps = BottomTabScreenProps<
   StackParamList & TabParamList,

@@ -1,11 +1,11 @@
+import { experimental_createPersister } from '@tanstack/query-persist-client-core';
 import {
   QueryClient,
   QueryClientProvider as Provider,
 } from '@tanstack/react-query';
-import { experimental_createPersister } from '@tanstack/query-persist-client-core';
 
 import { storage } from '~/data/core/local/storage';
-import { Toast, Toaster } from '../shared/toast';
+import { Toast } from '../shared/toast';
 
 const client = new QueryClient({
   defaultOptions: {

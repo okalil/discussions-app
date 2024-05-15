@@ -6,15 +6,15 @@ import {
   TextInput,
   Keyboard,
 } from 'react-native';
-import { useRoute } from '@react-navigation/native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { useForm } from 'react-hook-form';
+import { useRoute } from '@react-navigation/native';
 import { MotiView } from 'moti';
+import { useForm } from 'react-hook-form';
 
-import { CommentDto } from '~/data/comment/comment.dto';
-import { ScreenProps } from './discussion-screen';
-import { useUpsertCommentMutation } from './queries/use-upsert-comment-mutation';
+import type { CommentDto } from '~/data/comment/comment.dto';
 import { Text } from '../shared/text';
+import type { ScreenProps } from './discussion-screen';
+import { useUpsertCommentMutation } from './queries/use-upsert-comment-mutation';
 
 interface Props {
   editing: boolean;

@@ -1,9 +1,9 @@
 import React from 'react';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, ActivityIndicator, Pressable } from 'react-native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { Vote } from '~/ui/shared/vote';
 import { Text } from '~/ui/shared/text';
+import { Vote } from '~/ui/shared/vote';
 import { Comments } from './comments';
 import { useDiscussionQuery } from './queries/use-discussion-query';
 import { useVoteDiscussionMutation } from './queries/use-vote-discussion-mutation';

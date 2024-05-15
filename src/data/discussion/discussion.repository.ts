@@ -1,8 +1,8 @@
 import { api } from '../core/network/api';
 import { socket } from '../core/network/socket';
-import { CreateDiscussionDto } from './create-discussion.dto';
-import { DiscussionDto, DiscussionSchema } from './discussion.dto';
-import { UpdateDiscussionDto } from './update-discussion.dto';
+import { type CreateDiscussionDto } from './create-discussion.dto';
+import { type DiscussionDto, DiscussionSchema } from './discussion.dto';
+import { type UpdateDiscussionDto } from './update-discussion.dto';
 
 export function getDiscussionRepository() {
   return new DiscussionRepository();

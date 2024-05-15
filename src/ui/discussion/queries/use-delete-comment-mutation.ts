@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CommentDto } from '~/data/comment/comment.dto';
+import type { CommentDto } from '~/data/comment/comment.dto';
 import { getCommentRepository } from '~/data/comment/comment.repository';
 
 export function useDeleteCommentMutation(discussionId: string) {

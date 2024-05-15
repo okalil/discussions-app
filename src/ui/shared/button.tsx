@@ -1,4 +1,5 @@
-import { Pressable, PressableProps, ActivityIndicator } from 'react-native';
+import type { PressableProps} from 'react-native';
+import { Pressable, ActivityIndicator } from 'react-native';
 import { Text } from './text';
 import { cn } from './utils/cn';
 

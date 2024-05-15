@@ -1,20 +1,21 @@
 import React from 'react';
 import { View, Pressable } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import * as ImagePicker from 'expo-image-picker';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import * as ImagePicker from 'expo-image-picker';
 import { FormProvider, useForm } from 'react-hook-form';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { UpdateUserDto } from '~/data/user/update-user.dto';
+import type { UpdateUserDto } from '~/data/user/update-user.dto';
 import { Avatar } from '~/ui/shared/avatar';
 import { Button } from '~/ui/shared/button';
-import { Text } from '~/ui/shared/text';
 import { FormInput } from '~/ui/shared/form-input';
+import { Text } from '~/ui/shared/text';
 import { cn } from '~/ui/shared/utils/cn';
-import { useUserQuery } from './queries/use-user-query';
-import { useUpdateProfileMutation } from './queries/use-update-profile-mutation';
+import { useUserQuery } from '../shared/queries/use-user-query';
+import { Toast } from '../shared/toast';
 import { useLogoutMutation } from './queries/use-logout-mutation';
+import { useUpdateProfileMutation } from './queries/use-update-profile-mutation';
 
 export function ProfileScreen() {
   const { data: user } = useUserQuery();
@@ -69,7 +70,11 @@ export function ProfileScreen() {
     form.setValue('picture', parseAssetToLocalFile(asset));
   };
 
-  const onSave = form.handleSubmit(data => updateProfile.mutate(data));
+  const onSave = form.handleSubmit(data =>
+    updateProfile.mutate(data, {
+      onSuccess: () => Toast.show('Salvo!', Toast.SHORT),
+    })
+  );
 
   if (!user) {
     return <Text>Sem dados</Text>;

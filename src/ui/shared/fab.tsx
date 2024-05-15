@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import { MotiPressable, MotiPressableProps } from 'moti/interactions';
+import type { MotiPressableProps } from 'moti/interactions';
+import { MotiPressable } from 'moti/interactions';
 
 interface FabProps extends MotiPressableProps {
   icon: JSX.Element;

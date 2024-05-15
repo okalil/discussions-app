@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
-import { url } from './api';
 import { storage } from '../local/storage';
+import { url } from './api';
 
 const socket = io(url, {
   autoConnect: false,

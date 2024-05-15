@@ -1,14 +1,14 @@
-import { FormProvider, useForm } from 'react-hook-form';
 import { Pressable, View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { type NativeStackScreenProps } from '@react-navigation/native-stack';
+import { FormProvider, useForm } from 'react-hook-form';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { LoginDto } from '~/data/user/login.dto';
-import { Text } from '~/ui/shared/text';
+import type { LoginDto } from '~/data/user/login.dto';
 import { Button } from '~/ui/shared/button';
 import { FormInput } from '~/ui/shared/form-input';
+import { Text } from '~/ui/shared/text';
+import { Toast } from '~/ui/shared/toast';
 import { useLoginMutation } from './queries/use-login-mutation';
-import { Toast } from '../shared/toast';
 
 export function LoginScreen({
   navigation,

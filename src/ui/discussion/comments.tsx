@@ -1,22 +1,22 @@
 import React from 'react';
 import { View, FlatList, Pressable, Alert, BackHandler } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { useRoute } from '@react-navigation/native';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import { FadeIn } from 'react-native-reanimated';
-import { MotiPressable } from 'moti/interactions';
+import { useRoute } from '@react-navigation/native';
 import { MotiView } from 'moti';
+import { MotiPressable } from 'moti/interactions';
+import { FadeIn } from 'react-native-reanimated';
 
-import type { ScreenProps } from './discussion-screen';
-import { CommentDto } from '~/data/comment/comment.dto';
-import { Vote } from '~/ui/shared/vote';
+import type { CommentDto } from '~/data/comment/comment.dto';
 import { Avatar } from '~/ui/shared/avatar';
 import { Text } from '~/ui/shared/text';
-import { useUserQuery } from '../profile/queries/use-user-query';
+import { Vote } from '~/ui/shared/vote';
+import { useUserQuery } from '../shared/queries/use-user-query';
+import { CommentForm } from './comment-form';
+import type { ScreenProps } from './discussion-screen';
 import { useCommentsQuery } from './queries/use-comments-query';
 import { useDeleteCommentMutation } from './queries/use-delete-comment-mutation';
 import { useVoteCommentMutation } from './queries/use-vote-comment-mutation';
-import { CommentForm } from './comment-form';
 
 export function Comments() {
   const params = useRoute<ScreenProps['route']>().params;

@@ -1,5 +1,3 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   useFonts,
   Inter_400Regular,
@@ -7,13 +5,15 @@ import {
   Inter_600SemiBold,
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { Tabs } from './tabs';
 import { LoginScreen } from '../auth/login-screen';
 import { RegisterScreen } from '../auth/register-screen';
 import { DiscussionScreen } from '../discussion/discussion-screen';
 import { DiscussionFormScreen } from '../discussion-form/discussion-form-screen';
-import { useUserQuery } from '../profile/queries/use-user-query';
+import { useUserQuery } from '../shared/queries/use-user-query';
+import { Tabs } from './tabs';
 
 const Stack = createNativeStackNavigator();
 

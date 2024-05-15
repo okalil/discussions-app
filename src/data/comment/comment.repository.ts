@@ -1,7 +1,8 @@
 import { api } from '../core/network/api';
 import { socket } from '../core/network/socket';
-import { CommentDto, CommentSchema } from './comment.dto';
-import { SaveCommentDto } from './save-comment.dto';
+import type { CommentDto } from './comment.dto';
+import { CommentSchema } from './comment.dto';
+import type { SaveCommentDto } from './save-comment.dto';
 
 export function getCommentRepository(discussionId: string) {
   return new CommentRepository(discussionId);

@@ -1,6 +1,7 @@
 import React from 'react';
+import type { TextInputProps} from 'react-native';
+import { TextInput, View, Pressable } from 'react-native';
 import { useController, useFormContext } from 'react-hook-form';
-import { TextInput, View, TextInputProps, Pressable } from 'react-native';
 
 import { Text } from './text';
 import { cn } from './utils/cn';

@@ -1,7 +1,8 @@
 import React from 'react';
-import { useController, useFormContext } from 'react-hook-form';
-import { TextInput, View, TextInputProps, Pressable } from 'react-native';
+import type { TextInputProps} from 'react-native';
+import { TextInput, View, Pressable } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import { useController, useFormContext } from 'react-hook-form';
 
 import { Text } from './text';
 import { cn } from './utils/cn';

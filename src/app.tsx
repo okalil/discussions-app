@@ -1,10 +1,10 @@
 import React from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { Providers } from './ui/providers';
 import { Navigation } from './ui/navigation/stack';
+import { Providers } from './ui/providers';
 
 SplashScreen.preventAutoHideAsync();
 

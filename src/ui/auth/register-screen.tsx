@@ -1,14 +1,14 @@
-import { FormProvider, useForm } from 'react-hook-form';
 import { Pressable, View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { FormProvider, useForm } from 'react-hook-form';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { RegisterDto } from '~/data/user/register.dto';
-import { useRegisterMutation } from './queries/use-register-mutation';
-import { FormInput } from '~/ui/shared/form-input';
+import type { RegisterDto } from '~/data/user/register.dto';
 import { Button } from '~/ui/shared/button';
+import { FormInput } from '~/ui/shared/form-input';
 import { Text } from '../shared/text';
 import { Toast } from '../shared/toast';
+import { useRegisterMutation } from './queries/use-register-mutation';
 
 export function RegisterScreen({
   navigation,

@@ -1,9 +1,9 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { FormProvider, useForm } from 'react-hook-form';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
+import { FormProvider, useForm } from 'react-hook-form';
 
 import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
 import { Fab } from '~/ui/shared/fab';
