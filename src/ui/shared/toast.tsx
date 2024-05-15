@@ -16,7 +16,6 @@ export class Toast {
       duration,
       icon: (
         <Image
-          key="teste"
           source={require('~/../assets/icon.png')}
           className="w-5 h-5 rounded-lg"
         />
