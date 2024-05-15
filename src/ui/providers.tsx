@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 import { storage } from '~/data/core/local/storage';
+import { Toast, Toaster } from './shared/toast';
 
 const client = new QueryClient({
   defaultOptions: {
@@ -12,6 +13,11 @@ const client = new QueryClient({
       staleTime: 5 * 1000,
       persister: experimental_createPersister({ storage }),
       retry: 1,
+    },
+    mutations: {
+      onError(error) {
+        Toast.show(error.message, Toast.LONG);
+      },
     },
   },
 });
@@ -22,6 +28,7 @@ export function Providers({ children }: React.PropsWithChildren) {
       <BottomSheetModalProvider>
         <QueryClientProvider client={client}>{children}</QueryClientProvider>
       </BottomSheetModalProvider>
+      <Toaster />
     </SafeAreaProvider>
   );
 }

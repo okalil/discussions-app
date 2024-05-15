@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, ToastAndroid, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -9,6 +9,7 @@ import { getDiscussionRepository } from '~/data/discussion/discussion.repository
 import { Fab } from '~/ui/shared/fab';
 import { FormInput } from '~/ui/shared/form-input';
 import { FormTextarea } from '~/ui/shared/form-textarea';
+import { Toast } from '../shared/toast';
 
 type ScreenProps = NativeStackScreenProps<StackParamList>;
 
@@ -23,7 +24,7 @@ export function DiscussionFormScreen({ navigation }: ScreenProps) {
       client.invalidateQueries({ queryKey: ['discussions'] });
       navigation.replace('Discussion', { id: discussionId });
     } catch (error: any) {
-      ToastAndroid.show(error.message || 'Erro ao salvar', 1200);
+      Toast.show(error.message || 'Erro ao salvar', Toast.SHORT);
       form.setError('root', { message: 'Erro ao salvar' });
     }
   });

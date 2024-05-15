@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { Pressable, View, ToastAndroid } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,6 +8,7 @@ import { Text } from '~/ui/shared/text';
 import { Button } from '~/ui/shared/button';
 import { FormInput } from '~/ui/shared/form-input';
 import { useLoginMutation } from './queries/use-login-mutation';
+import { Toast } from '../shared/toast';
 
 export function LoginScreen({
   navigation,
@@ -17,8 +18,7 @@ export function LoginScreen({
 
   const onLogin = form.handleSubmit(async data => {
     mutation.mutate(data, {
-      onError: error =>
-        ToastAndroid.show(error.message || 'Erro ao Entrar', 1200),
+      onSuccess: () => Toast.show('Logado com sucesso!', Toast.SHORT),
     });
   });
 

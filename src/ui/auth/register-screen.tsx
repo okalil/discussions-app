@@ -1,13 +1,14 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { Pressable, View, ToastAndroid } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RegisterDto } from '~/data/user/register.dto';
+import { useRegisterMutation } from './queries/use-register-mutation';
 import { FormInput } from '~/ui/shared/form-input';
 import { Button } from '~/ui/shared/button';
 import { Text } from '../shared/text';
-import { useRegisterMutation } from './queries/use-register-mutation';
+import { Toast } from '../shared/toast';
 
 export function RegisterScreen({
   navigation,
@@ -17,8 +18,8 @@ export function RegisterScreen({
 
   const onRegister = form.handleSubmit(async data => {
     mutation.mutate(data, {
-      onError: error =>
-        ToastAndroid.show(error.message || 'Erro ao Cadastrar', 1200),
+      onSuccess: () =>
+        Toast.show('Cadastrado realizado com sucesso!', Toast.LONG),
     });
   });
 

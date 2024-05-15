@@ -8,6 +8,7 @@ import { Fab } from '~/ui/shared/fab';
 import { Avatar } from '~/ui/shared/avatar';
 import { Text } from '~/ui/shared/text';
 import { useInfiniteDiscussionsQuery } from './queries/use-infinite-discussions-query';
+import { Toast } from '../shared/toast';
 
 type ScreenProps = BottomTabScreenProps<
   StackParamList & TabParamList,
@@ -30,7 +31,10 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
           data={discussions}
           renderItem={({ item }) => (
             <Pressable
-              onPress={() => navigation.navigate('Discussion', { id: item.id })}
+              onPress={() => {
+                Toast.show('Nice', Toast.SHORT)
+                // navigation.navigate('Discussion', { id: item.id });
+              }}
               className="flex-row gap-3 py-4 border-b border-gray-300"
             >
               <View>
