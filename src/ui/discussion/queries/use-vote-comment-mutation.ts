@@ -18,11 +18,10 @@ export function useVoteCommentMutation({
         ? repository.upvoteComment(commentId)
         : repository.downvoteComment(commentId);
     },
-    onSettled() {
-      return client.invalidateQueries({
+    onSettled: () =>
+      client.invalidateQueries({
         queryKey: ['discussions', discussionId],
-      });
-    },
+      }),
   });
   return mutation;
 }

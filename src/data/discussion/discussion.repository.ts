@@ -27,7 +27,7 @@ export class DiscussionRepository {
   }
 
   async getDiscussion(id: string): Promise<DiscussionDto> {
-    const response = await api.get('/api/v1/discussions/' + id);
+    const response = await api.get(`/api/v1/discussions/${id}`);
     const json = await response.json();
     return DiscussionSchema.parse(json.discussion);
   }
