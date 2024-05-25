@@ -12,5 +12,5 @@ export function useRefresh(refresh: () => Promise<unknown>) {
       setRefreshing(false);
     }
   };
-  return [refreshing, onRefresh] as const;
+  return { refreshing, onRefresh };
 }

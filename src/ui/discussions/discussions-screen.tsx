@@ -59,13 +59,16 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
               />
             </View>
 
-            <Text className="text-base font-inter-semibold">{item.title}</Text>
+            <Text
+              className="flex-1 text-base font-inter-semibold"
+              numberOfLines={2}
+            >
+              {item.title}
+            </Text>
             <Text className="text-base font-inter-semibold">{item.votes}</Text>
           </Pressable>
         )}
-        onEndReached={() => {
-          if (query.hasNextPage) query.fetchNextPage();
-        }}
+        onEndReached={() => query.fetchNextPage()}
         ListFooterComponent={
           query.isFetchingNextPage ? (
             <ActivityIndicator
