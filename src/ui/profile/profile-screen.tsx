@@ -32,9 +32,7 @@ export function ProfileScreen() {
   const cameraPermissions = ImagePicker.useCameraPermissions();
 
   const picture = form.watch('picture');
-  const onEditPicturePress = () => {
-    bottomSheetModalRef.current?.present();
-  };
+  const onEditPicturePress = () => bottomSheetModalRef.current?.present();
   const parseAssetToLocalFile = (
     asset: ImagePicker.ImagePickerAsset
   ): LocalFile => {

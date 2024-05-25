@@ -24,7 +24,7 @@ export class CommentRepository {
     return comments;
 
     interface CommentsResponse {
-      comments: any[];
+      comments: unknown[];
     }
   }
 

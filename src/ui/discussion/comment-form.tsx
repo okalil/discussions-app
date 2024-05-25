@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form';
 import type { CommentDto } from '~/data/comment/comment.dto';
 import { Text } from '../shared/text';
 import type { ScreenProps } from './discussion-screen';
-import { useUpsertCommentMutation } from './queries/use-upsert-comment-mutation';
+import { useSaveCommentMutation } from './queries/use-save-comment-mutation';
 
 interface Props {
   editing: boolean;
@@ -29,7 +29,7 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
   const form = useForm({ defaultValues: comment });
   const content = form.watch('content');
 
-  const { isPending, mutate } = useUpsertCommentMutation(discussionId);
+  const { isPending, mutate } = useSaveCommentMutation(discussionId);
 
   const onSaveComment = () => {
     requestAnimationFrame(() =>
@@ -59,7 +59,7 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
           <Pressable onPress={onCancelEditing}>
             <Icon name="close-circle" size={24} />
           </Pressable>
-          <Text className=" ml-3">Editando mensagem</Text>
+          <Text className="ml-3">Editando mensagem</Text>
         </View>
       )}
 

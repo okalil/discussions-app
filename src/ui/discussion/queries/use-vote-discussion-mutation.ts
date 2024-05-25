@@ -10,10 +10,9 @@ export function useVoteDiscussionMutation(discussionId: string) {
         ? repository.upvoteDiscussion(discussionId)
         : repository.downvoteDiscussion(discussionId);
     },
-    onSettled() {
-      return client.invalidateQueries({
+    onSettled: () =>
+      client.invalidateQueries({
         queryKey: ['discussions', discussionId],
-      });
-    },
+      }),
   });
 }

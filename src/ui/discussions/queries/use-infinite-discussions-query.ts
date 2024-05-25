@@ -9,11 +9,7 @@ export function useInfiniteDiscussionsQuery() {
       return getDiscussionRepository().getDiscussions({ page });
     },
     initialPageParam: 1,
-    getNextPageParam(last) {
-      return last.next;
-    },
-    select(state) {
-      return state.pages.flatMap(it => it.data);
-    },
+    getNextPageParam: previous => previous.next,
+    select: state => state.pages.flatMap(it => it.data),
   });
 }
