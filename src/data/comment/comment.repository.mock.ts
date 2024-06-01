@@ -1,8 +1,8 @@
+import { faker } from '@faker-js/faker';
 import * as Factory from 'factory.ts';
 import { getUserRepository } from '../user/user.repository.mock';
 import type { CommentDto } from './comment.dto';
 import type { SaveCommentDto } from './save-comment.dto';
-import { faker } from '@faker-js/faker';
 
 export function getCommentRepository(discussionId: string) {
   return new CommentRepository(discussionId);
@@ -41,7 +41,7 @@ export class CommentRepository {
 
   async upvoteComment(commentId: string) {
     const comment = await this.getComment(commentId);
-    comment.voted = true;
+    comment.voted = true; 
     comment.votes++;
   }
 
