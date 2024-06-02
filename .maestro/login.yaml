@@ -1,0 +1,13 @@
+appId: com.discussions
+---
+- launchApp:
+    clearState: true
+
+- tapOn: "E-mail"
+- inputText: "john@mail.com"
+
+- tapOn: "Senha"
+- inputText: "password"
+
+- tapOn: "Ir"
+- assertVisible: "Logado com sucesso!"

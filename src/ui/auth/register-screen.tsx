@@ -19,7 +19,7 @@ export function RegisterScreen({
   const onRegister = form.handleSubmit(async data => {
     mutation.mutate(data, {
       onSuccess: () =>
-        Toast.show('Cadastrado realizado com sucesso!', Toast.LONG),
+        Toast.show('Cadastro realizado com sucesso!', Toast.LONG),
     });
   });
 
@@ -56,6 +56,7 @@ export function RegisterScreen({
           name="password_confirmation"
           className="mb-8"
           onSubmitEditing={onRegister}
+          returnKeyType="go"
           rules={{
             required: 'Preencha esse campo',
             validate(value, values) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TextInputProps} from 'react-native';
+import type { TextInputProps } from 'react-native';
 import { TextInput, View, Pressable } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useController, useFormContext } from 'react-hook-form';
@@ -35,12 +35,13 @@ export function FormInput({
   } = useController({ control: form.control, name, rules });
 
   return (
-    <Pressable
-      onPress={() => form.setFocus(name)}
+    <View
       className={cn('flex-col relative gap-y-2')}
       style={style}
     >
-      <Text className="font-inter-semibold">{label}</Text>
+      <Text className="font-inter-semibold" onPress={() => form.setFocus(name)}>
+        {label}
+      </Text>
 
       <View className="relative">
         <TextInput
@@ -84,7 +85,7 @@ export function FormInput({
         ) : null}
       </View>
       {error && <Text className="text-red-600">{error.message}</Text>}
-    </Pressable>
+    </View>
   );
 }
 
