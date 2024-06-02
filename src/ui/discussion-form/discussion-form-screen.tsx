@@ -51,6 +51,7 @@ export function DiscussionFormScreen({ navigation }: ScreenProps) {
         <Fab
           onPress={onSaveDiscussion}
           icon={<Icon name="check" color="white" size={24} />}
+          accessibilityLabel="Criar"
         />
       </View>
     </FormProvider>

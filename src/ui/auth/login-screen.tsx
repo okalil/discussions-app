@@ -40,6 +40,7 @@ export function LoginScreen({
           name="password"
           className="mb-8"
           onSubmitEditing={onLogin}
+          returnKeyType="go"
         />
 
         <Button

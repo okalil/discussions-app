@@ -97,6 +97,7 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
       <Fab
         onPress={() => navigation.navigate('DiscussionForm')}
         icon={<Icon name="plus" color="white" size={24} />}
+        accessibilityLabel="Nova Discussão"
       />
     </SafeAreaView>
   );
