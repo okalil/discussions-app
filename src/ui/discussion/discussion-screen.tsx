@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ActivityIndicator, Pressable } from 'react-native';
+import { View, ActivityIndicator, Pressable, ScrollView } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Text } from '~/ui/shared/text';
@@ -17,20 +17,36 @@ export function DiscussionScreen({ route }: ScreenProps) {
   const discussionQuery = useDiscussionQuery(discussionId);
   const votesMutation = useVoteDiscussionMutation(discussionId);
 
-  const discussion = discussionQuery.data;
-
-  if (discussion) {
-    const optimisticVoted = votesMutation.variables;
-    const voted = votesMutation.isPending ? optimisticVoted : discussion.voted;
-
-    let votes = discussion.votes;
-    if (votesMutation.isPending && optimisticVoted !== discussion.voted) {
-      votes += optimisticVoted ? 1 : -1;
-    }
-
+  if (discussionQuery.isPending)
     return (
-      <View className="flex-1 px-4 py-4">
-        <View>
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator color="black" size="large" />
+      </View>
+    );
+
+  if (discussionQuery.isLoadingError)
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-base">Houve um erro ao carregar</Text>
+        <Pressable onPress={() => discussionQuery.refetch()}>
+          <Text className="underline text-base">Tente novamente.</Text>
+        </Pressable>
+      </View>
+    );
+
+  const discussion = discussionQuery.data;
+  const optimisticVoted = votesMutation.variables;
+  const voted = votesMutation.isPending ? optimisticVoted : discussion.voted;
+
+  let votes = discussion.votes;
+  if (votesMutation.isPending && optimisticVoted !== discussion.voted) {
+    votes += optimisticVoted ? 1 : -1;
+  }
+
+  return (
+    <View className="flex-1">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View className="flex-1 px-4 py-4">
           <Text className="text-lg font-inter-semibold mb-2">
             {discussion.title}
           </Text>
@@ -46,26 +62,10 @@ export function DiscussionScreen({ route }: ScreenProps) {
               }}
             />
           </View>
+
+          <Comments />
         </View>
-
-        <Comments />
-      </View>
-    );
-  }
-
-  if (discussionQuery.isPending)
-    return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator color="black" size="large" />
-      </View>
-    );
-
-  return (
-    <View className="flex-1 items-center justify-center">
-      <Text className="text-base">Houve um erro ao carregar</Text>
-      <Pressable onPress={() => discussionQuery.refetch()}>
-        <Text className="underline text-base">Tente novamente.</Text>
-      </Pressable>
+      </ScrollView>
     </View>
   );
 }

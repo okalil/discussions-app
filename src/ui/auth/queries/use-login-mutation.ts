@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { type RegisterDto } from '~/data/user/register.dto';
+import type { LoginDto } from '~/data/user/login.dto';
 import { getUserRepository } from '~/data/user/user.repository';
 
-export function useRegisterMutation() {
+export function useLoginMutation() {
   const client = useQueryClient();
   return useMutation({
-    mutationFn: (dto: RegisterDto) => getUserRepository().register(dto),
+    mutationFn: (dto: LoginDto) => getUserRepository().login(dto),
     onSuccess: () => client.invalidateQueries({ queryKey: ['user'] }),
   });
 }

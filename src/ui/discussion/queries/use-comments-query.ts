@@ -11,7 +11,7 @@ export function useCommentsQuery(discussionId: string) {
   const [deletedComment] = useMutationState({
     filters: { mutationKey: ['delete_comment', discussionId] },
     select(mutation) {
-      return mutation.state.variables as CommentDto;
+      return mutation.state.variables as CommentDto | undefined;
     },
   });
 
@@ -33,7 +33,7 @@ export function useCommentsQuery(discussionId: string) {
       commentsRepository.listenCommentDelete(() => query.refetch()),
     ];
     return () => subscriptions.forEach(remove => remove());
-  }, []);
+  }, [commentsRepository]);
 
   return query;
 }

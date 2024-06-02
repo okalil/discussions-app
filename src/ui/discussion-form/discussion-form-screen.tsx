@@ -2,31 +2,32 @@ import React from 'react';
 import { ScrollView, View } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import type { CreateDiscussionDto } from '~/data/discussion/create-discussion.dto';
 import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
 import { Fab } from '~/ui/shared/fab';
 import { FormInput } from '~/ui/shared/form-input';
 import { FormTextarea } from '~/ui/shared/form-textarea';
-import { Toast } from '../shared/toast';
 
 type ScreenProps = NativeStackScreenProps<StackParamList>;
 
 export function DiscussionFormScreen({ navigation }: ScreenProps) {
   const client = useQueryClient();
-  const form = useForm({ defaultValues: { title: '', description: '' } });
+  const mutation = useMutation({
+    mutationFn: (dto: CreateDiscussionDto) =>
+      getDiscussionRepository().createDiscussion(dto),
+    onSuccess: () => client.invalidateQueries({ queryKey: ['discussions'] }),
+  });
+  const form = useForm<CreateDiscussionDto>({
+    defaultValues: { title: '', description: '' },
+  });
 
   const onSaveDiscussion = form.handleSubmit(async data => {
-    try {
-      const repository = getDiscussionRepository();
-      const discussionId = await repository.createDiscussion(data);
-      client.invalidateQueries({ queryKey: ['discussions'] });
-      navigation.replace('Discussion', { id: discussionId });
-    } catch (error: any) {
-      Toast.show(error.message || 'Erro ao salvar', Toast.SHORT);
-      form.setError('root', { message: 'Erro ao salvar' });
-    }
+    mutation.mutate(data, {
+      onSuccess: id => navigation.replace('Discussion', { id }),
+    });
   });
 
   return (
