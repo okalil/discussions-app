@@ -14,10 +14,11 @@ export function Vote({ voted, votes, onPress }: VoteProps) {
   return (
     <Pressable
       className={cn(
-        'flex-row items-center w-12 ml-auto',
+        'flex-row items-center ml-auto',
         'px-2 py-1 border rounded-xl',
         voted ? 'border-blue-500' : 'border-gray-200'
       )}
+      style={{ minWidth: 48 }}
       onPress={onPress}
     >
       <Icon

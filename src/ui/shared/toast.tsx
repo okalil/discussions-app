@@ -23,7 +23,7 @@ export class Toast {
       ),
     });
   }
-  static SHORT = 2000;
+  static SHORT = 2500;
   static LONG = 5000;
 }
 
@@ -51,10 +51,7 @@ function ToastView({ toast: t, onHeight, offset }: ToastProps) {
     <Animated.View
       style={{
         position: 'absolute',
-        left: 0,
-        right: 0,
-        zIndex: t.visible ? 9999 : undefined,
-        alignItems: 'center',
+        alignSelf: 'center',
         opacity: fadeAnim,
         transform: [{ translateY: posAnim }],
       }}
@@ -86,26 +83,16 @@ function ToastView({ toast: t, onHeight, offset }: ToastProps) {
 
 export function Toaster() {
   const { toasts, handlers } = useToaster();
-  const { startPause, endPause } = handlers;
   return (
-    <View
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-      }}
-    >
-      {toasts.map(t => (
-        <ToastView
-          key={t.id}
-          toast={t}
-          onHeight={height => handlers.updateHeight(t.id, height)}
-          offset={handlers.calculateOffset(t, {
-            reverseOrder: false,
-          })}
-        />
-      ))}
-    </View>
+    toasts.map(t => (
+      <ToastView
+        key={t.id}
+        toast={t}
+        onHeight={height => handlers.updateHeight(t.id, height)}
+        offset={handlers.calculateOffset(t, {
+          reverseOrder: false,
+        })}
+      />
+    ))
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ActivityIndicator, Pressable } from 'react-native';
+import { View, ActivityIndicator, Pressable, ScrollView } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Text } from '~/ui/shared/text';
@@ -44,26 +44,28 @@ export function DiscussionScreen({ route }: ScreenProps) {
   }
 
   return (
-    <View className="flex-1 px-4 py-4">
-      <View>
-        <Text className="text-lg font-inter-semibold mb-2">
-          {discussion.title}
-        </Text>
-        <Text className="text-base mb-2">{discussion.description}</Text>
-        <View>
-          <Vote
-            voted={voted}
-            votes={votes}
-            onPress={() => {
-              requestAnimationFrame(async () => {
-                votesMutation.mutate(!voted);
-              });
-            }}
-          />
-        </View>
-      </View>
+    <View className="flex-1">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View className="flex-1 px-4 py-4">
+          <Text className="text-lg font-inter-semibold mb-2">
+            {discussion.title}
+          </Text>
+          <Text className="text-base mb-2">{discussion.description}</Text>
+          <View>
+            <Vote
+              voted={voted}
+              votes={votes}
+              onPress={() => {
+                requestAnimationFrame(async () => {
+                  votesMutation.mutate(!voted);
+                });
+              }}
+            />
+          </View>
 
-      <Comments />
+          <Comments />
+        </View>
+      </ScrollView>
     </View>
   );
 }

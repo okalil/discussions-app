@@ -8,7 +8,7 @@ export function getCommentRepository(discussionId: string) {
   return new CommentRepository(discussionId);
 }
 
-export class CommentRepository {
+class CommentRepository {
   private discussionId: string;
   constructor(discussionId: string) {
     this.discussionId = discussionId;

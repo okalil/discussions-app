@@ -1,0 +1,22 @@
+appId: com.discussions
+---
+- launchApp:
+    clearState: true
+
+- tapOn: "Cadastre-se agora"
+- assertVisible: "Criar conta"
+
+- tapOn: "Nome"
+- inputRandomPersonName
+
+- tapOn: "E-mail"
+- inputRandomEmail
+
+- tapOn: "Senha"
+- inputText: "password"
+
+- tapOn: "Confirmar senha"
+- inputText: "password"
+
+- tapOn: "Ir"
+- assertVisible: "Cadastro realizado com sucesso!"

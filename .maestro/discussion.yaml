@@ -1,0 +1,17 @@
+appId: com.discussions
+---
+
+- tapOn: "Nova Discussão"
+
+- tapOn: "Título"
+- inputText: "Minha discussão"
+- tapOn: "Descrição"
+- inputRandomText
+
+# tap outside to hide keyboard
+- tapOn:
+    point: "50%,12%"
+
+- tapOn: "Criar"
+- assertVisible: "Minha discussão"
+- assertVisible: "Entre na discussão"

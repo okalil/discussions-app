@@ -68,6 +68,7 @@ export function Comments() {
     <React.Fragment>
       <View className="flex-1">
         <FlatList
+          scrollEnabled={false}
           data={commentsQuery.data}
           style={{ marginBottom: 40 }}
           keyExtractor={it => it.id}
