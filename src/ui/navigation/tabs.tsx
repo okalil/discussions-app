@@ -38,6 +38,7 @@ export function Tabs() {
         name="Discussions"
         component={DiscussionsScreen}
         options={{
+          tabBarAccessibilityLabel: "Início",
           tabBarIcon(props) {
             return (
               <Icon name={props.focused ? 'home' : 'home-outline'} size={24} />
@@ -49,6 +50,7 @@ export function Tabs() {
         name="Profile"
         component={ProfileScreen}
         options={{
+          tabBarAccessibilityLabel: "Perfil",
           tabBarIcon(props) {
             return (
               <Icon

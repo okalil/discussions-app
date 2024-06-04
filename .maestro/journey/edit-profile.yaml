@@ -1,0 +1,23 @@
+appId: com.discussions
+---
+- launchApp:
+   clearState: true
+
+- runFlow: ../subflow/login.yaml
+- tapOn: "Perfil"
+
+- tapOn: ".*Foto de Perfil"
+- tapOn: ".*Galeria"
+- tapOn: "Foto.*"
+
+- tapOn: "Nome"
+- longPressOn: 
+    id: "input.*"
+- tapOn: "Select All"
+- eraseText
+- inputText: "José Rodrigues"
+
+- tapOn: "retorno"
+- tapOn: "Salvar"
+
+- assertVisible: "Salvo!"

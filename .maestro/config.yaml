@@ -1,0 +1,5 @@
+flows:
+  - journey/*
+
+executionOrder:
+  continueOnFailure: false

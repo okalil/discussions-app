@@ -16,12 +16,12 @@ function delay(ms: number) {
 
 const factory = Factory.Sync.makeFactory<DiscussionDto>({
   id: Factory.each(() => faker.string.uuid()),
-  title: Factory.each(() => faker.lorem.lines({ min: 1, max: 2 })),
+  title: Factory.each(() => faker.lorem.sentences(1)),
   comments: Factory.each(() => faker.number.int()),
   description: Factory.each(() => faker.lorem.words(200)),
-  user: { id: '1', name: 'john@mail.com' },
+  user: Factory.each(() => faker.helpers.arrayElement([{ id: '1', name: 'John' }, { id: faker.string.uuid(), name: faker.person.fullName(), picture: { url: faker.image.avatar()} }])),
   voted: Factory.each(() => faker.datatype.boolean()),
-  votes: Factory.each(() => faker.number.int({ max: 1000 })),
+  votes: Factory.each(() => faker.number.int({ max: 100 })),
 });
 const discussions = factory.buildList(32);
 
@@ -69,9 +69,9 @@ export class DiscussionRepository {
     Object.assign(discussion, dto);
   }
 
-  sendDiscussionSubscribe(discussionId: string) {}
-  sendDiscussionUnsubscribe(discussionId: string) {}
+  sendDiscussionSubscribe(discussionId: string) { }
+  sendDiscussionUnsubscribe(discussionId: string) { }
   listenDiscussionUpdate(listener: (id: string) => void) {
-    return () => {};
+    return () => { };
   }
 }

@@ -93,7 +93,6 @@ FormInput.Email = function FormInputEmail(props: FormInputProps) {
   return (
     <FormInput
       {...props}
-      iconLeft={<Icon name="account" size={20} />}
       keyboardType="email-address"
       autoCapitalize="none"
     />
@@ -106,7 +105,6 @@ FormInput.Password = function FormInputPassword(props: FormInputProps) {
   return (
     <FormInput
       {...props}
-      iconLeft={<Icon name="lock" size={20} />}
       iconRight={
         <Pressable onPress={() => toggleVisible()}>
           <Icon name={visible ? 'eye-off' : 'eye'} size={20} />
