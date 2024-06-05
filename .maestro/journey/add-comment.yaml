@@ -1,0 +1,16 @@
+appId: com.discussions
+---
+- assertVisible:
+    id: "discussion_.*"
+- copyTextFrom:
+    id: "discussion_.*"
+- tapOn:
+    id: "discussion_.*"
+- assertVisible: ${maestro.copiedText}
+
+- scrollUntilVisible: 
+    element: "Entre na discussão"
+- tapOn: "Entre na discussão"
+- inputText: "Este comentário é apenas um teste"
+- tapOn: "Enviar"
+

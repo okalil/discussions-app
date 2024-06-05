@@ -1,18 +1,24 @@
-import React from 'react';
-import { View, FlatList, Pressable, ActivityIndicator } from 'react-native';
-import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import {
+  View,
+  FlatList,
+  Pressable,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Avatar } from '~/ui/shared/avatar';
-import { Fab } from '~/ui/shared/fab';
-import { Text } from '~/ui/shared/text';
-import { useRefresh } from '../shared/utils/use-refresh';
-import { useInfiniteDiscussionsQuery } from './queries/use-infinite-discussions-query';
+import { Avatar } from "~/ui/shared/avatar";
+import { Fab } from "~/ui/shared/fab";
+import { Text } from "~/ui/shared/text";
+import { useRefresh } from "../shared/utils/use-refresh";
+import { useInfiniteDiscussionsQuery } from "./queries/use-infinite-discussions-query";
 
 type ScreenProps = BottomTabScreenProps<
   StackParamList & TabParamList,
-  'Discussions'
+  "Discussions"
 >;
 
 export function DiscussionsScreen({ navigation, route }: ScreenProps) {
@@ -43,14 +49,13 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
   return (
     <SafeAreaView className="flex-1">
       <FlatList
-        {...refresh}
+        refreshControl={
+          <RefreshControl {...refresh} testID="refresh_control" />
+        }
         className="flex-1 px-4"
         data={discussions}
         renderItem={({ item }) => (
-          <Pressable
-            onPress={() => navigation.navigate('Discussion', { id: item.id })}
-            className="flex-row gap-3 py-4 border-b border-gray-300"
-          >
+          <View className="flex-row gap-3 py-4 border-b border-gray-300">
             <View>
               <Avatar
                 size={48}
@@ -60,13 +65,15 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
             </View>
 
             <Text
+              testID={`discussion_${item.id}`}
               className="flex-1 text-base font-inter-semibold"
               numberOfLines={2}
+              onPress={() => navigation.navigate("Discussion", { id: item.id })}
             >
               {item.title}
             </Text>
             <Text className="text-base font-inter-semibold">{item.votes}</Text>
-          </Pressable>
+          </View>
         )}
         onEndReached={() => query.fetchNextPage()}
         ListFooterComponent={
@@ -80,7 +87,7 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
             <View className="h-12" />
           )
         }
-        onScroll={e => {
+        onScroll={(e) => {
           const previousOffset = scrollYRef.current;
           const currentOffset = e.nativeEvent.contentOffset.y;
           const tabBarVisible =
@@ -95,7 +102,7 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
       />
 
       <Fab
-        onPress={() => navigation.navigate('DiscussionForm')}
+        onPress={() => navigation.navigate("DiscussionForm")}
         icon={<Icon name="plus" color="white" size={24} />}
         accessibilityLabel="Nova Discussão"
       />

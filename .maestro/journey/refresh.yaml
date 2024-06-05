@@ -1,0 +1,8 @@
+appId: com.discussions
+---
+
+- swipe:
+    direction: DOWN
+    duration: 50
+- assertVisible:
+    id: "refresh_control"

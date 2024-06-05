@@ -1,20 +1,20 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   ActivityIndicator,
   Pressable,
   TextInput,
   Keyboard,
-} from 'react-native';
-import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { useRoute } from '@react-navigation/native';
-import { MotiView } from 'moti';
-import { useForm } from 'react-hook-form';
+} from "react-native";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { useRoute } from "@react-navigation/native";
+import { MotiView } from "moti";
+import { useForm } from "react-hook-form";
 
-import type { CommentDto } from '~/data/comment/comment.dto';
-import { Text } from '../shared/text';
-import type { ScreenProps } from './discussion-screen';
-import { useSaveCommentMutation } from './queries/use-save-comment-mutation';
+import type { CommentDto } from "~/data/comment/comment.dto";
+import { Text } from "../shared/text";
+import type { ScreenProps } from "./discussion-screen";
+import { useSaveCommentMutation } from "./queries/use-save-comment-mutation";
 
 interface Props {
   editing: boolean;
@@ -23,11 +23,11 @@ interface Props {
 }
 
 export function CommentForm({ editing, onCancelEditing, comment }: Props) {
-  const params = useRoute<ScreenProps['route']>().params;
-  const discussionId = params?.id ?? '';
+  const params = useRoute<ScreenProps["route"]>().params;
+  const discussionId = params?.id ?? "";
 
   const form = useForm({ defaultValues: comment });
-  const content = form.watch('content');
+  const content = form.watch("content");
 
   const { isPending, mutate } = useSaveCommentMutation(discussionId);
 
@@ -52,7 +52,7 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
     <MotiView
       className="flex-1 absolute bottom-0 left-0 right-0 bg-gray-200"
       animate={{ bottom: height }}
-      transition={{ type: 'timing', duration: height === 0 ? 150 : 300 }}
+      transition={{ type: "timing", duration: height === 0 ? 150 : 300 }}
     >
       {editing && (
         <View className="py-2 px-2 flex-row items-center bg-gray-300">
@@ -70,13 +70,18 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
           multiline
           placeholder="Entre na discussão"
           value={content}
-          onChangeText={text => form.setValue('content', text)}
+          onChangeText={(text) => form.setValue("content", text)}
         />
-        <Pressable className="ml-3" disabled={!content} onPress={onSaveComment}>
+        <Pressable
+          accessibilityLabel="Enviar"
+          className="ml-3"
+          disabled={!content}
+          onPress={onSaveComment}
+        >
           {isPending ? (
             <ActivityIndicator color="black" size={24} />
           ) : (
-            <Icon name="send" color={content ? undefined : 'gray'} size={24} />
+            <Icon name="send" color={content ? undefined : "gray"} size={24} />
           )}
         </Pressable>
       </View>
@@ -88,14 +93,14 @@ function useKeyboardHeight() {
   const [height, setHeight] = React.useState(0);
   React.useEffect(() => {
     const subscriptions = [
-      Keyboard.addListener('keyboardWillHide', e => {
+      Keyboard.addListener("keyboardWillHide", (e) => {
         setHeight(0);
       }),
-      Keyboard.addListener('keyboardWillShow', e => {
+      Keyboard.addListener("keyboardWillShow", (e) => {
         setHeight(e.endCoordinates.height);
       }),
     ];
-    return () => subscriptions.forEach(it => it.remove());
+    return () => subscriptions.forEach((it) => it.remove());
   }, []);
   return height;
 }

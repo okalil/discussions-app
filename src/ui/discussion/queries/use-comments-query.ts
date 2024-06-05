@@ -1,6 +1,5 @@
 import React from 'react';
-import { useMutationState, useQuery } from '@tanstack/react-query';
-import type { CommentDto } from '~/data/comment/comment.dto';
+import { useQuery } from '@tanstack/react-query';
 import { getCommentRepository } from '~/data/comment/comment.repository';
 
 export function useCommentsQuery(discussionId: string) {
@@ -8,22 +7,9 @@ export function useCommentsQuery(discussionId: string) {
     () => getCommentRepository(discussionId),
     [discussionId]
   );
-  const [deletedComment] = useMutationState({
-    filters: { mutationKey: ['delete_comment', discussionId] },
-    select(mutation) {
-      return mutation.state.variables as CommentDto | undefined;
-    },
-  });
-
   const query = useQuery({
     queryKey: ['discussions', discussionId, 'comments'],
     queryFn: () => commentsRepository.getComments(),
-    select(data) {
-      if (deletedComment) {
-        return data.filter(it => it.id !== deletedComment.id);
-      }
-      return data;
-    },
   });
 
   React.useEffect(() => {
