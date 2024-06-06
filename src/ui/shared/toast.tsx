@@ -1,15 +1,8 @@
-import { useEffect, useRef } from 'react';
-import { Animated, View, Text, Image } from 'react-native';
-import Constants from 'expo-constants';
-
-import type { Toast as T } from 'react-hot-toast/headless';
-import toast, { useToaster } from 'react-hot-toast/headless';
-
-interface ToastProps {
-  toast: T;
-  onHeight: (height: number) => void;
-  offset: number;
-}
+import { useEffect, useRef } from "react";
+import { Animated, View, Text, Image } from "react-native";
+import Constants from "expo-constants";
+import type { Toast as T } from "react-hot-toast/headless";
+import toast, { useToaster } from "react-hot-toast/headless";
 
 export class Toast {
   static show(message: string, duration: number) {
@@ -17,7 +10,7 @@ export class Toast {
       duration,
       icon: (
         <Image
-          source={require('~/../assets/icon.png')}
+          source={require("~/../assets/icon.png")}
           className="w-5 h-5 rounded-lg"
         />
       ),
@@ -27,6 +20,11 @@ export class Toast {
   static LONG = 5000;
 }
 
+interface ToastProps {
+  toast: T;
+  onHeight: (height: number) => void;
+  offset: number;
+}
 function ToastView({ toast: t, onHeight, offset }: ToastProps) {
   // Animations for enter and exit
   const fadeAnim = useRef(new Animated.Value(0.5)).current;
@@ -50,18 +48,18 @@ function ToastView({ toast: t, onHeight, offset }: ToastProps) {
   return (
     <Animated.View
       style={{
-        position: 'absolute',
-        alignSelf: 'center',
+        position: "absolute",
+        alignSelf: "center",
         opacity: fadeAnim,
         transform: [{ translateY: posAnim }],
       }}
     >
       <View
-        onLayout={event => onHeight(event.nativeEvent.layout.height)}
+        onLayout={(event) => onHeight(event.nativeEvent.layout.height)}
         className="px-5 py-3"
         style={{
           margin: Constants.statusBarHeight + 10,
-          backgroundColor: '#404040',
+          backgroundColor: "#404040",
           borderRadius: 22,
         }}
         key={t.id}
@@ -73,7 +71,7 @@ function ToastView({ toast: t, onHeight, offset }: ToastProps) {
             style={{ flexShrink: 1 }}
             numberOfLines={4}
           >
-            {typeof t.message === 'function' ? t.message(t) : t.message}
+            {typeof t.message === "function" ? t.message(t) : t.message}
           </Text>
         </View>
       </View>
@@ -83,16 +81,14 @@ function ToastView({ toast: t, onHeight, offset }: ToastProps) {
 
 export function Toaster() {
   const { toasts, handlers } = useToaster();
-  return (
-    toasts.map(t => (
-      <ToastView
-        key={t.id}
-        toast={t}
-        onHeight={height => handlers.updateHeight(t.id, height)}
-        offset={handlers.calculateOffset(t, {
-          reverseOrder: false,
-        })}
-      />
-    ))
-  );
+  return toasts.map((t) => (
+    <ToastView
+      key={t.id}
+      toast={t}
+      onHeight={(height) => handlers.updateHeight(t.id, height)}
+      offset={handlers.calculateOffset(t, {
+        reverseOrder: false,
+      })}
+    />
+  ));
 }

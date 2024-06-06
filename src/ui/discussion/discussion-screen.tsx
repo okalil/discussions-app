@@ -1,18 +1,18 @@
-import React from 'react';
-import { View, ActivityIndicator, Pressable, ScrollView } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React from "react";
+import { View, ActivityIndicator, Pressable, ScrollView } from "react-native";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { Text } from '~/ui/shared/text';
-import { Vote } from '~/ui/shared/vote';
-import { Comments } from './comments';
-import { useDiscussionQuery } from './queries/use-discussion-query';
-import { useVoteDiscussionMutation } from './queries/use-vote-discussion-mutation';
+import { Text } from "~/ui/shared/text";
+import { Vote } from "~/ui/shared/vote";
+import { Comments } from "./comments";
+import { useDiscussionQuery } from "./queries/use-discussion-query";
+import { useVoteDiscussionMutation } from "./queries/use-vote-discussion-mutation";
 
-export type ScreenProps = NativeStackScreenProps<StackParamList, 'Discussion'>;
+export type ScreenProps = NativeStackScreenProps<StackParamList, "Discussion">;
 
 export function DiscussionScreen({ route }: ScreenProps) {
   const params = route.params;
-  const discussionId = params?.id ?? '';
+  const discussionId = params?.id ?? "";
 
   const discussionQuery = useDiscussionQuery(discussionId);
   const votesMutation = useVoteDiscussionMutation(discussionId);
@@ -44,28 +44,28 @@ export function DiscussionScreen({ route }: ScreenProps) {
   }
 
   return (
-    <View className="flex-1">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 px-4 py-4">
-          <Text className="text-lg font-inter-semibold mb-2">
-            {discussion.title}
-          </Text>
-          <Text className="text-base mb-2">{discussion.description}</Text>
-          <View>
-            <Vote
-              voted={voted}
-              votes={votes}
-              onPress={() => {
-                requestAnimationFrame(async () => {
-                  votesMutation.mutate(!voted);
-                });
-              }}
-            />
-          </View>
-
-          <Comments />
-        </View>
-      </ScrollView>
+    <View className="flex-1 justify-end">
+      <Comments
+        header={
+          <>
+            <Text className="text-lg font-inter-semibold mb-2">
+              {discussion.title}
+            </Text>
+            <Text className="text-base mb-2">{discussion.description}</Text>
+            <View>
+              <Vote
+                voted={voted}
+                votes={votes}
+                onPress={() => {
+                  requestAnimationFrame(async () => {
+                    votesMutation.mutate(!voted);
+                  });
+                }}
+              />
+            </View>
+          </>
+        }
+      />
     </View>
   );
 }

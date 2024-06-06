@@ -35,7 +35,7 @@ export class CommentRepository {
 
   async getComments(): Promise<CommentDto[]> {
     await delay(500);
-    return this.comments;
+    return [...this.comments];
   }
 
   async getComment(commentId: string): Promise<CommentDto> {

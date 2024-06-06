@@ -25,8 +25,6 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
   const query = useInfiniteDiscussionsQuery();
   const refresh = useRefresh(() => query.refetch({ throwOnError: true }));
 
-  const scrollYRef = React.useRef(0);
-
   if (query.isPending)
     return (
       <SafeAreaView className="flex-1 items-center justify-center">
@@ -87,18 +85,6 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
             <View className="h-12" />
           )
         }
-        onScroll={(e) => {
-          const previousOffset = scrollYRef.current;
-          const currentOffset = e.nativeEvent.contentOffset.y;
-          const tabBarVisible =
-            currentOffset <= 0 || currentOffset < previousOffset;
-
-          if (tabBarVisible !== route.params?.tabBarVisible) {
-            navigation.setParams({ tabBarVisible });
-          }
-
-          scrollYRef.current = currentOffset;
-        }}
       />
 
       <Fab

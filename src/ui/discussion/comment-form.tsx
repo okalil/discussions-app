@@ -8,8 +8,9 @@ import {
 } from "react-native";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRoute } from "@react-navigation/native";
-import { MotiView } from "moti";
 import { useForm } from "react-hook-form";
+import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
 import type { CommentDto } from "~/data/comment/comment.dto";
 import { Text } from "../shared/text";
@@ -46,14 +47,16 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
     );
   };
 
-  const height = useKeyboardHeight();
+  const { height } = useReanimatedKeyboardAnimation();
+  const textInputStyle = useAnimatedStyle(
+    () => ({
+      transform: [{ translateY: height.value }],
+    }),
+    []
+  );
 
   return (
-    <MotiView
-      className="flex-1 absolute bottom-0 left-0 right-0 bg-gray-200"
-      animate={{ bottom: height }}
-      transition={{ type: "timing", duration: height === 0 ? 150 : 300 }}
-    >
+    <Animated.View className="bg-white" style={textInputStyle}>
       {editing && (
         <View className="py-2 px-2 flex-row items-center bg-gray-300">
           <Pressable onPress={onCancelEditing}>
@@ -85,22 +88,6 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
           )}
         </Pressable>
       </View>
-    </MotiView>
+    </Animated.View>
   );
-}
-
-function useKeyboardHeight() {
-  const [height, setHeight] = React.useState(0);
-  React.useEffect(() => {
-    const subscriptions = [
-      Keyboard.addListener("keyboardWillHide", (e) => {
-        setHeight(0);
-      }),
-      Keyboard.addListener("keyboardWillShow", (e) => {
-        setHeight(e.endCoordinates.height);
-      }),
-    ];
-    return () => subscriptions.forEach((it) => it.remove());
-  }, []);
-  return height;
 }
