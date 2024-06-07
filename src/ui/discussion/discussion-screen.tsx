@@ -48,7 +48,7 @@ export function DiscussionScreen({ route }: ScreenProps) {
       <Comments
         header={
           <View>
-            <Text className="text-lg font-inter-semibold mb-2">
+            <Text testID="discussion_title" className="text-lg font-inter-semibold mb-2">
               {discussion.title}
             </Text>
             <Text className="text-base mb-2">{discussion.description}</Text>

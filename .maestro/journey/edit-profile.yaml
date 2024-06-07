@@ -3,10 +3,12 @@ appId: com.discussions
 
 - tapOn: "Perfil"
 
+# pick photo from gallery
 - tapOn: ".*Foto de Perfil"
 - tapOn: ".*Galeria"
 - tapOn: "Foto.*"
 
+# change name
 - tapOn: "Nome"
 - longPressOn: 
     id: "input.*"
@@ -14,7 +16,7 @@ appId: com.discussions
 - eraseText
 - inputText: "José Rodrigues"
 
+# save
 - tapOn: "retorno"
 - tapOn: "Salvar"
-
 - assertVisible: "Salvo!"

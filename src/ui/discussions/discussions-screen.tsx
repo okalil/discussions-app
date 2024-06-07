@@ -63,7 +63,7 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
             </View>
 
             <Text
-              testID={`discussion_${item.id}`}
+              testID={`discussion_item_${item.id}`}
               className="flex-1 text-base font-inter-semibold"
               numberOfLines={2}
               onPress={() => navigation.navigate("Discussion", { id: item.id })}

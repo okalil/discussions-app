@@ -1,20 +1,27 @@
 appId: com.discussions
 ---
 
+# click item from discussions list
 - assertVisible:
-    id: "discussion_.*"
+    id: "discussion_item.*"
 - copyTextFrom:
-    id: "discussion_.*"
+    id: "discussion_item.*"
+- evalScript: ${output.title = maestro.copiedText}
 - tapOn:
-    id: "discussion_.*"
-- assertVisible: ${maestro.copiedText}
+    id: "discussion_item.*"
 
-- scrollUntilVisible: 
-    element: "Entre na discussão"
+# check title is the same that was clicked
+- copyTextFrom:
+    id: "discussion_title"
+- assertTrue: ${output.title == maestro.copiedText}
+
+# save comment
 - tapOn: "Entre na discussão"
 - inputText: "Este comentário é apenas um teste"
 - tapOn: "Enviar"
-- assertVisible: "Este comentário é apenas um teste"
+- assertVisible: 
+    id: "comment_item.*"
+    containsChild: "Este comentário é apenas um teste"
 
 # back
 - tapOn: "Home"
