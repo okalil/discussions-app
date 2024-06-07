@@ -4,16 +4,16 @@ import {
   Inter_500Medium,
   Inter_600SemiBold,
   Inter_700Bold,
-} from '@expo-google-fonts/inter';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+} from "@expo-google-fonts/inter";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { LoginScreen } from '../auth/login-screen';
-import { RegisterScreen } from '../auth/register-screen';
-import { DiscussionScreen } from '../discussion/discussion-screen';
-import { DiscussionFormScreen } from '../discussion-form/discussion-form-screen';
-import { useUserQuery } from '../shared/queries/use-user-query';
-import { Tabs } from './tabs';
+import { LoginScreen } from "../auth/login-screen";
+import { RegisterScreen } from "../auth/register-screen";
+import { DiscussionScreen } from "../discussion/discussion-screen";
+import { DiscussionFormScreen } from "../discussion-form/discussion-form-screen";
+import { useUserQuery } from "../shared/queries/use-user-query";
+import { Tabs } from "./tabs";
 
 const Stack = createNativeStackNavigator();
 

@@ -1,6 +1,8 @@
 appId: com.discussions
 ---
-- launchApp
+- launchApp:
+    clearState: true
+
 - tapOn: "E-mail"
 - inputText: "john@mail.com"
 

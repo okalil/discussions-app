@@ -1,0 +1,7 @@
+appId: com.discussions
+---
+
+- tapOn: "Sair"
+- assertVisible: "Deseja realmente sair.*"
+- tapOn: "Sim"
+- assertVisible: "Entrar"

@@ -1,9 +1,5 @@
 appId: com.discussions
 ---
-- launchApp:
-    clearState: true
-
-- runFlow: ../subflow/login.yaml
 
 - tapOn: "Nova Discussão"
 
@@ -22,3 +18,6 @@ appId: com.discussions
 
 - waitForAnimationToEnd
 - takeScreenshot: "discussion-screen"
+
+# back
+- tapOn: "Home"

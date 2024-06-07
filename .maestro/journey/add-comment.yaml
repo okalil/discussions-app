@@ -1,5 +1,6 @@
 appId: com.discussions
 ---
+
 - assertVisible:
     id: "discussion_.*"
 - copyTextFrom:
@@ -13,4 +14,8 @@ appId: com.discussions
 - tapOn: "Entre na discussão"
 - inputText: "Este comentário é apenas um teste"
 - tapOn: "Enviar"
+- assertVisible: "Este comentário é apenas um teste"
+
+# back
+- tapOn: "Home"
 

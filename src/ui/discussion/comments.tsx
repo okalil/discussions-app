@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList, Pressable, Alert, BackHandler } from "react-native";
+import { View, StyleSheet, Pressable, Alert, BackHandler } from "react-native";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { useRoute } from "@react-navigation/native";
@@ -27,7 +27,7 @@ export function Comments({ header }: Props) {
   const params = useRoute<ScreenProps["route"]>().params;
   const discussionId = params?.id ?? "";
 
-  const commentsQuery = useCommentsQuery(discussionId);
+  const { data: comments } = useCommentsQuery(discussionId);
   const deleteCommentMutation = useDeleteCommentMutation(discussionId);
 
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
@@ -68,8 +68,15 @@ export function Comments({ header }: Props) {
   });
 
   const user = useUserQuery().data;
+  const scrollViewRef = React.useRef<Animated.ScrollView>(null);
 
   const { height } = useReanimatedKeyboardAnimation();
+  const scrollViewStyle = useAnimatedStyle(
+    () => ({
+      transform: [{ translateY: height.value }, ...styles.inverted.transform],
+    }),
+    []
+  );
   const fakeView = useAnimatedStyle(
     () => ({
       height: Math.abs(height.value),
@@ -78,45 +85,59 @@ export function Comments({ header }: Props) {
   );
 
   return (
-    <React.Fragment>
-      <FlatList
-        inverted
-        ListFooterComponent={header}
-        ListHeaderComponent={<Animated.View style={fakeView} />}
-        data={[...(commentsQuery.data ?? [])].reverse()}
-        keyExtractor={(it) => it.id}
-        renderItem={({ item }) => {
-          const isAuthor = user?.id === item.user.id;
-
-          return (
-            <MotiView style={{ paddingVertical: 12 }} entering={FadeIn}>
-              <View className="flex-row">
-                <Avatar src={item.user.picture?.url} alt={item.user.name} />
-                <Text className="ml-3 mr-auto">{item.user.name}</Text>
-                {isAuthor && (
-                  <MotiPressable
-                    style={{ borderRadius: 9999 }}
-                    animate={({ pressed }) => {
-                      "worklet";
-                      return {
-                        backgroundColor: pressed ? "lightgray" : "transparent",
-                        opacity: pressed ? 0 : 1,
-                      };
-                    }}
-                    onPress={() => onOpenCommentOptions(item)}
-                  >
-                    <Icon name="dots-vertical" size={24} />
-                  </MotiPressable>
-                )}
-              </View>
-
-              <Text className="py-2 px-3">{item.content}</Text>
-
-              <CommentVote comment={item} />
-            </MotiView>
-          );
+    <View className="flex-1 justify-end">
+      <Animated.ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{
+          justifyContent: "flex-end",
+          flexGrow: 1,
+          padding: 16,
         }}
-      />
+        showsVerticalScrollIndicator={false}
+        style={scrollViewStyle}
+        onLayout={() => scrollViewRef.current?.scrollToEnd()}
+      >
+        <View style={styles.inverted}>
+          <Animated.View style={fakeView} />
+          {header}
+          {comments?.map((item) => {
+            const isAuthor = user?.id === item.user.id;
+            return (
+              <MotiView
+                key={item.id}
+                style={{ paddingVertical: 12 }}
+                entering={FadeIn}
+              >
+                <View className="flex-row">
+                  <Avatar src={item.user.picture?.url} alt={item.user.name} />
+                  <Text className="ml-3 mr-auto">{item.user.name}</Text>
+                  {isAuthor && (
+                    <MotiPressable
+                      style={{ borderRadius: 9999 }}
+                      animate={({ pressed }) => {
+                        "worklet";
+                        return {
+                          backgroundColor: pressed
+                            ? "lightgray"
+                            : "transparent",
+                          opacity: pressed ? 0 : 1,
+                        };
+                      }}
+                      onPress={() => onOpenCommentOptions(item)}
+                    >
+                      <Icon name="dots-vertical" size={24} />
+                    </MotiPressable>
+                  )}
+                </View>
+
+                <Text className="py-2 px-3">{item.content}</Text>
+
+                <CommentVote comment={item} />
+              </MotiView>
+            );
+          })}
+        </View>
+      </Animated.ScrollView>
 
       {comment && (
         <BottomSheetModal
@@ -153,17 +174,27 @@ export function Comments({ header }: Props) {
       )}
 
       <CommentForm
-        key={editing && comment ? comment.id : "add-comment"}
+        // key={editing && comment ? comment.id : "add-comment"}
         comment={editing && comment ? comment : undefined}
         editing={editing}
         onCancelEditing={() => {
+          const isNewComment = !comment;
+          if (isNewComment) {
+            setTimeout(() => {
+              scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+            });
+          }
           setEditing(false);
           setComment(null);
         }}
       />
-    </React.Fragment>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  inverted: { transform: [{ rotate: "180deg" }] },
+});
 
 function CommentVote({ comment }: { comment: CommentDto }) {
   const params = useRoute<ScreenProps["route"]>().params;

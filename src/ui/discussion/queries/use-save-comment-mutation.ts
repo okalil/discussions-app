@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { getCommentRepository } from '~/data/comment/comment.repository';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getCommentRepository } from "~/data/comment/comment.repository";
 
 export function useSaveCommentMutation(discussionId: string) {
   const client = useQueryClient();
@@ -10,9 +10,10 @@ export function useSaveCommentMutation(discussionId: string) {
         ? commentsRepository.updateComment(id, { content })
         : commentsRepository.createComment({ content });
     },
-    onSuccess: () =>
+    onSuccess: () => {
       client.invalidateQueries({
-        queryKey: ['discussions', discussionId, 'comments'],
-      }),
+        queryKey: ["discussions", discussionId, "comments"],
+      });
+    },
   });
 }

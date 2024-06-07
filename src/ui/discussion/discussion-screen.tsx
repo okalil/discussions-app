@@ -44,10 +44,10 @@ export function DiscussionScreen({ route }: ScreenProps) {
   }
 
   return (
-    <View className="flex-1 justify-end">
+    <View className="flex-1">
       <Comments
         header={
-          <>
+          <View>
             <Text className="text-lg font-inter-semibold mb-2">
               {discussion.title}
             </Text>
@@ -63,7 +63,7 @@ export function DiscussionScreen({ route }: ScreenProps) {
                 }}
               />
             </View>
-          </>
+          </View>
         }
       />
     </View>
