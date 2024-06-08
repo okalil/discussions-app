@@ -1,15 +1,15 @@
-import { Image, View } from 'react-native';
+import { Image, ImageProps, View } from 'react-native';
 import { url } from '~/data/core/network/api';
 import { Text } from '~/ui/shared/text';
 import { cn } from '~/ui/shared/utils/cn';
 
-interface Props {
+interface Props extends ImageProps {
   src?: string;
   alt: string;
   size?: number;
 }
 
-export function Avatar({ src, alt, size = 40 }: Props) {
+export function Avatar({ src, alt, size = 40, ...props }: Props) {
   return src ? (
     <Image
       className="rounded-full"
@@ -17,6 +17,7 @@ export function Avatar({ src, alt, size = 40 }: Props) {
       source={{
         uri: src.startsWith('/') ? url + src : src,
       }}
+      {...props}
     />
   ) : (
     <View

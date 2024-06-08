@@ -9,5 +9,6 @@ appId: com.discussions
 - tapOn: "Senha"
 - inputText: "password"
 
-- tapOn: "Ir"
+- tapOn:
+    id: "submit_button"
 - assertVisible: "Logado com sucesso!"

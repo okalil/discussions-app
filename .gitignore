@@ -35,5 +35,10 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# native projects
 /android
 /ios
+
+# maestro outputs
+.maestro/screenshots
+.maestro/videos

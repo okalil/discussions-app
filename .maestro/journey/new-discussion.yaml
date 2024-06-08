@@ -1,0 +1,34 @@
+appId: com.discussions
+---
+
+- tapOn: "Nova Discussão"
+
+- tapOn: "Título"
+- inputText: "My amazing discussion"
+- tapOn: "Descrição"
+- inputRandomText
+
+# tap outside to hide keyboard
+- tapOn:
+    point: "50%,12%"
+
+- tapOn: "Criar"
+- assertVisible: 
+    id: "discussion_title"
+    text: "My amazing discussion"
+- assertVisible: "Entre na discussão"
+
+- waitForAnimationToEnd
+- takeScreenshot: ".maestro/screenshots/discussion-created"
+
+# back
+- runFlow:
+    when:
+        platform: iOS
+    commands:
+        - tapOn: "Home"
+- runFlow:
+    when:
+        platform: Android
+    commands:
+        - back

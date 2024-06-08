@@ -1,0 +1,44 @@
+appId: com.discussions
+onFlowStart:
+  - startRecording: .maestro/videos/add-comment
+onFlowComplete:
+  - stopRecording
+---
+# click item from discussions list
+- assertVisible:
+    id: "discussion_item.*"
+- copyTextFrom:
+    id: "discussion_item.*"
+- evalScript: ${output.title = maestro.copiedText}
+- tapOn:
+    id: "discussion_item.*"
+
+# check title is the same that was clicked
+- copyTextFrom:
+    id: "discussion_title"
+- assertTrue: ${output.title == maestro.copiedText}
+
+# save comment
+- tapOn: "Entre na discussão"
+- inputText: "This comment is just a test comment"
+- tapOn: "Enviar"
+
+- waitForAnimationToEnd
+- assertVisible:
+    id: comment_item.*
+    containsDescendants:
+        - text: "This comment is just a test comment"
+
+- takeScreenshot: ".maestro/screenshots/comment-created"
+
+# back
+- runFlow:
+    when:
+        platform: iOS
+    commands:
+        - tapOn: "Home"
+- runFlow:
+    when:
+        platform: Android
+    commands:
+        - back

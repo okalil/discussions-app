@@ -17,6 +17,8 @@ appId: com.discussions
 
 - tapOn: "Confirmar senha"
 - inputText: "password"
+- hideKeyboard
 
-- tapOn: "Ir"
+- tapOn: 
+    id: "submit_button"
 - assertVisible: "Cadastro realizado com sucesso!"

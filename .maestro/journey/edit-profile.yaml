@@ -1,0 +1,39 @@
+appId: com.discussions
+---
+
+- tapOn: "Perfil"
+
+# pick photo from gallery
+- tapOn: 
+    text: "Editar Foto de Perfil"
+    retryTapIfNoChange: false
+- tapOn: ".*Galeria"
+- runFlow:
+    when:
+        platform: iOS
+    commands:
+        - tapOn: "Foto.*"
+- runFlow:
+    when:
+        platform: Android
+    commands:
+        - tapOn: 
+            id: ".*thumbnail"
+
+# change name
+- tapOn: "Nome"
+- runFlow:
+    when:
+        platform: iOS
+    commands:
+        - longPressOn: 
+            id: "input.*"
+        - tapOn: "Select All"
+- eraseText
+- inputRandomPersonName
+- hideKeyboard
+
+# save
+- tapOn: 
+    id: submit_button
+- assertVisible: "Salvo!"

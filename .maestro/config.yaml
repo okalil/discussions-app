@@ -1,0 +1,13 @@
+flows:
+  - journey/*
+
+executionOrder:
+  continueOnFailure: false
+  flowsOrder:
+    - register
+    - login
+    - refresh
+    - add-comment
+    - new-discussion
+    - edit-profile
+    - logout
