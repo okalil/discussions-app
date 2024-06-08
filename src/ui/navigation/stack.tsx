@@ -12,7 +12,7 @@ import { LoginScreen } from "../auth/login-screen";
 import { RegisterScreen } from "../auth/register-screen";
 import { DiscussionScreen } from "../discussion/discussion-screen";
 import { DiscussionFormScreen } from "../discussion-form/discussion-form-screen";
-import { useUserQuery } from "../shared/queries/use-user-query";
+import { useOptionalUserQuery } from "../shared/queries/use-user-query";
 import { Tabs } from "./tabs";
 
 const Stack = createNativeStackNavigator();
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export function Navigation({ onReady }: Props) {
-  const userQuery = useUserQuery();
+  const userQuery = useOptionalUserQuery();
   const isAuthenticated = !!userQuery.data;
 
   const [fontsLoaded, fontError] = useFonts({

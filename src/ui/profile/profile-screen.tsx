@@ -13,19 +13,20 @@ import { Button } from "~/ui/shared/button";
 import { FormInput } from "~/ui/shared/form-input";
 import { Text } from "~/ui/shared/text";
 import { cn } from "~/ui/shared/utils/cn";
-import { useUserQuery } from "../shared/queries/use-user-query";
+import { useCurrentUser } from "../shared/queries/use-user-query";
 import { Toast } from "../shared/toast";
 import { useLogoutMutation } from "./queries/use-logout-mutation";
 import { useUpdateProfileMutation } from "./queries/use-update-profile-mutation";
 
 export function ProfileScreen() {
-  const { data: user } = useUserQuery();
+  const user = useCurrentUser();
   const logout = useLogoutMutation();
   const updateProfile = useUpdateProfileMutation();
+
   const form = useForm<UpdateUserDto>({
     defaultValues: {
-      name: user?.name ?? "",
-      picture: { uri: user?.picture?.url ?? "" },
+      name: user.name ?? "",
+      picture: { uri: user.picture?.url ?? "" },
     },
   });
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
@@ -74,10 +75,6 @@ export function ProfileScreen() {
       onSuccess: () => Toast.show("Salvo!", Toast.SHORT),
     })
   );
-
-  if (!user) {
-    return <Text>Sem dados</Text>;
-  }
 
   return (
     <FormProvider {...form}>

@@ -12,7 +12,7 @@ import type { CommentDto } from "~/data/comment/comment.dto";
 import { Avatar } from "~/ui/shared/avatar";
 import { Text } from "~/ui/shared/text";
 import { Vote } from "~/ui/shared/vote";
-import { useUserQuery } from "../shared/queries/use-user-query";
+import { useCurrentUser } from "../shared/queries/use-user-query";
 import { CommentForm } from "./comment-form";
 import type { ScreenProps } from "./discussion-screen";
 import { useCommentsQuery } from "./queries/use-comments-query";
@@ -27,6 +27,7 @@ export function Comments({ header }: Props) {
   const params = useRoute<ScreenProps["route"]>().params;
   const discussionId = params?.id ?? "";
 
+  const user = useCurrentUser();
   const { data: comments } = useCommentsQuery(discussionId);
   const deleteCommentMutation = useDeleteCommentMutation(discussionId);
 
@@ -34,6 +35,14 @@ export function Comments({ header }: Props) {
 
   const [comment, setComment] = React.useState<CommentDto | null>(null);
   const [editing, setEditing] = React.useState(false);
+
+  useBackHandler(() => {
+    if (comment) {
+      setComment(null);
+      return true;
+    }
+    return false;
+  });
 
   const onOpenCommentOptions = (it: CommentDto) => {
     setComment(it);
@@ -59,15 +68,6 @@ export function Comments({ header }: Props) {
     setTimeout(() => setEditing(true), 250);
   };
 
-  useBackHandler(() => {
-    if (comment) {
-      setComment(null);
-      return true;
-    }
-    return false;
-  });
-
-  const user = useUserQuery().data;
   const scrollViewRef = React.useRef<Animated.ScrollView>(null);
 
   const { height } = useReanimatedKeyboardAnimation();
@@ -101,7 +101,7 @@ export function Comments({ header }: Props) {
           <Animated.View style={fakeView} />
           {header}
           {comments?.map((item) => {
-            const isAuthor = user?.id === item.user.id;
+            const isAuthor = user.id === item.user.id;
             return (
               <MotiView
                 key={item.id}
