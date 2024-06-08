@@ -58,7 +58,7 @@ function ToastView({ toast: t, onHeight, offset }: ToastProps) {
         onLayout={(event) => onHeight(event.nativeEvent.layout.height)}
         className="px-5 py-3"
         style={{
-          margin: Constants.statusBarHeight + 10,
+          marginTop: Constants.statusBarHeight + 10,
           backgroundColor: "#404040",
           borderRadius: 22,
         }}
