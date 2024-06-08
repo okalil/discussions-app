@@ -74,6 +74,8 @@ O aplicativo inclui várias funcionalidades típicas de diversos aplicativos mó
 
 - **[Reanimated](https://www.reanimated2.com) e [Moti](https://moti.fyi)**, para animações.
 
+- **[Maestro](https://maestro.mobile.dev)**, para testes visuais automatizados.
+
 ## Instalação
 
 1. Clone o repositório
