@@ -20,7 +20,7 @@ export function useCurrentUser() {
   // Mantém o estado anterior para evitar erro durante a transição de logout
   const previousState = React.useRef(data);
   React.useEffect(() => {
-    previousState.current = queryClient.getQueryData(["user"]);
+    previousState.current = queryClient.getQueryData(options.queryKey);
   }, [data]);
   const user = data ?? previousState.current;
 
