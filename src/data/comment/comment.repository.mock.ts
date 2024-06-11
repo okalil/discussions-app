@@ -1,31 +1,17 @@
-import { faker } from "@faker-js/faker";
-import * as Factory from "factory.ts";
-import { getUserRepository } from "../user/user.repository.mock";
-import type { CommentDto } from "./comment.dto";
-import type { SaveCommentDto } from "./save-comment.dto";
+import { faker } from '@faker-js/faker';
+import * as Factory from 'factory.ts';
+
+import { getUserRepository } from '../user/user.repository.mock';
+import type { CommentDto } from './comment.dto';
+import type { SaveCommentDto } from './save-comment.dto';
+import type * as original from './comment.repository';
 
 export function getCommentRepository(discussionId: string) {
   return new CommentRepository(discussionId);
 }
 
-function delay(ms: number) {
-  return new Promise((r) => setTimeout(r, ms));
-}
-
-const factory = Factory.Sync.makeFactory<CommentDto>({
-  id: Factory.each(() => faker.string.uuid()),
-  content: Factory.each(() => faker.lorem.lines({ min: 1, max: 4 })),
-  user: { id: "1", name: "john@mail.com" },
-  voted: Factory.each(() => faker.datatype.boolean()),
-  votes: Factory.each(() => faker.number.int({ max: 1000 })),
-});
-const cache = new Map<string, CommentDto[]>();
-
-export class CommentRepository {
-  private discussionId: string;
-  constructor(discussionId: string) {
-    this.discussionId = discussionId;
-  }
+export class CommentRepository implements original.CommentRepository {
+  constructor(readonly discussionId: string) {}
 
   private get comments() {
     const c = cache.get(this.discussionId) ?? [];
@@ -85,4 +71,17 @@ export class CommentRepository {
   listenCommentDelete(listener: () => void) {
     return () => {};
   }
+}
+
+const factory = Factory.Sync.makeFactory<CommentDto>({
+  id: Factory.each(() => faker.string.uuid()),
+  content: Factory.each(() => faker.lorem.lines({ min: 1, max: 4 })),
+  user: { id: '1', name: 'john@mail.com' },
+  voted: Factory.each(() => faker.datatype.boolean()),
+  votes: Factory.each(() => faker.number.int({ max: 1000 })),
+});
+const cache = new Map<string, CommentDto[]>();
+
+function delay(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
 }

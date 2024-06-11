@@ -8,15 +8,12 @@ export function getCommentRepository(discussionId: string) {
   return new CommentRepository(discussionId);
 }
 
-class CommentRepository {
-  private discussionId: string;
-  constructor(discussionId: string) {
-    this.discussionId = discussionId;
-  }
+export class CommentRepository {
+  constructor(readonly discussionId: string) {}
 
   async getComments(): Promise<CommentDto[]> {
     const response = await api.get(
-      `/api/v1/discussions/${this.discussionId}/comments`
+      `/api/v1/discussions/${this.discussionId}/comments`,
     );
     const json: CommentsResponse = await response.json();
 
@@ -30,7 +27,7 @@ class CommentRepository {
 
   async getComment(commentId: string): Promise<CommentDto> {
     const response = await api.get(
-      `/api/v1/discussions/${this.discussionId}/comments/${commentId}`
+      `/api/v1/discussions/${this.discussionId}/comments/${commentId}`,
     );
     const json = await response.json();
     return CommentSchema.parse(json.comment);
@@ -38,13 +35,13 @@ class CommentRepository {
 
   async upvoteComment(commentId: string) {
     await api.post(
-      `/api/v1/discussions/${this.discussionId}/comments/${commentId}/votes`
+      `/api/v1/discussions/${this.discussionId}/comments/${commentId}/votes`,
     );
   }
 
   async downvoteComment(commentId: string) {
     await api.delete(
-      `/api/v1/discussions/${this.discussionId}/comments/${commentId}/votes`
+      `/api/v1/discussions/${this.discussionId}/comments/${commentId}/votes`,
     );
   }
 
@@ -59,13 +56,13 @@ class CommentRepository {
     const body = JSON.stringify(dto);
     await api.put(
       `/api/v1/discussions/${this.discussionId}/comments/${commentId}`,
-      { body }
+      { body },
     );
   }
 
   async deleteComment(commentId: string) {
     await api.delete(
-      `/api/v1/discussions/${this.discussionId}/comments/${commentId}`
+      `/api/v1/discussions/${this.discussionId}/comments/${commentId}`,
     );
   }
 
