@@ -15,7 +15,6 @@ module.exports = {
     'import/order': [
       'warn',
       {
-        alphabetize: { order: 'asc', caseInsensitive: true },
         groups: [
           'builtin',
           'external',
