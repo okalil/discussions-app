@@ -44,7 +44,7 @@ export function DiscussionScreen({ route }: ScreenProps) {
   }
 
   return (
-    <View className="flex-1">
+    <View className="flex-1" >
       <Comments
         header={
           <View>

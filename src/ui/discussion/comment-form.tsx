@@ -1,21 +1,22 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   ActivityIndicator,
   Pressable,
   TextInput,
   Keyboard,
-} from "react-native";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import { useRoute } from "@react-navigation/native";
-import { useForm } from "react-hook-form";
-import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
-import Animated, { useAnimatedStyle } from "react-native-reanimated";
+} from 'react-native';
+import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import { useRoute } from '@react-navigation/native';
+import { useForm } from 'react-hook-form';
+import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { CommentDto } from "~/data/comment/comment.dto";
-import { Text } from "../shared/text";
-import type { ScreenProps } from "./discussion-screen";
-import { useSaveCommentMutation } from "./queries/use-save-comment-mutation";
+import type { CommentDto } from '~/data/comment/comment.dto';
+import { Text } from '../shared/text';
+import type { ScreenProps } from './discussion-screen';
+import { useSaveCommentMutation } from './queries/use-save-comment-mutation';
 
 interface Props {
   editing: boolean;
@@ -24,11 +25,12 @@ interface Props {
 }
 
 export function CommentForm({ editing, onCancelEditing, comment }: Props) {
-  const params = useRoute<ScreenProps["route"]>().params;
-  const discussionId = params?.id ?? "";
+  const insets = useSafeAreaInsets();
+  const params = useRoute<ScreenProps['route']>().params;
+  const discussionId = params?.id ?? '';
 
   const form = useForm({ defaultValues: comment });
-  const content = form.watch("content");
+  const content = form.watch('content');
 
   const { isPending, mutate } = useSaveCommentMutation(discussionId);
 
@@ -42,17 +44,18 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
             Keyboard.dismiss();
             onCancelEditing();
           },
-        }
-      )
+        },
+      ),
     );
   };
 
   const { height } = useReanimatedKeyboardAnimation();
   const textInputStyle = useAnimatedStyle(
     () => ({
+      paddingBottom: height.value ? 0 : insets.bottom,
       transform: [{ translateY: height.value }],
     }),
-    []
+    [],
   );
 
   return (
@@ -68,12 +71,12 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
 
       <View className="flex-row px-4 py-4">
         <TextInput
-          autoFocus={editing}
-          className=" flex-1 bg-white"
           multiline
+          autoFocus={editing}
+          className="flex-1 bg-white"
           placeholder="Entre na discussão"
           value={content}
-          onChangeText={(text) => form.setValue("content", text)}
+          onChangeText={(text) => form.setValue('content', text)}
         />
         <Pressable
           accessibilityLabel="Enviar"
@@ -84,7 +87,7 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
           {isPending ? (
             <ActivityIndicator color="black" size={24} />
           ) : (
-            <Icon name="send" color={content ? undefined : "gray"} size={24} />
+            <Icon name="send" color={content ? undefined : 'gray'} size={24} />
           )}
         </Pressable>
       </View>

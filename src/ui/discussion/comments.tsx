@@ -1,31 +1,38 @@
-import React from "react";
-import { View, StyleSheet, Pressable, Alert, BackHandler } from "react-native";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { useRoute } from "@react-navigation/native";
-import { MotiView } from "moti";
-import { MotiPressable } from "moti/interactions";
-import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
-import Animated, { FadeIn, useAnimatedStyle } from "react-native-reanimated";
+import React from 'react';
+import { View, StyleSheet, Pressable, Alert, BackHandler } from 'react-native';
+import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { useRoute } from '@react-navigation/native';
+import { MotiView } from 'moti';
+import { MotiPressable } from 'moti/interactions';
+import {
+  KeyboardEvents,
+  useReanimatedKeyboardAnimation,
+} from 'react-native-keyboard-controller';
+import Animated, { FadeIn, useAnimatedStyle } from 'react-native-reanimated';
+import type { ListRenderItem } from '@shopify/flash-list';
+import { FlashList } from '@shopify/flash-list';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { CommentDto } from "~/data/comment/comment.dto";
-import { Avatar } from "~/ui/shared/avatar";
-import { Text } from "~/ui/shared/text";
-import { Vote } from "~/ui/shared/vote";
-import { useCurrentUser } from "../shared/queries/use-user-query";
-import { CommentForm } from "./comment-form";
-import type { ScreenProps } from "./discussion-screen";
-import { useCommentsQuery } from "./queries/use-comments-query";
-import { useDeleteCommentMutation } from "./queries/use-delete-comment-mutation";
-import { useVoteCommentMutation } from "./queries/use-vote-comment-mutation";
+import type { CommentDto } from '~/data/comment/comment.dto';
+import { Avatar } from '~/ui/shared/avatar';
+import { Text } from '~/ui/shared/text';
+import { Vote } from '~/ui/shared/vote';
+import { useCurrentUser } from '../shared/queries/use-user-query';
+import { CommentForm } from './comment-form';
+import type { ScreenProps } from './discussion-screen';
+import { useCommentsQuery } from './queries/use-comments-query';
+import { useDeleteCommentMutation } from './queries/use-delete-comment-mutation';
+import { useVoteCommentMutation } from './queries/use-vote-comment-mutation';
 
 interface Props {
   header: JSX.Element;
 }
 
 export function Comments({ header }: Props) {
-  const params = useRoute<ScreenProps["route"]>().params;
-  const discussionId = params?.id ?? "";
+  const insets = useSafeAreaInsets();
+  const params = useRoute<ScreenProps['route']>().params;
+  const discussionId = params?.id ?? '';
 
   const user = useCurrentUser();
   const { data: comments } = useCommentsQuery(discussionId);
@@ -44,16 +51,46 @@ export function Comments({ header }: Props) {
     return false;
   });
 
+  const { height } = useReanimatedKeyboardAnimation();
+  const fakeView = useAnimatedStyle(
+    () => ({
+      height: Math.abs(height.value),
+    }),
+    [],
+  );
+  const flashListRef = React.useRef<FlashList<CommentDto>>(null);
+  const offsetY = React.useRef(0);
+
+  React.useEffect(() => {
+    let heightValue = 0;
+    const events = [
+      KeyboardEvents.addListener('keyboardWillShow', (e) => {
+        heightValue = e.height;
+        flashListRef.current?.scrollToOffset({
+          offset: offsetY.current + heightValue,
+          animated: true,
+        });
+      }),
+      KeyboardEvents.addListener('keyboardWillHide', (e) => {
+        flashListRef.current?.scrollToOffset({
+          offset: offsetY.current - heightValue,
+          animated: true,
+        });
+      }),
+    ];
+    return () => events.forEach((it) => it.remove());
+  });
+
   const onOpenCommentOptions = (it: CommentDto) => {
     setComment(it);
     requestAnimationFrame(() => bottomSheetModalRef.current?.present());
   };
   const onDeleteCommentPress = (comment: CommentDto) => {
     bottomSheetModalRef.current?.close();
-    Alert.alert("Excluir comentário", "Excluir comentário permanentemente?", [
-      { text: "Cancelar" },
+    Alert.alert('Excluir comentário', 'Excluir comentário permanentemente?', [
+      { text: 'Cancelar' },
       {
-        text: "Ok",
+        text: 'Ok',
         onPress() {
           requestAnimationFrame(() => {
             deleteCommentMutation.mutate(comment);
@@ -68,39 +105,18 @@ export function Comments({ header }: Props) {
     setTimeout(() => setEditing(true), 250);
   };
 
-  const scrollViewRef = React.useRef<Animated.ScrollView>(null);
-
-  const { height } = useReanimatedKeyboardAnimation();
-  const scrollViewStyle = useAnimatedStyle(
-    () => ({
-      transform: [{ translateY: height.value }, ...styles.inverted.transform],
-    }),
-    []
-  );
-  const fakeView = useAnimatedStyle(
-    () => ({
-      height: Math.abs(height.value),
-    }),
-    []
-  );
-
   return (
     <View className="flex-1 justify-end">
-      <Animated.ScrollView
-        ref={scrollViewRef}
-        contentContainerStyle={{
-          justifyContent: "flex-end",
-          flexGrow: 1,
-          padding: 16,
-        }}
-        showsVerticalScrollIndicator={false}
-        style={scrollViewStyle}
-        onLayout={() => scrollViewRef.current?.scrollToEnd()}
-      >
-        <View style={styles.inverted}>
-          <Animated.View style={fakeView} />
-          {header}
-          {comments?.map((item) => {
+      <FlashList
+        onScroll={(e) => (offsetY.current = e.nativeEvent.contentOffset.y)}
+        ref={flashListRef}
+        estimatedItemSize={300}
+        ListHeaderComponent={header}
+        ListFooterComponent={<Animated.View style={fakeView} />}
+        contentContainerStyle={{ padding: 16 }}
+        data={[...(comments ?? [])]}
+        renderItem={React.useCallback<ListRenderItem<CommentDto>>(
+          ({ item }) => {
             const isAuthor = user.id === item.user.id;
             return (
               <MotiView
@@ -116,11 +132,11 @@ export function Comments({ header }: Props) {
                     <MotiPressable
                       style={{ borderRadius: 9999 }}
                       animate={({ pressed }) => {
-                        "worklet";
+                        'worklet';
                         return {
                           backgroundColor: pressed
-                            ? "lightgray"
-                            : "transparent",
+                            ? 'lightgray'
+                            : 'transparent',
                           opacity: pressed ? 0 : 1,
                         };
                       }}
@@ -136,9 +152,11 @@ export function Comments({ header }: Props) {
                 <CommentVote comment={item} />
               </MotiView>
             );
-          })}
-        </View>
-      </Animated.ScrollView>
+          },
+          [],
+        )}
+        keyExtractor={(it) => it.id}
+      />
 
       {comment && (
         <BottomSheetModal
@@ -152,7 +170,7 @@ export function Comments({ header }: Props) {
               disappearsOnIndex={-1}
             />
           )}
-          bottomInset={16}
+          bottomInset={insets.bottom + 16}
           style={{ marginHorizontal: 16 }}
         >
           <View className="px-4 py-2">
@@ -182,8 +200,8 @@ export function Comments({ header }: Props) {
           const isNewComment = !comment;
           if (isNewComment) {
             setTimeout(() => {
-              scrollViewRef.current?.scrollTo({ y: 0, animated: true });
-            });
+              flashListRef.current?.scrollToEnd();
+            }, 500);
           }
           setEditing(false);
           setComment(null);
@@ -194,12 +212,12 @@ export function Comments({ header }: Props) {
 }
 
 const styles = StyleSheet.create({
-  inverted: { transform: [{ rotate: "180deg" }] },
+  inverted: { transform: [{ rotate: '180deg' }] },
 });
 
 function CommentVote({ comment }: { comment: CommentDto }) {
-  const params = useRoute<ScreenProps["route"]>().params;
-  const discussionId = params?.id ?? "";
+  const params = useRoute<ScreenProps['route']>().params;
+  const discussionId = params?.id ?? '';
   const commentId = comment.id;
 
   const mutation = useVoteCommentMutation({ discussionId, commentId });
@@ -227,8 +245,8 @@ function CommentVote({ comment }: { comment: CommentDto }) {
 function useBackHandler(handler: () => boolean | null | undefined) {
   React.useEffect(() => {
     const subscription = BackHandler.addEventListener(
-      "hardwareBackPress",
-      handler
+      'hardwareBackPress',
+      handler,
     );
     return () => subscription.remove();
   }, [handler]);
