@@ -55,11 +55,11 @@ export class DiscussionRepository implements original.DiscussionRepository {
     Object.assign(discussion, dto);
   }
 
-  sendDiscussionSubscribe(discussionId: string) {}
-  sendDiscussionUnsubscribe(discussionId: string) {}
-  listenDiscussionUpdate(listener: (id: string) => void) {
+  joinDiscussionChannel(discussionId: string): () => void {
     return () => {};
   }
+
+  async *getDiscussionStream(): AsyncGenerator<string, any, unknown> {}
 }
 
 function delay(ms: number) {

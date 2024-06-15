@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, Pressable, Alert, BackHandler } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  Alert,
+  BackHandler,
+  FlatList,
+} from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { useRoute } from '@react-navigation/native';
@@ -58,7 +65,7 @@ export function Comments({ header }: Props) {
     }),
     [],
   );
-  const flashListRef = React.useRef<FlashList<CommentDto>>(null);
+  const flashListRef = React.useRef<FlatList<CommentDto>>(null);
   const offsetY = React.useRef(0);
 
   React.useEffect(() => {
@@ -107,7 +114,7 @@ export function Comments({ header }: Props) {
 
   return (
     <View className="flex-1 justify-end">
-      <FlashList
+      <FlatList
         onScroll={(e) => (offsetY.current = e.nativeEvent.contentOffset.y)}
         ref={flashListRef}
         estimatedItemSize={300}
@@ -115,46 +122,41 @@ export function Comments({ header }: Props) {
         ListFooterComponent={<Animated.View style={fakeView} />}
         contentContainerStyle={{ padding: 16 }}
         data={[...(comments ?? [])]}
-        renderItem={React.useCallback<ListRenderItem<CommentDto>>(
-          ({ item }) => {
-            const isAuthor = user.id === item.user.id;
-            return (
-              <MotiView
-                key={item.id}
-                style={{ paddingVertical: 12 }}
-                entering={FadeIn}
-                testID={`comment_item_${item.id}`}
-              >
-                <View className="flex-row">
-                  <Avatar src={item.user.picture?.url} alt={item.user.name} />
-                  <Text className="ml-3 mr-auto">{item.user.name}</Text>
-                  {isAuthor && (
-                    <MotiPressable
-                      style={{ borderRadius: 9999 }}
-                      animate={({ pressed }) => {
-                        'worklet';
-                        return {
-                          backgroundColor: pressed
-                            ? 'lightgray'
-                            : 'transparent',
-                          opacity: pressed ? 0 : 1,
-                        };
-                      }}
-                      onPress={() => onOpenCommentOptions(item)}
-                    >
-                      <Icon name="dots-vertical" size={24} />
-                    </MotiPressable>
-                  )}
-                </View>
+        renderItem={React.useCallback(({ item }) => {
+          const isAuthor = user.id === item.user.id;
+          return (
+            <MotiView
+              key={item.id}
+              style={{ paddingVertical: 12 }}
+              entering={FadeIn}
+              testID={`comment_item_${item.id}`}
+            >
+              <View className="flex-row">
+                <Avatar src={item.user.picture?.url} alt={item.user.name} />
+                <Text className="ml-3 mr-auto">{item.user.name}</Text>
+                {isAuthor && (
+                  <MotiPressable
+                    style={{ borderRadius: 9999 }}
+                    animate={({ pressed }) => {
+                      'worklet';
+                      return {
+                        backgroundColor: pressed ? 'lightgray' : 'transparent',
+                        opacity: pressed ? 0 : 1,
+                      };
+                    }}
+                    onPress={() => onOpenCommentOptions(item)}
+                  >
+                    <Icon name="dots-vertical" size={24} />
+                  </MotiPressable>
+                )}
+              </View>
 
-                <Text className="py-2 px-3">{item.content}</Text>
+              <Text className="py-2 px-3">{item.content}</Text>
 
-                <CommentVote comment={item} />
-              </MotiView>
-            );
-          },
-          [],
-        )}
+              <CommentVote comment={item} />
+            </MotiView>
+          );
+        }, [])}
         keyExtractor={(it) => it.id}
       />
 

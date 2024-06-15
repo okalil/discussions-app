@@ -2,6 +2,7 @@ import React from 'react';
 import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
+import { useStream } from '../../shared/utils/use-stream';
 
 const discussionsRepository = getDiscussionRepository();
 
@@ -23,17 +24,16 @@ export function useDiscussionQuery(discussionId: string) {
     enabled: !!discussionId,
   });
 
-  React.useEffect(() => {
-    discussionsRepository.sendDiscussionSubscribe(discussionId);
-    return () => discussionsRepository.sendDiscussionUnsubscribe(discussionId);
-  }, [discussionId]);
-  React.useEffect(() => {
-    return discussionsRepository.listenDiscussionUpdate(id => {
-      if (id === discussionId) {
-        query.refetch();
-      }
+  React.useEffect(
+    () => discussionsRepository.joinDiscussionChannel(discussionId),
+    [discussionId],
+  );
+  useStream(discussionsRepository.getDiscussionStream(), (discussionId) => {
+    client.invalidateQueries({
+      queryKey: ['discussions', discussionId],
+      exact: true,
     });
-  }, []);
+  });
 
   return query;
 }

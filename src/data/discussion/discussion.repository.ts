@@ -52,16 +52,18 @@ export class DiscussionRepository {
     await api.put(`/api/v1/discussions/${id}`, { body });
   }
 
-  sendDiscussionSubscribe(discussionId: string) {
+  async *getDiscussionStream(): AsyncGenerator<string> {
+    while (true) {
+      yield await new Promise<any>((resolve) => {
+        socket.once('discussion_update', resolve);
+      });
+    }
+  }
+
+  joinDiscussionChannel(discussionId: string) {
     socket.emit('discussion_subscribe', discussionId);
-  }
-  sendDiscussionUnsubscribe(discussionId: string) {
-    socket.emit('discussion_unsubscribe', discussionId);
-  }
-  listenDiscussionUpdate(listener: (id: string) => void) {
-    socket.on('discussion_update', listener);
-    return function removeDiscussionUpdateListener() {
-      socket.off('discussion_update', listener);
+    return function leave() {
+      socket.emit('discussion_unsubscribe', discussionId);
     };
   }
 }
