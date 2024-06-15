@@ -62,15 +62,7 @@ export class CommentRepository implements original.CommentRepository {
     }
   }
 
-  listenCommentCreate(listener: () => void) {
-    return () => {};
-  }
-  listenCommentUpdate(listener: () => void) {
-    return () => {};
-  }
-  listenCommentDelete(listener: () => void) {
-    return () => {};
-  }
+  async *getCommentsStream(): AsyncGenerator<CommentDto[]> {}
 }
 
 const factory = Factory.Sync.makeFactory<CommentDto>({

@@ -66,22 +66,15 @@ export class CommentRepository {
     );
   }
 
-  listenCommentCreate(listener: () => void) {
-    socket.on('comment_create', listener);
-    return function removeCommentCreateListener() {
-      socket.off('comment_create', listener);
-    };
-  }
-  listenCommentUpdate(listener: () => void) {
-    socket.on('comment_update', listener);
-    return function removeCommentUpdateListener() {
-      socket.off('comment_update', listener);
-    };
-  }
-  listenCommentDelete(listener: () => void) {
-    socket.on('comment_delete', listener);
-    return function removeCommentDeleteListener() {
-      socket.off('comment_delete', listener);
-    };
+  async *getCommentsStream(): AsyncGenerator<CommentDto[]> {
+    while (true) {
+      await Promise.race([
+        new Promise((r) => socket.once('comment_new', r)),
+        new Promise((r) => socket.once('comment_update', r)),
+        new Promise((r) => socket.once('comment_delete', r)),
+      ]);
+      const comments = await this.getComments();
+      yield comments;
+    }
   }
 }

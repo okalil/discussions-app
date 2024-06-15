@@ -1,25 +1,22 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import type { CommentDto } from '~/data/comment/comment.dto';
 import { getCommentRepository } from '~/data/comment/comment.repository';
+import { useStream } from '~/ui/shared/utils/use-stream';
 
 export function useCommentsQuery(discussionId: string) {
-  const commentsRepository = React.useMemo(
-    () => getCommentRepository(discussionId),
-    [discussionId]
-  );
+  const commentsRepository = getCommentRepository(discussionId);
+  const client = useQueryClient();
   const query = useQuery({
     queryKey: ['discussions', discussionId, 'comments'],
     queryFn: () => commentsRepository.getComments(),
   });
 
-  React.useEffect(() => {
-    const subscriptions = [
-      commentsRepository.listenCommentCreate(() => query.refetch()),
-      commentsRepository.listenCommentUpdate(() => query.refetch()),
-      commentsRepository.listenCommentDelete(() => query.refetch()),
-    ];
-    return () => subscriptions.forEach(remove => remove());
-  }, [commentsRepository]);
+  useStream(commentsRepository.getCommentsStream(), (data) =>
+    client.setQueryData<CommentDto[]>(
+      ['discussions', discussionId, 'comments'],
+      data,
+    ),
+  );
 
   return query;
 }

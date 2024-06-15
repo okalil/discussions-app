@@ -2,9 +2,10 @@ import React from 'react';
 import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
+import type { DiscussionDto } from '~/data/discussion/discussion.dto';
 import { useStream } from '../../shared/utils/use-stream';
 
-const discussionsRepository = getDiscussionRepository();
+const discussionRepository = getDiscussionRepository();
 
 const getCommentsQuery = (discussionId: string) =>
   queryOptions({ queryKey: ['discussions', discussionId, 'comments'] });
@@ -19,21 +20,18 @@ export function useDiscussionQuery(discussionId: string) {
       if (!client.getQueryData(commentsQuery.queryKey)) {
         client.prefetchQuery(commentsQuery);
       }
-      return discussionsRepository.getDiscussion(discussionId);
+      return discussionRepository.getDiscussion(discussionId);
     },
     enabled: !!discussionId,
   });
 
   React.useEffect(
-    () => discussionsRepository.joinDiscussionChannel(discussionId),
+    () => discussionRepository.joinDiscussionChannel(discussionId),
     [discussionId],
   );
-  useStream(discussionsRepository.getDiscussionStream(), (discussionId) => {
-    client.invalidateQueries({
-      queryKey: ['discussions', discussionId],
-      exact: true,
-    });
-  });
+  useStream(discussionRepository.getDiscussionStream(discussionId), (data) =>
+    client.setQueryData<DiscussionDto>(['discussions', discussionId], data),
+  );
 
   return query;
 }
