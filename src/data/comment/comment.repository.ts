@@ -69,8 +69,8 @@ export class CommentRepository {
   async *getCommentsStream(
     signal: AbortSignal,
   ): AsyncGenerator<CommentDto[], never> {
-    yield await this.getComments();
     while (true) {
+      yield await this.getComments();
       await new Promise((resolve, reject) => {
         socket.once('comment_new', resolve);
         socket.once('comment_update', resolve);
@@ -83,7 +83,6 @@ export class CommentRepository {
           reject(new Error('Aborted'));
         });
       });
-      yield await this.getComments();
     }
   }
 }

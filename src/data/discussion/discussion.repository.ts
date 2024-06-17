@@ -56,8 +56,8 @@ export class DiscussionRepository {
     id: string,
     signal: AbortSignal,
   ): AsyncGenerator<DiscussionDto, never> {
-    yield await this.getDiscussion(id);
     while (true) {
+      yield await this.getDiscussion(id);
       await new Promise((resolve, reject) => {
         const listener = (data: any) => {
           if (data === id) resolve(data);
@@ -69,7 +69,6 @@ export class DiscussionRepository {
           reject(new Error('Aborted'));
         });
       });
-      yield await this.getDiscussion(id);
     }
   }
 
