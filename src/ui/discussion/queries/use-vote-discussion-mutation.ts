@@ -13,6 +13,7 @@ export function useVoteDiscussionMutation(discussionId: string) {
     onSettled: () =>
       client.invalidateQueries({
         queryKey: ['discussions', discussionId],
+        exact: true,
       }),
   });
 }

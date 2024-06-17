@@ -1,22 +1,13 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import type { CommentDto } from '~/data/comment/comment.dto';
+import { useQuery } from '@tanstack/react-query';
 import { getCommentRepository } from '~/data/comment/comment.repository';
-import { useStream } from '~/ui/shared/utils/use-stream';
+import { useStreamQuery } from '~/ui/shared/utils/use-stream-query';
 
 export function useCommentsQuery(discussionId: string) {
   const commentsRepository = getCommentRepository(discussionId);
-  const client = useQueryClient();
-  const query = useQuery({
+  return useQuery({
     queryKey: ['discussions', discussionId, 'comments'],
-    queryFn: () => commentsRepository.getComments(),
-  });
-
-  useStream(commentsRepository.getCommentsStream(), (data) =>
-    client.setQueryData<CommentDto[]>(
-      ['discussions', discussionId, 'comments'],
-      data,
+    queryFn: useStreamQuery((signal) =>
+      commentsRepository.getCommentsStream(signal),
     ),
-  );
-
-  return query;
+  });
 }

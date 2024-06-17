@@ -1,37 +1,25 @@
 import React from 'react';
-import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
-import type { DiscussionDto } from '~/data/discussion/discussion.dto';
-import { useStream } from '../../shared/utils/use-stream';
-
-const discussionRepository = getDiscussionRepository();
-
-const getCommentsQuery = (discussionId: string) =>
-  queryOptions({ queryKey: ['discussions', discussionId, 'comments'] });
+import { useStreamQuery } from '../../shared/utils/use-stream-query';
 
 export function useDiscussionQuery(discussionId: string) {
-  const client = useQueryClient();
-
-  const query = useQuery({
+  const discussionRepository = getDiscussionRepository();
+  return useQuery({
     queryKey: ['discussions', discussionId],
-    queryFn() {
-      const commentsQuery = getCommentsQuery(discussionId);
-      if (!client.getQueryData(commentsQuery.queryKey)) {
-        client.prefetchQuery(commentsQuery);
-      }
-      return discussionRepository.getDiscussion(discussionId);
-    },
+    queryFn: useStreamQuery((signal) =>
+      discussionRepository.getDiscussionStream(discussionId, signal),
+    ),
     enabled: !!discussionId,
+    staleTime: 0,
   });
+}
 
+export function useDiscussionChannel(discussionId: string) {
+  const discussionRepository = getDiscussionRepository();
   React.useEffect(
     () => discussionRepository.joinDiscussionChannel(discussionId),
     [discussionId],
   );
-  useStream(discussionRepository.getDiscussionStream(discussionId), (data) =>
-    client.setQueryData<DiscussionDto>(['discussions', discussionId], data),
-  );
-
-  return query;
 }

@@ -66,15 +66,24 @@ export class CommentRepository {
     );
   }
 
-  async *getCommentsStream(): AsyncGenerator<CommentDto[]> {
+  async *getCommentsStream(
+    signal: AbortSignal,
+  ): AsyncGenerator<CommentDto[], never> {
+    yield await this.getComments();
     while (true) {
-      await Promise.race([
-        new Promise((r) => socket.once('comment_new', r)),
-        new Promise((r) => socket.once('comment_update', r)),
-        new Promise((r) => socket.once('comment_delete', r)),
-      ]);
-      const comments = await this.getComments();
-      yield comments;
+      await new Promise((resolve, reject) => {
+        socket.once('comment_new', resolve);
+        socket.once('comment_update', resolve);
+        socket.once('comment_delete', resolve);
+
+        signal.addEventListener('abort', () => {
+          socket.off('comment_new', resolve);
+          socket.off('comment_update', resolve);
+          socket.off('comment_delete', resolve);
+          reject(new Error('Aborted'));
+        });
+      });
+      yield await this.getComments();
     }
   }
 }

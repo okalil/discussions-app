@@ -10,7 +10,6 @@ import { Toast } from '../shared/toast';
 const client = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 1000,
       persister: experimental_createPersister({ storage }),
       retry: 1,
     },
