@@ -5,6 +5,7 @@ import {
   Pressable,
   ActivityIndicator,
   RefreshControl,
+  StyleSheet,
 } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
@@ -47,7 +48,10 @@ export function DiscussionsScreen({ navigation, route }: ScreenProps) {
           className="flex-1 px-4"
           data={query.data}
           renderItem={({ item }) => (
-            <View className="flex-row gap-3 py-4 border-b border-gray-300">
+            <View
+              className="flex-row gap-3 py-4 border-gray-300"
+              style={{ borderBottomWidth: StyleSheet.hairlineWidth }}
+            >
               <View>
                 <Avatar
                   size={48}

@@ -1,4 +1,4 @@
-import type { PressableProps} from 'react-native';
+import type { PressableProps } from 'react-native';
 import { Pressable, ActivityIndicator } from 'react-native';
 import { Text } from './text';
 import { cn } from './utils/cn';
@@ -19,11 +19,11 @@ export function Button({
   return (
     <Pressable
       className={cn(
-        'h-10 rounded',
+        'h-11 rounded-lg',
         'items-center justify-center',
         Boolean(loading || props.disabled) && 'opacity-90',
         variant === 'primary' && 'bg-gray-900 text-gray-50 hover:opacity-90',
-        className
+        className,
       )}
       disabled={loading}
       {...props}

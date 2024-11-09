@@ -52,29 +52,15 @@ export class DiscussionRepository {
     await api.put(`/api/v1/discussions/${id}`, { body });
   }
 
-  async *getDiscussionStream(
-    id: string,
-    signal: AbortSignal,
-  ): AsyncGenerator<DiscussionDto, never> {
-    while (true) {
-      yield await this.getDiscussion(id);
-      await new Promise((resolve, reject) => {
-        const listener = (data: any) => {
-          if (data === id) resolve(data);
-        };
-        socket.once('discussion_update', listener);
-
-        signal.addEventListener('abort', () => {
-          socket.off('discussion_update', listener);
-          reject(new Error('Aborted'));
-        });
-      });
-    }
-  }
-
-  joinDiscussionChannel(discussionId: string) {
+  watchDiscussionUpdate(discussionId: string, callback: () => void) {
+    const listener = async (data: string) => {
+      if (data === discussionId) callback();
+    };
     socket.emit('discussion_subscribe', discussionId);
-    return function leave() {
+    socket.once('discussion_update', listener);
+
+    return () => {
+      socket.off('discussion_update', listener);
       socket.emit('discussion_unsubscribe', discussionId);
     };
   }

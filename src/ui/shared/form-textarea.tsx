@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TextInputProps} from 'react-native';
+import type { TextInputProps } from 'react-native';
 import { TextInput, View, Pressable } from 'react-native';
 import { useController, useFormContext } from 'react-hook-form';
 
@@ -46,10 +46,10 @@ export function FormTextarea({
           textAlignVertical="top"
           style={{ minHeight: 200 }}
           className={cn(
-            'bg-gray-50 rounded px-4 py-4',
-            'border border-gray-300',
-            'focus:border-2 focus:border-gray-800',
-            error && 'border-2 border-red-500'
+            'bg-gray-50 rounded-lg px-4 py-4',
+            'border-[0.5px] border-gray-300',
+            'focus:border focus:border-gray-800',
+            error && 'border border-red-500',
           )}
         />
       </View>

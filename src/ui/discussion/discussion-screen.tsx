@@ -6,7 +6,7 @@ import { Text } from '~/ui/shared/text';
 import { Vote } from '~/ui/shared/vote';
 import { Comments } from './comments';
 import {
-  useDiscussionChannel,
+  useWatchDiscussionUpdates,
   useDiscussionQuery,
 } from './queries/use-discussion-query';
 import { useVoteDiscussionMutation } from './queries/use-vote-discussion-mutation';
@@ -17,7 +17,7 @@ export function DiscussionScreen({ route }: ScreenProps) {
   const params = route.params;
   const discussionId = params?.id ?? '';
 
-  useDiscussionChannel(discussionId); // only receive discussion updates while in this screen
+  useWatchDiscussionUpdates(discussionId); // only receive discussion updates while in this screen
 
   const discussionQuery = useDiscussionQuery(discussionId);
   const votesMutation = useVoteDiscussionMutation(discussionId);
@@ -29,7 +29,7 @@ export function DiscussionScreen({ route }: ScreenProps) {
       </View>
     );
 
-  if (discussionQuery.isLoadingError)
+  if (discussionQuery.isLoadingError) {
     return (
       <View className="flex-1 items-center justify-center">
         <Text className="text-base">Houve um erro ao carregar</Text>
@@ -38,6 +38,7 @@ export function DiscussionScreen({ route }: ScreenProps) {
         </Pressable>
       </View>
     );
+  }
 
   const discussion = discussionQuery.data;
   const optimisticVoted = votesMutation.variables;

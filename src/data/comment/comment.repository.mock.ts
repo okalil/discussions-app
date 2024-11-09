@@ -62,7 +62,9 @@ export class CommentRepository implements original.CommentRepository {
     }
   }
 
-  async *getCommentsStream(): AsyncGenerator<CommentDto[]> {}
+  watchComments(callback: (comments: CommentDto[]) => void) {
+    return () => {};
+  }
 }
 
 const factory = Factory.Sync.makeFactory<CommentDto>({

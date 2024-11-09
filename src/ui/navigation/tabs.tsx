@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MotiView } from 'moti';
 
 import { DiscussionsScreen } from '../discussions/discussions-screen';
-import { ProfileScreen } from '../profile/profile-screen';
+import { ProfileLogoutButton, ProfileScreen } from '../profile/profile-screen';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +33,6 @@ export function Tabs() {
         );
       }}
       screenOptions={{
-        headerShown: false,
         tabBarShowLabel: false,
       }}
     >
@@ -41,6 +40,7 @@ export function Tabs() {
         name="Discussions"
         component={DiscussionsScreen}
         options={{
+          headerShown: false,
           tabBarAccessibilityLabel: 'Início',
           tabBarIcon(props) {
             return (
@@ -53,6 +53,7 @@ export function Tabs() {
         name="Profile"
         component={ProfileScreen}
         options={{
+          headerRight: () => <ProfileLogoutButton />,
           tabBarAccessibilityLabel: 'Perfil',
           tabBarIcon(props) {
             return (

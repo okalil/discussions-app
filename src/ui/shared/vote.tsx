@@ -15,8 +15,8 @@ export function Vote({ voted, votes, onPress }: VoteProps) {
     <Pressable
       className={cn(
         'flex-row items-center ml-auto',
-        'px-2 py-1 border rounded-xl',
-        voted ? 'border-blue-500' : 'border-gray-200'
+        'px-2 py-1 border-[0.5px] rounded-xl',
+        voted ? 'border-blue-500' : 'border-gray-300',
       )}
       style={{ minWidth: 48 }}
       onPress={onPress}

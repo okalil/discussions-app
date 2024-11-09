@@ -59,6 +59,7 @@ export function Navigation({ onReady }: Props) {
             <Stack.Screen
               name="DiscussionForm"
               component={DiscussionFormScreen}
+              options={{ title: 'Nova Discussão', presentation: 'formSheet' }}
             />
           </Stack.Group>
         )}

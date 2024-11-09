@@ -1,25 +1,41 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
-import { useStreamQuery } from '../../shared/utils/use-stream-query';
+import { getCommentRepository } from '~/data/comment/comment.repository';
 
 export function useDiscussionQuery(discussionId: string) {
   const discussionRepository = getDiscussionRepository();
   return useQuery({
     queryKey: ['discussions', discussionId],
-    queryFn: useStreamQuery((signal) =>
-      discussionRepository.getDiscussionStream(discussionId, signal),
-    ),
+    queryFn: () => discussionRepository.getDiscussion(discussionId),
     enabled: !!discussionId,
     staleTime: 0,
   });
 }
 
-export function useDiscussionChannel(discussionId: string) {
-  const discussionRepository = getDiscussionRepository();
-  React.useEffect(
-    () => discussionRepository.joinDiscussionChannel(discussionId),
-    [discussionId],
-  );
+export function useWatchDiscussionUpdates(discussionId: string) {
+  const queryClient = useQueryClient();
+  React.useEffect(() => {
+    const discussionRepository = getDiscussionRepository();
+    const commentsRepository = getCommentRepository(discussionId);
+    const unwatchDiscussion = discussionRepository.watchDiscussionUpdate(
+      discussionId,
+      () => {
+        queryClient.invalidateQueries({
+          queryKey: ['discussions', discussionId],
+        });
+      },
+    );
+    const unwatchComments = commentsRepository.watchComments((comments) => {
+      queryClient.setQueryData(
+        ['discussions', discussionId, 'comments'],
+        comments,
+      );
+    });
+    return () => {
+      unwatchDiscussion();
+      unwatchComments();
+    };
+  }, [discussionId, queryClient]);
 }

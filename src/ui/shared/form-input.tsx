@@ -35,10 +35,7 @@ export function FormInput({
   } = useController({ control: form.control, name, rules });
 
   return (
-    <View
-      className={cn('flex-col relative gap-y-2')}
-      style={style}
-    >
+    <View className={cn('flex-col relative gap-y-2')} style={style}>
       <Text className="font-inter-semibold" onPress={() => form.setFocus(name)}>
         {label}
       </Text>
@@ -48,22 +45,22 @@ export function FormInput({
           {...props}
           ref={field.ref}
           value={field.value}
-          onChangeText={text => {
+          onChangeText={(text) => {
             field.onChange(text);
           }}
           onBlur={field.onBlur}
           returnKeyType={nextFocusDown ? 'next' : props.returnKeyType}
-          onSubmitEditing={e => {
+          onSubmitEditing={(e) => {
             if (nextFocusDown) form.setFocus(nextFocusDown);
             props.onSubmitEditing?.(e);
           }}
           className={cn(
-            'bg-gray-50 rounded h-12 px-4',
-            'border border-gray-300',
-            'focus:border-2 focus:border-gray-800',
-            error && 'border-2 border-red-500',
+            'bg-gray-50 rounded-lg h-11 px-4',
+            'border-[0.5px] border-gray-300',
+            'focus:border focus:border-gray-800',
+            error && 'border border-red-500',
             iconLeft && 'pl-12',
-            iconRight && 'pr-12'
+            iconRight && 'pr-12',
           )}
         />
 
@@ -91,16 +88,12 @@ export function FormInput({
 
 FormInput.Email = function FormInputEmail(props: FormInputProps) {
   return (
-    <FormInput
-      {...props}
-      keyboardType="email-address"
-      autoCapitalize="none"
-    />
+    <FormInput {...props} keyboardType="email-address" autoCapitalize="none" />
   );
 };
 
 FormInput.Password = function FormInputPassword(props: FormInputProps) {
-  const [visible, toggleVisible] = React.useReducer(state => !state, false);
+  const [visible, toggleVisible] = React.useReducer((state) => !state, false);
 
   return (
     <FormInput

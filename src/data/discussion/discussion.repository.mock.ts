@@ -44,7 +44,7 @@ export class DiscussionRepository implements original.DiscussionRepository {
   async createDiscussion(dto: CreateDiscussionDto): Promise<string> {
     await delay(500);
     const user = await getUserRepository().getUser();
-    if (!user) throw new Error();
+    if (!user) throw new Error('No User');
     const discussion = factory.build({ user, ...dto });
     discussions.push(discussion);
     return discussion.id;
@@ -55,11 +55,9 @@ export class DiscussionRepository implements original.DiscussionRepository {
     Object.assign(discussion, dto);
   }
 
-  joinDiscussionChannel(discussionId: string): () => void {
+  watchDiscussionUpdate(discussionId: string, callback: () => void) {
     return () => {};
   }
-
-  async *getDiscussionStream(): AsyncGenerator<string, any, unknown> {}
 }
 
 function delay(ms: number) {
