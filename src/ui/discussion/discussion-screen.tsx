@@ -1,46 +1,58 @@
 import React from 'react';
 import { View, ActivityIndicator, Pressable } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useQuery } from '@tanstack/react-query';
+import type { StaticScreenProps } from '@react-navigation/native';
 import { Text } from '~/ui/shared/text';
 import { Vote } from '~/ui/shared/vote';
-import { Comments } from './comments';
+import type { DiscussionDto } from '~/data/discussion/discussion.dto';
 import {
   useWatchDiscussionUpdates,
-  useDiscussionQuery,
+  discussionQuery,
 } from './queries/use-discussion-query';
 import { useVoteDiscussionMutation } from './queries/use-vote-discussion-mutation';
+import { Comments } from './comments';
 
-export type ScreenProps = NativeStackScreenProps<StackParamList, 'Discussion'>;
-
-export function DiscussionScreen({ route }: ScreenProps) {
+export function DiscussionScreen({ route }: StaticScreenProps<{ id: string }>) {
   const params = route.params;
-  const discussionId = params?.id ?? '';
+  const discussionId = params.id;
 
   useWatchDiscussionUpdates(discussionId); // only receive discussion updates while in this screen
 
-  const discussionQuery = useDiscussionQuery(discussionId);
-  const votesMutation = useVoteDiscussionMutation(discussionId);
+  const {
+    data: discussion,
+    isLoadingError,
+    isPending,
+    refetch,
+  } = useQuery(discussionQuery(discussionId));
 
-  if (discussionQuery.isPending)
-    return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator color="black" size="large" />
-      </View>
-    );
+  return (
+    <View className="flex-1">
+      <Comments
+        header={
+          isPending ? (
+            <View className="flex-1 items-center justify-center">
+              <ActivityIndicator color="black" size="large" />
+            </View>
+          ) : isLoadingError ? (
+            <View className="flex-1 items-center justify-center">
+              <Text className="text-base">Houve um erro ao carregar</Text>
+              <Pressable onPress={() => refetch()}>
+                <Text className="underline text-base">Tente novamente.</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <DiscussionContent discussion={discussion} />
+          )
+        }
+      />
+    </View>
+  );
+}
 
-  if (discussionQuery.isLoadingError) {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-base">Houve um erro ao carregar</Text>
-        <Pressable onPress={() => discussionQuery.refetch()}>
-          <Text className="underline text-base">Tente novamente.</Text>
-        </Pressable>
-      </View>
-    );
-  }
+function DiscussionContent({ discussion }: { discussion: DiscussionDto }) {
+  const votesMutation = useVoteDiscussionMutation(discussion.id);
 
-  const discussion = discussionQuery.data;
   const optimisticVoted = votesMutation.variables;
   const voted = votesMutation.isPending ? optimisticVoted : discussion.voted;
 
@@ -50,31 +62,25 @@ export function DiscussionScreen({ route }: ScreenProps) {
   }
 
   return (
-    <View className="flex-1">
-      <Comments
-        header={
-          <View>
-            <Text
-              testID="discussion_title"
-              className="text-lg font-inter-semibold mb-2"
-            >
-              {discussion.title}
-            </Text>
-            <Text className="text-base mb-2">{discussion.description}</Text>
-            <View>
-              <Vote
-                voted={voted}
-                votes={votes}
-                onPress={() => {
-                  requestAnimationFrame(async () => {
-                    votesMutation.mutate(!voted);
-                  });
-                }}
-              />
-            </View>
-          </View>
-        }
-      />
+    <View>
+      <Text
+        testID="discussion_title"
+        className="text-lg font-inter-semibold mb-2"
+      >
+        {discussion.title}
+      </Text>
+      <Text className="text-base mb-2">{discussion.description}</Text>
+      <View>
+        <Vote
+          voted={voted}
+          votes={votes}
+          onPress={() => {
+            requestAnimationFrame(async () => {
+              votesMutation.mutate(!voted);
+            });
+          }}
+        />
+      </View>
     </View>
   );
 }

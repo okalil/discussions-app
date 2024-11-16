@@ -1,9 +1,9 @@
-import React from "react";
-import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getUserRepository } from "~/data/user/user.repository";
+import React from 'react';
+import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getUserRepository } from '~/data/user/user.repository';
 
 const options = queryOptions({
-  queryKey: ["user"],
+  queryKey: ['user'],
   queryFn: () => getUserRepository().getUser(),
   gcTime: Infinity,
   staleTime: Infinity,
@@ -26,8 +26,20 @@ export function useCurrentUser() {
 
   if (!user) {
     throw new Error(
-      "Não é possível acessar os dados do usuário sem estar logado"
+      'Não é possível acessar os dados do usuário sem estar logado',
     );
   }
   return user;
+}
+
+export function useIsAuthenticated() {
+  const userQuery = useOptionalUserQuery();
+  const isAuthenticated = !!userQuery.data;
+  return isAuthenticated;
+}
+
+export function useIsUnauthenticated() {
+  const userQuery = useOptionalUserQuery();
+  const isAuthenticated = !!userQuery.data;
+  return !isAuthenticated;
 }

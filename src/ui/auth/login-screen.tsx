@@ -1,23 +1,22 @@
-import { Pressable, View } from "react-native";
-import { type NativeStackScreenProps } from "@react-navigation/native-stack";
-import { FormProvider, useForm } from "react-hook-form";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import type { LoginDto } from "~/data/user/login.dto";
-import { Button } from "~/ui/shared/button";
-import { FormInput } from "~/ui/shared/form-input";
-import { Text } from "~/ui/shared/text";
-import { Toast } from "~/ui/shared/toast";
-import { useLoginMutation } from "./queries/use-login-mutation";
+import { Pressable, View } from 'react-native';
+import { FormProvider, useForm } from 'react-hook-form';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { useNavigation } from '@react-navigation/native';
+import type { LoginDto } from '~/data/user/login.dto';
+import { Button } from '~/ui/shared/button';
+import { FormInput } from '~/ui/shared/form-input';
+import { Text } from '~/ui/shared/text';
+import { Toast } from '~/ui/shared/toast';
+import { useLoginMutation } from './queries/use-login-mutation';
 
-export function LoginScreen({
-  navigation,
-}: NativeStackScreenProps<StackParamList>) {
+export function LoginScreen() {
+  const navigation = useNavigation();
   const form = useForm<LoginDto>();
   const mutation = useLoginMutation();
 
   const onLogin = form.handleSubmit(async (data) => {
     mutation.mutate(data, {
-      onSuccess: () => Toast.show("Logado com sucesso!", Toast.SHORT),
+      onSuccess: () => Toast.show('Logado com sucesso!', Toast.SHORT),
     });
   });
 
@@ -59,7 +58,7 @@ export function LoginScreen({
 
           <View className="flex-row justify-center ">
             <Text className="">Novo por aqui? </Text>
-            <Pressable onPress={() => navigation.navigate("Register")}>
+            <Pressable onPress={() => navigation.navigate('Register')}>
               <Text className="underline">Cadastre-se agora</Text>
             </Pressable>
           </View>

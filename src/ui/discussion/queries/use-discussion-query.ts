@@ -1,18 +1,15 @@
 import React from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { queryOptions, useQueryClient } from '@tanstack/react-query';
 
 import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
 import { getCommentRepository } from '~/data/comment/comment.repository';
 
-export function useDiscussionQuery(discussionId: string) {
-  const discussionRepository = getDiscussionRepository();
-  return useQuery({
+export const discussionQuery = (discussionId: string) =>
+  queryOptions({
     queryKey: ['discussions', discussionId],
-    queryFn: () => discussionRepository.getDiscussion(discussionId),
-    enabled: !!discussionId,
+    queryFn: () => getDiscussionRepository().getDiscussion(discussionId),
     staleTime: 0,
   });
-}
 
 export function useWatchDiscussionUpdates(discussionId: string) {
   const queryClient = useQueryClient();

@@ -8,21 +8,17 @@ import {
   StyleSheet,
 } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+
 import { Avatar } from '~/ui/shared/avatar';
 import { Fab } from '~/ui/shared/fab';
 import { Text } from '~/ui/shared/text';
 import { useRefresh } from '../shared/utils/use-refresh';
 import { useInfiniteDiscussionsQuery } from './queries/use-infinite-discussions-query';
 
-type ScreenProps = BottomTabScreenProps<
-  StackParamList & TabParamList,
-  'Discussions'
->;
-
-export function DiscussionsScreen({ navigation, route }: ScreenProps) {
+export function DiscussionsScreen() {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const query = useInfiniteDiscussionsQuery();
   const refresh = useRefresh(() => query.refetch({ throwOnError: true }));

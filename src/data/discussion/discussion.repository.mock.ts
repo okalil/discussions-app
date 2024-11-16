@@ -24,6 +24,7 @@ export class DiscussionRepository implements original.DiscussionRepository {
   }
 
   async getDiscussion(id: string): Promise<DiscussionDto> {
+    await delay(500);
     const discussion = discussions.find((it) => it.id === id);
     if (!discussion) throw new Error();
     return discussion;

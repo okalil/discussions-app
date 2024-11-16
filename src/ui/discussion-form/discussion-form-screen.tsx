@@ -1,5 +1,4 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -12,9 +11,9 @@ import { Fab } from '~/ui/shared/fab';
 import { FormInput } from '~/ui/shared/form-input';
 import { FormTextarea } from '~/ui/shared/form-textarea';
 
-type ScreenProps = NativeStackScreenProps<StackParamList>;
-
-export function DiscussionFormScreen({ navigation }: ScreenProps) {
+export function DiscussionFormScreen({
+  navigation,
+}: NativeStackScreenProps<ReactNavigation.RootParamList>) {
   const client = useQueryClient();
   const mutation = useMutation({
     mutationFn: (dto: CreateDiscussionDto) =>
