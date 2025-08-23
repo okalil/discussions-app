@@ -13,8 +13,8 @@ interface FormInputProps extends TextInputProps {
   rules?: Parameters<typeof useController>[0]['rules'];
 
   label?: string;
-  iconLeft?: JSX.Element;
-  iconRight?: JSX.Element;
+  iconLeft?: React.JSX.Element;
+  iconRight?: React.JSX.Element;
 }
 
 export function FormInput({

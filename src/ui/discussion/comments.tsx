@@ -3,8 +3,6 @@ import { View, Pressable, Alert, BackHandler } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { useRoute } from '@react-navigation/native';
-import { MotiView } from 'moti';
-import { MotiPressable } from 'moti/interactions';
 import {
   KeyboardEvents,
   useReanimatedKeyboardAnimation,
@@ -20,18 +18,17 @@ import { Text } from '~/ui/shared/text';
 import { Vote } from '~/ui/shared/vote';
 import { useCurrentUser } from '../shared/queries/use-user-query';
 import { CommentForm } from './comment-form';
-import type { ScreenProps } from './discussion-screen';
 import { useCommentsQuery } from './queries/use-comments-query';
 import { useDeleteCommentMutation } from './queries/use-delete-comment-mutation';
 import { useVoteCommentMutation } from './queries/use-vote-comment-mutation';
 
 interface Props {
-  header: JSX.Element;
+  header: React.JSX.Element;
 }
 
 export function Comments({ header }: Props) {
   const insets = useSafeAreaInsets();
-  const params = useRoute<ScreenProps['route']>().params;
+  const params = useRoute().params as { id: string };
   const discussionId = params?.id ?? '';
 
   const user = useCurrentUser();
@@ -119,7 +116,7 @@ export function Comments({ header }: Props) {
           ({ item }) => {
             const isAuthor = user.id === item.user.id;
             return (
-              <MotiView
+              <Animated.View
                 key={item.id}
                 style={{ paddingVertical: 12 }}
                 entering={FadeIn}
@@ -129,28 +126,28 @@ export function Comments({ header }: Props) {
                   <Avatar src={item.user.picture?.url} alt={item.user.name} />
                   <Text className="ml-3 mr-auto">{item.user.name}</Text>
                   {isAuthor && (
-                    <MotiPressable
-                      style={{ borderRadius: 9999 }}
-                      animate={({ pressed }) => {
-                        'worklet';
-                        return {
-                          backgroundColor: pressed
-                            ? 'lightgray'
-                            : 'transparent',
-                          opacity: pressed ? 0 : 1,
-                        };
-                      }}
+                    <Pressable
                       onPress={() => onOpenCommentOptions(item)}
+                      style={{ borderRadius: 9999 }}
+                      // animate={({ pressed }) => {
+                      //   'worklet';
+                      //   return {
+                      //     backgroundColor: pressed
+                      //       ? 'lightgray'
+                      //       : 'transparent',
+                      //     opacity: pressed ? 0 : 1,
+                      //   };
+                      // }}
                     >
                       <Icon name="dots-vertical" size={24} />
-                    </MotiPressable>
+                    </Pressable>
                   )}
                 </View>
 
                 <Text className="py-2 px-3">{item.content}</Text>
 
                 <CommentVote comment={item} />
-              </MotiView>
+              </Animated.View>
             );
           },
           [],
@@ -212,7 +209,7 @@ export function Comments({ header }: Props) {
 }
 
 function CommentVote({ comment }: { comment: CommentDto }) {
-  const params = useRoute<ScreenProps['route']>().params;
+  const params = useRoute().params as { id: string };
   const discussionId = params?.id ?? '';
   const commentId = comment.id;
 

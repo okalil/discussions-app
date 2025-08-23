@@ -1,4 +1,4 @@
-import { experimental_createPersister } from '@tanstack/query-persist-client-core';
+import { experimental_createQueryPersister } from '@tanstack/query-persist-client-core';
 import {
   QueryClient,
   QueryClientProvider as Provider,
@@ -7,11 +7,13 @@ import {
 import { storage } from '~/data/core/local/storage';
 import { Toast } from '../shared/toast';
 
+const persistor = experimental_createQueryPersister({ storage });
+
 const client = new QueryClient({
   defaultOptions: {
     queries: {
-      persister: experimental_createPersister({ storage }),
-      retry: 1,
+      persister: persistor.persisterFn,
+      retry: false,
     },
     mutations: {
       onError(error) {

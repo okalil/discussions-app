@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import {
@@ -5,13 +6,17 @@ import {
   BottomTabBar,
 } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { MotiView } from 'moti';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { DiscussionsScreen } from '../discussions/discussions-screen';
 import { ProfileLogoutButton, ProfileScreen } from '../profile/profile-screen';
 
 export const Tabs = createBottomTabNavigator({
-  tabBar: TabBar,
+  tabBar: (props) => <TabBar {...props} />,
   screenOptions: { tabBarShowLabel: false },
   screens: {
     Discussions: {
@@ -49,16 +54,23 @@ function TabBar(props: BottomTabBarProps) {
   const route = props.state.routes[props.state.index];
   const params: Record<string, any> = route.params ?? {};
   const tabBarVisible = params?.tabBarVisible ?? true;
+
+  const height = useSharedValue(tabBarVisible ? 48 : 0);
+
+  useEffect(() => {
+    height.value = withTiming(tabBarVisible ? 48 : 0, { duration: 250 });
+  }, [tabBarVisible]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: height.value,
+    backgroundColor: 'blue',
+    marginBottom: insets.bottom,
+    overflow: 'hidden',
+  }));
+
   return (
-    <MotiView
-      animate={{
-        height: tabBarVisible ? 48 : 0,
-        backgroundColor: 'blue',
-        marginBottom: insets.bottom,
-      }}
-      transition={{ type: 'timing', duration: 250 }}
-    >
+    <Animated.View style={animatedStyle}>
       <BottomTabBar {...props} />
-    </MotiView>
+    </Animated.View>
   );
 }
