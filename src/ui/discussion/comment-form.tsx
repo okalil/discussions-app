@@ -26,7 +26,7 @@ interface Props {
 
 export function CommentForm({ editing, onCancelEditing, comment }: Props) {
   const insets = useSafeAreaInsets();
-  const params = useRoute<ScreenProps['route']>().params;
+  const params = useRoute().params as ScreenProps['route']['params'];
   const discussionId = params?.id ?? '';
 
   const form = useForm({ defaultValues: comment });
@@ -35,17 +35,15 @@ export function CommentForm({ editing, onCancelEditing, comment }: Props) {
   const { isPending, mutate } = useSaveCommentMutation(discussionId);
 
   const onSaveComment = () => {
-    requestAnimationFrame(() =>
-      mutate(
-        { id: comment?.id, content },
-        {
-          onSuccess() {
-            form.reset();
-            Keyboard.dismiss();
-            onCancelEditing();
-          },
+    mutate(
+      { id: comment?.id, content },
+      {
+        onSuccess() {
+          form.reset();
+          Keyboard.dismiss();
+          onCancelEditing();
         },
-      ),
+      },
     );
   };
 

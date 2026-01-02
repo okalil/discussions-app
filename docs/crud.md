@@ -35,7 +35,7 @@ export class CommentRepository {
 
   async getComments(): Promise<CommentDto[]> {
     const response = await api.get(
-      `/api/v1/discussions/${this.discussionId}/comments`
+      `/api/v1/discussions/${this.discussionId}/comments`,
     );
     const json = await response.json();
     return json.comments;
@@ -52,13 +52,13 @@ export class CommentRepository {
     const body = JSON.stringify(dto);
     await api.put(
       `/api/v1/discussions/${this.discussionId}/comments/${commentId}`,
-      { body }
+      { body },
     );
   }
 
   async deleteComment(commentId: string) {
     await api.delete(
-      `/api/v1/discussions/${this.discussionId}/comments/${commentId}`
+      `/api/v1/discussions/${this.discussionId}/comments/${commentId}`,
     );
   }
 }
@@ -90,7 +90,7 @@ export function CommentsList({ discussionId }) {
   return (
     <FlatList
       data={comments}
-      keyExtractor={it => it.id}
+      keyExtractor={(it) => it.id}
       renderItem={({ item }) => <Comment comment={comment} />}
     />
   );
@@ -113,10 +113,10 @@ function AddEditComment({ discussionId, comment }) {
     onSuccess: () => client.invalidateQueries({ queryKey: ['comments'] }),
   });
 
-  const onSave = form.handleSubmit(data => {
+  const onSave = form.handleSubmit((data) => {
     mutation.mutate(
       { commentId: comment?.id, data },
-      { onSuccess: () => form.reset() }
+      { onSuccess: () => form.reset() },
     );
   });
 
@@ -137,7 +137,7 @@ function AddEditComment({ discussionId, comment }) {
 function DeleteComment({ discussionId, comment }) {
   const client = useQueryClient();
   const mutation = useMutation({
-    mutationFn: commentId =>
+    mutationFn: (commentId) =>
       new CommentRepository(discussionId).deleteComment(commentId),
     onSuccess: () => client.invalidateQueries({ queryKey: ['comments'] }),
   });
@@ -148,9 +148,7 @@ function DeleteComment({ discussionId, comment }) {
       {
         text: 'Ok',
         onPress() {
-          requestAnimationFrame(() => {
-            deleteCommentMutation.mutate(comment);
-          });
+          deleteCommentMutation.mutate(comment);
         },
       },
     ]);

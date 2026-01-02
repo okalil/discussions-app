@@ -1,56 +1,35 @@
 import React from 'react';
-import { View, ActivityIndicator, Pressable } from 'react-native';
-
-import { useQuery } from '@tanstack/react-query';
+import { View } from 'react-native';
 import type { StaticScreenProps } from '@react-navigation/native';
 import { Text } from '~/ui/shared/text';
 import { Vote } from '~/ui/shared/vote';
-import type { DiscussionDto } from '~/data/discussion/discussion.dto';
+import { Await } from '~/ui/shared/await';
 import {
   useWatchDiscussionUpdates,
-  discussionQuery,
+  useSuspenseDiscussionQuery,
 } from './queries/use-discussion-query';
 import { useVoteDiscussionMutation } from './queries/use-vote-discussion-mutation';
 import { Comments } from './comments';
 
-export function DiscussionScreen({ route }: StaticScreenProps<{ id: string }>) {
+export type ScreenProps = StaticScreenProps<{ id: string }>;
+
+export function DiscussionScreen({ route }: ScreenProps) {
   const params = route.params;
   const discussionId = params.id;
 
   useWatchDiscussionUpdates(discussionId); // only receive discussion updates while in this screen
 
-  const {
-    data: discussion,
-    isLoadingError,
-    isPending,
-    refetch,
-  } = useQuery(discussionQuery(discussionId));
-
   return (
     <View className="flex-1">
-      <Comments
-        header={
-          isPending ? (
-            <View className="flex-1 items-center justify-center">
-              <ActivityIndicator color="black" size="large" />
-            </View>
-          ) : isLoadingError ? (
-            <View className="flex-1 items-center justify-center">
-              <Text className="text-base">Houve um erro ao carregar</Text>
-              <Pressable onPress={() => refetch()}>
-                <Text className="underline text-base">Tente novamente.</Text>
-              </Pressable>
-            </View>
-          ) : (
-            <DiscussionContent discussion={discussion} />
-          )
-        }
-      />
+      <Await>
+        <Comments header={<DiscussionContent discussionId={discussionId} />} />
+      </Await>
     </View>
   );
 }
 
-function DiscussionContent({ discussion }: { discussion: DiscussionDto }) {
+function DiscussionContent({ discussionId }: { discussionId: string }) {
+  const { data: discussion } = useSuspenseDiscussionQuery(discussionId);
   const votesMutation = useVoteDiscussionMutation(discussion.id);
 
   const optimisticVoted = votesMutation.variables;
@@ -74,11 +53,7 @@ function DiscussionContent({ discussion }: { discussion: DiscussionDto }) {
         <Vote
           voted={voted}
           votes={votes}
-          onPress={() => {
-            requestAnimationFrame(async () => {
-              votesMutation.mutate(!voted);
-            });
-          }}
+          onPress={() => votesMutation.mutate(!voted)}
         />
       </View>
     </View>

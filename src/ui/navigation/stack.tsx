@@ -12,7 +12,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LoginScreen } from '../auth/login-screen';
 import { RegisterScreen } from '../auth/register-screen';
 import { DiscussionScreen } from '../discussion/discussion-screen';
-import { DiscussionFormScreen } from '../discussion-form/discussion-form-screen';
+import { DiscussionFormScreen } from '../discussions/discussion-form-screen';
 import {
   useIsAuthenticated,
   useIsUnauthenticated,

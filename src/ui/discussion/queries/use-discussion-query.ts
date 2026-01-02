@@ -1,15 +1,16 @@
 import React from 'react';
-import { queryOptions, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 
 import { getDiscussionRepository } from '~/data/discussion/discussion.repository';
 import { getCommentRepository } from '~/data/comment/comment.repository';
 
-export const discussionQuery = (discussionId: string) =>
-  queryOptions({
+export function useSuspenseDiscussionQuery(discussionId: string) {
+  return useSuspenseQuery({
     queryKey: ['discussions', discussionId],
     queryFn: () => getDiscussionRepository().getDiscussion(discussionId),
     staleTime: 0,
   });
+}
 
 export function useWatchDiscussionUpdates(discussionId: string) {
   const queryClient = useQueryClient();

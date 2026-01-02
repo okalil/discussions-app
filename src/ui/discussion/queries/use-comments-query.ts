@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getCommentRepository } from '~/data/comment/comment.repository';
 
-export function useCommentsQuery(discussionId: string) {
+export function useSuspenseCommentsQuery(discussionId: string) {
   const commentsRepository = getCommentRepository(discussionId);
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ['discussions', discussionId, 'comments'],
     queryFn: () => commentsRepository.getComments(),
   });

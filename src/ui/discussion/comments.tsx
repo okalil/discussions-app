@@ -18,7 +18,7 @@ import { Text } from '~/ui/shared/text';
 import { Vote } from '~/ui/shared/vote';
 import { useCurrentUser } from '../shared/queries/use-user-query';
 import { CommentForm } from './comment-form';
-import { useCommentsQuery } from './queries/use-comments-query';
+import { useSuspenseCommentsQuery } from './queries/use-comments-query';
 import { useDeleteCommentMutation } from './queries/use-delete-comment-mutation';
 import { useVoteCommentMutation } from './queries/use-vote-comment-mutation';
 
@@ -32,7 +32,7 @@ export function Comments({ header }: Props) {
   const discussionId = params?.id ?? '';
 
   const user = useCurrentUser();
-  const { data: comments } = useCommentsQuery(discussionId);
+  const { data: comments } = useSuspenseCommentsQuery(discussionId);
   const deleteCommentMutation = useDeleteCommentMutation(discussionId);
 
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
@@ -80,7 +80,7 @@ export function Comments({ header }: Props) {
 
   const onOpenCommentOptions = (it: CommentDto) => {
     setComment(it);
-    requestAnimationFrame(() => bottomSheetModalRef.current?.present());
+    bottomSheetModalRef.current?.present();
   };
   const onDeleteCommentPress = (comment: CommentDto) => {
     bottomSheetModalRef.current?.close();
@@ -89,9 +89,7 @@ export function Comments({ header }: Props) {
       {
         text: 'Ok',
         onPress() {
-          requestAnimationFrame(() => {
-            deleteCommentMutation.mutate(comment);
-          });
+          deleteCommentMutation.mutate(comment);
         },
       },
     ]);
@@ -110,7 +108,7 @@ export function Comments({ header }: Props) {
         ListHeaderComponent={header}
         ListFooterComponent={<Animated.View style={fakeView} />}
         contentContainerStyle={{ padding: 16 }}
-        data={[...(comments ?? [])]}
+        data={[...comments]}
         renderItem={React.useCallback<ListRenderItem<CommentDto>>(
           ({ item }) => {
             const isAuthor = user.id === item.user.id;
@@ -128,15 +126,15 @@ export function Comments({ header }: Props) {
                     <Pressable
                       onPress={() => onOpenCommentOptions(item)}
                       style={{ borderRadius: 9999 }}
-                    // animate={({ pressed }) => {
-                    //   'worklet';
-                    //   return {
-                    //     backgroundColor: pressed
-                    //       ? 'lightgray'
-                    //       : 'transparent',
-                    //     opacity: pressed ? 0 : 1,
-                    //   };
-                    // }}
+                      // animate={({ pressed }) => {
+                      //   'worklet';
+                      //   return {
+                      //     backgroundColor: pressed
+                      //       ? 'lightgray'
+                      //       : 'transparent',
+                      //     opacity: pressed ? 0 : 1,
+                      //   };
+                      // }}
                     >
                       <Icon name="dots-vertical" size={24} />
                     </Pressable>
@@ -222,15 +220,7 @@ function CommentVote({ comment }: { comment: CommentDto }) {
     votes += optimisticVoted ? 1 : -1;
 
   return (
-    <Vote
-      voted={voted}
-      votes={votes}
-      onPress={() => {
-        requestAnimationFrame(async () => {
-          mutation.mutate(!voted);
-        });
-      }}
-    />
+    <Vote voted={voted} votes={votes} onPress={() => mutation.mutate(!voted)} />
   );
 }
 
