@@ -8,7 +8,7 @@ import {
   useReanimatedKeyboardAnimation,
 } from 'react-native-keyboard-controller';
 import Animated, { FadeIn, useAnimatedStyle } from 'react-native-reanimated';
-import type { ListRenderItem } from '@shopify/flash-list';
+import type { FlashListRef, ListRenderItem } from '@shopify/flash-list';
 import { FlashList } from '@shopify/flash-list';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -55,7 +55,7 @@ export function Comments({ header }: Props) {
     }),
     [],
   );
-  const flashListRef = React.useRef<FlashList<CommentDto>>(null);
+  const flashListRef = React.useRef<FlashListRef<CommentDto>>(null);
   const offsetY = React.useRef(0);
 
   React.useEffect(() => {
@@ -107,7 +107,6 @@ export function Comments({ header }: Props) {
       <FlashList
         onScroll={(e) => (offsetY.current = e.nativeEvent.contentOffset.y)}
         ref={flashListRef}
-        estimatedItemSize={300}
         ListHeaderComponent={header}
         ListFooterComponent={<Animated.View style={fakeView} />}
         contentContainerStyle={{ padding: 16 }}
@@ -129,15 +128,15 @@ export function Comments({ header }: Props) {
                     <Pressable
                       onPress={() => onOpenCommentOptions(item)}
                       style={{ borderRadius: 9999 }}
-                      // animate={({ pressed }) => {
-                      //   'worklet';
-                      //   return {
-                      //     backgroundColor: pressed
-                      //       ? 'lightgray'
-                      //       : 'transparent',
-                      //     opacity: pressed ? 0 : 1,
-                      //   };
-                      // }}
+                    // animate={({ pressed }) => {
+                    //   'worklet';
+                    //   return {
+                    //     backgroundColor: pressed
+                    //       ? 'lightgray'
+                    //       : 'transparent',
+                    //     opacity: pressed ? 0 : 1,
+                    //   };
+                    // }}
                     >
                       <Icon name="dots-vertical" size={24} />
                     </Pressable>
