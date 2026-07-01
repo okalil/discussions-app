@@ -42,7 +42,7 @@
     "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0",
+    "@babel/core": "^7.29.6",
     "@faker-js/faker": "^8.4.1",
     "@types/react": "^19.1.17",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
